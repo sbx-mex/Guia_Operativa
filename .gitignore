@@ -1,0 +1,8 @@
+source/
+tmp_sheet/
+tmp_browser/
+node_modules/
+outputs/visual-check/
+**/__pycache__/
+*.pyc
+_site/
