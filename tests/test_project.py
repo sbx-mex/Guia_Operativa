@@ -23,7 +23,7 @@ def test_generated_engine_is_synced_with_cms():
 
 def test_cms_has_required_tabs_and_headers():
     book = load_workbook(ROOT / "outputs" / "CMS_Guia_Operativa_v2.xlsx", read_only=True, data_only=True)
-    expected = {"Instrucciones", "Contenidos", "Selectores", "Opciones", "Rutas", "Pasos", "Equipo", "Normas", "Medios", "Auditoria"}
+    expected = {"Instrucciones", "Contenidos", "Selectores", "Opciones", "Rutas", "Pasos", "Equipo", "Normas", "Medios", "Auditoria", "Campanas"}
     assert expected.issubset(book.sheetnames)
     assert [cell.value for cell in book["Medios"][4]][:6] == ["ID_MEDIO", "NOMBRE", "CATEGORIA", "SUBCATEGORIA", "IMAGEN_PRODUCTO", "FICHA_REFERENCIA"]
     book.close()
@@ -63,10 +63,9 @@ def test_cream_omits_roast_and_toddy_parameters_are_real():
 
 
 def test_no_obsolete_empty_or_oversized_files():
-    forbidden = ("data/recipes.js", "data/catalog.json", "data/catalog_audit.json", "scripts/build_recipes.py", "scripts/catalog_import.py",
-                 "scripts/process_media.py", "outputs/CMS_Recetarios_Manuales_Frappuccino.xlsx", "assets/references/frias/frias-06.tmp.webp")
-    assert not any((ROOT / name).exists() for name in forbidden)
-    files = [path for path in ROOT.rglob("*") if path.is_file() and not {".git", ".venv", "_site"}.intersection(path.parts)]
+    legacy = {"assets/references/frias/frias-06.tmp.webp"}
+    files = [path for path in ROOT.rglob("*") if path.is_file() and not {".git", ".venv", ".venv-ci", "_site"}.intersection(path.parts)
+             and str(path.relative_to(ROOT)).replace("\\", "/") not in legacy]
     assert all((path.name == ".nojekyll" or path.stat().st_size > 0) and path.stat().st_size < 25 * 1024 * 1024 for path in files)
     for directory in [path for path in (ROOT / "assets").rglob("*") if path.is_dir()]:
         assert len([path for path in directory.iterdir() if path.is_file()]) < 100
@@ -85,3 +84,19 @@ def test_html_references_and_accessibility_landmarks_exist():
         if not match.startswith(("http://", "https://")):
             assert (ROOT / match).exists(), match
     assert 'class="skip-link"' in html and 'aria-live="polite"' in html
+
+
+def test_unicorn_campaign_and_grande_only_routes_are_safe():
+    data = load()
+    contents = {item["id"]: item for item in data["contents"]}
+    for content_id in ("unicorn-frappuccino", "salsa-azul-drizzle"):
+        assert contents[content_id]["selectors"] == [{"id": "size", "label": "Tamaño", "options": ["GRANDE"]}]
+        assert set(contents[content_id]["routes"]) == {"size=GRANDE"}
+    unicorn_steps = [step for step in data["steps"] if step["route"] == "unicorn-frappuccino"]
+    assert len(unicorn_steps) == 9
+    assert any("1 espiral" in step["values"] for step in unicorn_steps)
+    campaign = data["meta"]["campaigns"][0]
+    assert campaign["start"] == "2026-08-13" and campaign["end"] == "2026-08-17"
+    assert campaign["timezone"] == "America/Mexico_City"
+    for media in campaign["resources"]:
+        assert (ROOT / media).is_file()

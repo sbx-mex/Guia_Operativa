@@ -1,0 +1,35 @@
+ARCHIVOS URGENTES · UNICORN 13–17 AGOSTO
+
+Copia estas rutas sobre la raíz del repositorio conservando las carpetas.
+
+.github/workflows/validate-and-deploy.yml
+README.md
+app.js
+assets/campaigns/unicorn-buenas-practicas.webp
+assets/campaigns/unicorn-checklist.webp
+assets/campaigns/unicorn-concurso.webp
+assets/products/temporada/lavanda-latte-helado.webp
+assets/products/temporada/lavanda-latte.webp
+assets/products/temporada/lavanda-mocha-blanco-frappuccino.webp
+assets/products/temporada/matcha-lavanda-cold-foam.webp
+assets/products/temporada/salsa-azul-drizzle.webp
+assets/products/temporada/unicorn-frappuccino.webp
+assets/products/temporada/vainilla-lavanda-latte-helado.webp
+assets/products/temporada/vainilla-lavanda-latte.webp
+assets/references/temporada/lavanda-latte-helado.webp
+assets/references/temporada/lavanda-latte.webp
+assets/references/temporada/lavanda-mocha-blanco-frappuccino.webp
+assets/references/temporada/matcha-lavanda-cold-foam.webp
+assets/references/temporada/salsa-azul-drizzle.webp
+assets/references/temporada/unicorn-frappuccino.webp
+assets/references/temporada/vainilla-lavanda-latte-helado.webp
+assets/references/temporada/vainilla-lavanda-latte.webp
+data/content.js
+data/content.json
+index.html
+outputs/CMS_Guia_Operativa_v2.xlsx
+scripts/audit_project.py
+scripts/cms_engine.py
+styles.css
+sw.js
+tests/test_project.py

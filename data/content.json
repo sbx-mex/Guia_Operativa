@@ -1,9 +1,26 @@
 {
   "meta": {
-    "version": "3.0.0",
-    "catalogItems": 82,
-    "trainingModules": 5,
-    "source": "outputs/CMS_Guia_Operativa_v2.xlsx"
+    "version": "4.0.0",
+    "catalogItems": 90,
+    "trainingModules": 13,
+    "source": "outputs/CMS_Guia_Operativa_v2.xlsx",
+    "campaigns": [
+      {
+        "id": "unicorn-agosto",
+        "title": "Semana Unicorn",
+        "subtitle": "Practica Unicorn y Salsa Azul antes del servicio.",
+        "start": "2026-08-13",
+        "end": "2026-08-17",
+        "timezone": "America/Mexico_City",
+        "primary": "unicorn-frappuccino",
+        "secondary": "salsa-azul-drizzle",
+        "resources": [
+          "assets/campaigns/unicorn-checklist.webp",
+          "assets/campaigns/unicorn-buenas-practicas.webp",
+          "assets/campaigns/unicorn-concurso.webp"
+        ]
+      }
+    ]
   },
   "labels": {
     "ALTO": "Alto",
@@ -752,6 +769,78 @@
       "productImage": "assets/products/procesos/croissant-mantequilla.webp",
       "referenceImage": "assets/references/procesos/croissant-mantequilla.webp",
       "search": "Croissant mantequilla Alimentos Horneo Alimentos Croissant y Pan de queso"
+    },
+    {
+      "id": "temporada-practica-01",
+      "name": "Salsa Azul Drizzle",
+      "category": "Bebidas",
+      "subcategory": "Temporada · prioridad",
+      "productImage": "assets/products/temporada/salsa-azul-drizzle.webp",
+      "referenceImage": "assets/references/temporada/salsa-azul-drizzle.webp",
+      "search": "Salsa Azul Drizzle Bebidas Temporada · prioridad Bebidas Temporada · W33"
+    },
+    {
+      "id": "temporada-practica-02",
+      "name": "Unicorn Frappuccino",
+      "category": "Bebidas",
+      "subcategory": "Temporada · prioridad",
+      "productImage": "assets/products/temporada/unicorn-frappuccino.webp",
+      "referenceImage": "assets/references/temporada/unicorn-frappuccino.webp",
+      "search": "Unicorn Frappuccino Bebidas Temporada · prioridad Bebidas Temporada · W33"
+    },
+    {
+      "id": "temporada-practica-03",
+      "name": "Lavanda Latte",
+      "category": "Bebidas",
+      "subcategory": "Temporada · lavanda",
+      "productImage": "assets/products/temporada/lavanda-latte.webp",
+      "referenceImage": "assets/references/temporada/lavanda-latte.webp",
+      "search": "Lavanda Latte Bebidas Temporada · lavanda Bebidas Temporada · W33"
+    },
+    {
+      "id": "temporada-practica-04",
+      "name": "Lavanda Latte Helado",
+      "category": "Bebidas",
+      "subcategory": "Temporada · lavanda",
+      "productImage": "assets/products/temporada/lavanda-latte-helado.webp",
+      "referenceImage": "assets/references/temporada/lavanda-latte-helado.webp",
+      "search": "Lavanda Latte Helado Bebidas Temporada · lavanda Bebidas Temporada · W33"
+    },
+    {
+      "id": "temporada-practica-05",
+      "name": "Lavanda Mocha Blanco Frappuccino",
+      "category": "Bebidas",
+      "subcategory": "Temporada · lavanda",
+      "productImage": "assets/products/temporada/lavanda-mocha-blanco-frappuccino.webp",
+      "referenceImage": "assets/references/temporada/lavanda-mocha-blanco-frappuccino.webp",
+      "search": "Lavanda Mocha Blanco Frappuccino Bebidas Temporada · lavanda Bebidas Temporada · W33"
+    },
+    {
+      "id": "temporada-practica-06",
+      "name": "Matcha Lavanda Cold Foam",
+      "category": "Bebidas",
+      "subcategory": "Temporada · lavanda",
+      "productImage": "assets/products/temporada/matcha-lavanda-cold-foam.webp",
+      "referenceImage": "assets/references/temporada/matcha-lavanda-cold-foam.webp",
+      "search": "Matcha Lavanda Cold Foam Bebidas Temporada · lavanda Bebidas Temporada · W33"
+    },
+    {
+      "id": "temporada-practica-07",
+      "name": "Vainilla Lavanda Latte Helado",
+      "category": "Bebidas",
+      "subcategory": "Temporada · lavanda",
+      "productImage": "assets/products/temporada/vainilla-lavanda-latte-helado.webp",
+      "referenceImage": "assets/references/temporada/vainilla-lavanda-latte-helado.webp",
+      "search": "Vainilla Lavanda Latte Helado Bebidas Temporada · lavanda Bebidas Temporada · W33"
+    },
+    {
+      "id": "temporada-practica-08",
+      "name": "Vainilla Lavanda Latte",
+      "category": "Bebidas",
+      "subcategory": "Temporada · lavanda",
+      "productImage": "assets/products/temporada/vainilla-lavanda-latte.webp",
+      "referenceImage": "assets/references/temporada/vainilla-lavanda-latte.webp",
+      "search": "Vainilla Lavanda Latte Bebidas Temporada · lavanda Bebidas Temporada · W33"
     }
   ],
   "contents": [
@@ -907,6 +996,280 @@
       ],
       "rules": [
         "Mantén el producto congelado a -18 °C hasta su preparación."
+      ]
+    },
+    {
+      "id": "salsa-azul-drizzle",
+      "name": "Salsa Azul Drizzle",
+      "category": "Bebidas",
+      "subcategory": "Temporada · prioridad",
+      "description": "Prepara el premix azul homogéneo y controla su vida útil de 24 horas.",
+      "productImage": "assets/products/temporada/salsa-azul-drizzle.webp",
+      "referenceImage": "assets/references/temporada/salsa-azul-drizzle.webp",
+      "selectors": [
+        {
+          "id": "size",
+          "label": "Tamaño",
+          "options": [
+            "GRANDE"
+          ]
+        }
+      ],
+      "routes": {
+        "size=GRANDE": "salsa-azul-drizzle"
+      },
+      "equipment": [
+        "Jarra vaporizadora",
+        "Dosificador metal para Mocha Blanco",
+        "Cuchara para Mocha Blanco",
+        "Mamila plástica"
+      ],
+      "rules": [
+        "Usar únicamente en tamaño Grande.",
+        "Vida útil: 24 horas.",
+        "La mezcla debe quedar homogénea y sin grumos."
+      ]
+    },
+    {
+      "id": "unicorn-frappuccino",
+      "name": "Unicorn Frappuccino",
+      "category": "Bebidas",
+      "subcategory": "Temporada · prioridad",
+      "description": "Práctica guiada del regreso Unicorn. Disponible únicamente en tamaño Grande.",
+      "productImage": "assets/products/temporada/unicorn-frappuccino.webp",
+      "referenceImage": "assets/references/temporada/unicorn-frappuccino.webp",
+      "selectors": [
+        {
+          "id": "size",
+          "label": "Tamaño",
+          "options": [
+            "GRANDE"
+          ]
+        }
+      ],
+      "routes": {
+        "size=GRANDE": "unicorn-frappuccino"
+      },
+      "equipment": [
+        "Vaso Grande",
+        "Vaso de licuadora",
+        "Cuchara de 1 TSP",
+        "Mamila con Salsa Azul Drizzle"
+      ],
+      "rules": [
+        "Disponible del 15 al 17 de agosto y sólo en tamaño Grande.",
+        "No preparar dos bebidas al mismo tiempo en la licuadora.",
+        "Verificar Salsa Azul Drizzle vigente antes de iniciar."
+      ]
+    },
+    {
+      "id": "lavanda-latte",
+      "name": "Lavanda Latte",
+      "category": "Bebidas",
+      "subcategory": "Temporada · lavanda",
+      "description": "Espresso, leche y lavanda con acabado aromático.",
+      "productImage": "assets/products/temporada/lavanda-latte.webp",
+      "referenceImage": "assets/references/temporada/lavanda-latte.webp",
+      "selectors": [
+        {
+          "id": "size",
+          "label": "Tamaño",
+          "options": [
+            "ALTO",
+            "GRANDE",
+            "VENTI"
+          ]
+        }
+      ],
+      "routes": {
+        "size=ALTO": "lavanda-latte",
+        "size=GRANDE": "lavanda-latte",
+        "size=VENTI": "lavanda-latte"
+      },
+      "equipment": [
+        "Vaso caliente",
+        "Jarra para leche",
+        "Espolvoreador de lavanda"
+      ],
+      "rules": [
+        "Confirmar el tamaño antes de iniciar.",
+        "Seguir la secuencia sin omitir pasos.",
+        "Usar la ficha original como referencia visual."
+      ]
+    },
+    {
+      "id": "lavanda-latte-helado",
+      "name": "Lavanda Latte Helado",
+      "category": "Bebidas",
+      "subcategory": "Temporada · lavanda",
+      "description": "Espresso y lavanda sobre leche y hielo.",
+      "productImage": "assets/products/temporada/lavanda-latte-helado.webp",
+      "referenceImage": "assets/references/temporada/lavanda-latte-helado.webp",
+      "selectors": [
+        {
+          "id": "size",
+          "label": "Tamaño",
+          "options": [
+            "ALTO",
+            "GRANDE",
+            "VENTI"
+          ]
+        }
+      ],
+      "routes": {
+        "size=ALTO": "lavanda-latte-helado",
+        "size=GRANDE": "lavanda-latte-helado",
+        "size=VENTI": "lavanda-latte-helado"
+      },
+      "equipment": [
+        "Vaso frío",
+        "Tapa Nitro",
+        "Espolvoreador de lavanda"
+      ],
+      "rules": [
+        "Confirmar el tamaño antes de iniciar.",
+        "Seguir la secuencia sin omitir pasos.",
+        "Usar la ficha original como referencia visual."
+      ]
+    },
+    {
+      "id": "lavanda-mocha-blanco-frappuccino",
+      "name": "Lavanda Mocha Blanco Frappuccino",
+      "category": "Bebidas",
+      "subcategory": "Temporada · lavanda",
+      "description": "Frappuccino con mocha blanco, lavanda y base Cream.",
+      "productImage": "assets/products/temporada/lavanda-mocha-blanco-frappuccino.webp",
+      "referenceImage": "assets/references/temporada/lavanda-mocha-blanco-frappuccino.webp",
+      "selectors": [
+        {
+          "id": "size",
+          "label": "Tamaño",
+          "options": [
+            "ALTO",
+            "GRANDE",
+            "VENTI"
+          ]
+        }
+      ],
+      "routes": {
+        "size=ALTO": "lavanda-mocha-blanco-frappuccino",
+        "size=GRANDE": "lavanda-mocha-blanco-frappuccino",
+        "size=VENTI": "lavanda-mocha-blanco-frappuccino"
+      },
+      "equipment": [
+        "Vaso frío",
+        "Licuadora",
+        "Tapa domo"
+      ],
+      "rules": [
+        "Confirmar el tamaño antes de iniciar.",
+        "Seguir la secuencia sin omitir pasos.",
+        "Usar la ficha original como referencia visual."
+      ]
+    },
+    {
+      "id": "matcha-lavanda-cold-foam",
+      "name": "Matcha Lavanda Cold Foam",
+      "category": "Bebidas",
+      "subcategory": "Temporada · lavanda",
+      "description": "Matcha helado terminado con cold foam de lavanda.",
+      "productImage": "assets/products/temporada/matcha-lavanda-cold-foam.webp",
+      "referenceImage": "assets/references/temporada/matcha-lavanda-cold-foam.webp",
+      "selectors": [
+        {
+          "id": "size",
+          "label": "Tamaño",
+          "options": [
+            "ALTO",
+            "GRANDE",
+            "VENTI"
+          ]
+        }
+      ],
+      "routes": {
+        "size=ALTO": "matcha-lavanda-cold-foam",
+        "size=GRANDE": "matcha-lavanda-cold-foam",
+        "size=VENTI": "matcha-lavanda-cold-foam"
+      },
+      "equipment": [
+        "Coctelera",
+        "Licuadora para cold foam",
+        "Vaso frío"
+      ],
+      "rules": [
+        "Confirmar el tamaño antes de iniciar.",
+        "Seguir la secuencia sin omitir pasos.",
+        "Usar la ficha original como referencia visual."
+      ]
+    },
+    {
+      "id": "vainilla-lavanda-latte-helado",
+      "name": "Vainilla Lavanda Latte Helado",
+      "category": "Bebidas",
+      "subcategory": "Temporada · lavanda",
+      "description": "Espresso, vainilla y lavanda sobre leche y hielo.",
+      "productImage": "assets/products/temporada/vainilla-lavanda-latte-helado.webp",
+      "referenceImage": "assets/references/temporada/vainilla-lavanda-latte-helado.webp",
+      "selectors": [
+        {
+          "id": "size",
+          "label": "Tamaño",
+          "options": [
+            "ALTO",
+            "GRANDE",
+            "VENTI"
+          ]
+        }
+      ],
+      "routes": {
+        "size=ALTO": "vainilla-lavanda-latte-helado",
+        "size=GRANDE": "vainilla-lavanda-latte-helado",
+        "size=VENTI": "vainilla-lavanda-latte-helado"
+      },
+      "equipment": [
+        "Vaso frío",
+        "Tapa Nitro",
+        "Espolvoreador de lavanda"
+      ],
+      "rules": [
+        "Confirmar el tamaño antes de iniciar.",
+        "Seguir la secuencia sin omitir pasos.",
+        "Usar la ficha original como referencia visual."
+      ]
+    },
+    {
+      "id": "vainilla-lavanda-latte",
+      "name": "Vainilla Lavanda Latte",
+      "category": "Bebidas",
+      "subcategory": "Temporada · lavanda",
+      "description": "Latte caliente con vainilla, lavanda y acabado aromático.",
+      "productImage": "assets/products/temporada/vainilla-lavanda-latte.webp",
+      "referenceImage": "assets/references/temporada/vainilla-lavanda-latte.webp",
+      "selectors": [
+        {
+          "id": "size",
+          "label": "Tamaño",
+          "options": [
+            "ALTO",
+            "GRANDE",
+            "VENTI"
+          ]
+        }
+      ],
+      "routes": {
+        "size=ALTO": "vainilla-lavanda-latte",
+        "size=GRANDE": "vainilla-lavanda-latte",
+        "size=VENTI": "vainilla-lavanda-latte"
+      },
+      "equipment": [
+        "Vaso caliente",
+        "Jarra para leche",
+        "Espolvoreador de lavanda"
+      ],
+      "rules": [
+        "Confirmar el tamaño antes de iniciar.",
+        "Seguir la secuencia sin omitir pasos.",
+        "Usar la ficha original como referencia visual."
       ]
     }
   ],
@@ -1209,6 +1572,237 @@
       "media": ""
     },
     {
+      "route": "lavanda-latte",
+      "order": 1,
+      "title": "Vaporiza la leche",
+      "detail": "Vaporiza la leche a la temperatura correspondiente.",
+      "icon": "heat",
+      "values": "",
+      "timer": 0,
+      "stage": "Vaporiza la leche",
+      "media": ""
+    },
+    {
+      "route": "lavanda-latte",
+      "order": 2,
+      "title": "Agrega espresso",
+      "detail": "Sirve los shots en el vaso.",
+      "icon": "coffee",
+      "values": "ALTO=1 shot|GRANDE=2 shots|VENTI=2 shots",
+      "timer": 0,
+      "stage": "Agrega espresso",
+      "media": ""
+    },
+    {
+      "route": "lavanda-latte",
+      "order": 3,
+      "title": "Agrega lavanda",
+      "detail": "Incorpora el polvo de lavanda y mezcla.",
+      "icon": "pour",
+      "values": "ALTO=3 medidas|GRANDE=4 medidas|VENTI=5 medidas",
+      "timer": 0,
+      "stage": "Agrega lavanda",
+      "media": ""
+    },
+    {
+      "route": "lavanda-latte",
+      "order": 4,
+      "title": "Termina",
+      "detail": "Vierte leche a 6 mm del borde y espolvorea lavanda cuatro veces.",
+      "icon": "serve",
+      "values": "TODOS=4 veces",
+      "timer": 0,
+      "stage": "Termina",
+      "media": ""
+    },
+    {
+      "route": "lavanda-latte-helado",
+      "order": 1,
+      "title": "Agrega espresso",
+      "detail": "Sirve los shots en el vaso.",
+      "icon": "coffee",
+      "values": "ALTO=1 shot|GRANDE=2 shots|VENTI=2 shots",
+      "timer": 0,
+      "stage": "Agrega espresso",
+      "media": ""
+    },
+    {
+      "route": "lavanda-latte-helado",
+      "order": 2,
+      "title": "Agrega lavanda",
+      "detail": "Mezcla espresso, polvo de lavanda y leche hasta la línea superior.",
+      "icon": "pour",
+      "values": "ALTO=3 medidas|GRANDE=4 medidas|VENTI=5 medidas",
+      "timer": 0,
+      "stage": "Agrega lavanda",
+      "media": ""
+    },
+    {
+      "route": "lavanda-latte-helado",
+      "order": 3,
+      "title": "Agrega hielo",
+      "detail": "Llena con hielo hasta 6 mm debajo del borde.",
+      "icon": "ice",
+      "values": "",
+      "timer": 0,
+      "stage": "Agrega hielo",
+      "media": ""
+    },
+    {
+      "route": "lavanda-latte-helado",
+      "order": 4,
+      "title": "Termina",
+      "detail": "Espolvorea lavanda cuatro veces y coloca tapa Nitro.",
+      "icon": "serve",
+      "values": "TODOS=4 veces",
+      "timer": 0,
+      "stage": "Termina",
+      "media": ""
+    },
+    {
+      "route": "lavanda-mocha-blanco-frappuccino",
+      "order": 1,
+      "title": "Vierte la leche",
+      "detail": "Llena hasta la línea inferior y pasa a la licuadora.",
+      "icon": "milk",
+      "values": "",
+      "timer": 0,
+      "stage": "Vierte la leche",
+      "media": ""
+    },
+    {
+      "route": "lavanda-mocha-blanco-frappuccino",
+      "order": 2,
+      "title": "Agrega mocha blanco",
+      "detail": "Usa pump metal o la equivalencia CBS.",
+      "icon": "sauce",
+      "values": "ALTO=1 metal / 2 CBS|GRANDE=2 metal / 3 CBS|VENTI=2 metal / 4 CBS",
+      "timer": 0,
+      "stage": "Agrega mocha blanco",
+      "media": ""
+    },
+    {
+      "route": "lavanda-mocha-blanco-frappuccino",
+      "order": 3,
+      "title": "Agrega lavanda",
+      "detail": "Añade polvo de lavanda.",
+      "icon": "pour",
+      "values": "ALTO=2 medidas|GRANDE=3 medidas|VENTI=4 medidas",
+      "timer": 0,
+      "stage": "Agrega lavanda",
+      "media": ""
+    },
+    {
+      "route": "lavanda-mocha-blanco-frappuccino",
+      "order": 4,
+      "title": "Agrega hielo",
+      "detail": "Usa la medida volumétrica apropiada.",
+      "icon": "ice",
+      "values": "",
+      "timer": 0,
+      "stage": "Agrega hielo",
+      "media": ""
+    },
+    {
+      "route": "lavanda-mocha-blanco-frappuccino",
+      "order": 5,
+      "title": "Agrega base Cream",
+      "detail": "Añade base Cream para Frappuccino.",
+      "icon": "bottle",
+      "values": "ALTO=2 pumps|GRANDE=3 pumps|VENTI=4 pumps",
+      "timer": 0,
+      "stage": "Agrega base Cream",
+      "media": ""
+    },
+    {
+      "route": "lavanda-mocha-blanco-frappuccino",
+      "order": 6,
+      "title": "Mezcla",
+      "detail": "Presiona el botón número 1.",
+      "icon": "blend",
+      "values": "TODOS=Botón 1",
+      "timer": 0,
+      "stage": "Mezcla",
+      "media": ""
+    },
+    {
+      "route": "lavanda-mocha-blanco-frappuccino",
+      "order": 7,
+      "title": "Vierte",
+      "detail": "Sirve hasta 1 cm debajo del borde.",
+      "icon": "pour",
+      "values": "",
+      "timer": 0,
+      "stage": "Vierte",
+      "media": ""
+    },
+    {
+      "route": "lavanda-mocha-blanco-frappuccino",
+      "order": 8,
+      "title": "Termina",
+      "detail": "Cubre con crema batida, espolvorea lavanda cuatro veces y coloca tapa domo.",
+      "icon": "serve",
+      "values": "TODOS=4 veces",
+      "timer": 0,
+      "stage": "Termina",
+      "media": ""
+    },
+    {
+      "route": "matcha-lavanda-cold-foam",
+      "order": 1,
+      "title": "Prepara el cold foam",
+      "detail": "Mezcla 100 ml de crema dulce de vainilla con lavanda y presiona botón 3.",
+      "icon": "blend",
+      "values": "TODOS=100 ml + 2 cucharadas; botón 3",
+      "timer": 0,
+      "stage": "Prepara el cold foam",
+      "media": ""
+    },
+    {
+      "route": "matcha-lavanda-cold-foam",
+      "order": 2,
+      "title": "Prepara la base",
+      "detail": "Agrega agua a la línea alta de la coctelera, jarabe clásico y matcha.",
+      "icon": "water",
+      "values": "ALTO=3 clásico + 2 matcha|GRANDE=4 clásico + 3 matcha|VENTI=5 clásico + 4 matcha",
+      "timer": 0,
+      "stage": "Prepara la base",
+      "media": ""
+    },
+    {
+      "route": "matcha-lavanda-cold-foam",
+      "order": 3,
+      "title": "Agrega hielo",
+      "detail": "Usa la medida volumétrica apropiada.",
+      "icon": "ice",
+      "values": "",
+      "timer": 0,
+      "stage": "Agrega hielo",
+      "media": ""
+    },
+    {
+      "route": "matcha-lavanda-cold-foam",
+      "order": 4,
+      "title": "Agita y sirve",
+      "detail": "Agita diez veces y vierte en el vaso.",
+      "icon": "blend",
+      "values": "TODOS=10 veces",
+      "timer": 0,
+      "stage": "Agita y sirve",
+      "media": ""
+    },
+    {
+      "route": "matcha-lavanda-cold-foam",
+      "order": 5,
+      "title": "Termina",
+      "detail": "Agrega leche a 2 cm del borde y cold foam hasta 6 mm debajo del borde.",
+      "icon": "serve",
+      "values": "",
+      "timer": 0,
+      "stage": "Termina",
+      "media": ""
+    },
+    {
       "route": "pan-queso",
       "order": 1,
       "title": "Almacena",
@@ -1272,6 +1866,83 @@
       "values": "TODOS=Listo",
       "timer": 0,
       "stage": "Entrega",
+      "media": ""
+    },
+    {
+      "route": "salsa-azul-drizzle",
+      "order": 1,
+      "title": "Agrega mocha blanco",
+      "detail": "Coloca la salsa de mocha blanco en una jarra vaporizadora.",
+      "icon": "sauce",
+      "values": "GRANDE=6 pumps",
+      "timer": 0,
+      "stage": "Agrega mocha blanco",
+      "media": ""
+    },
+    {
+      "route": "salsa-azul-drizzle",
+      "order": 2,
+      "title": "Agrega polvo azul",
+      "detail": "Añade un sobre completo de polvo azul.",
+      "icon": "pour",
+      "values": "GRANDE=1 sobre",
+      "timer": 0,
+      "stage": "Agrega polvo azul",
+      "media": ""
+    },
+    {
+      "route": "salsa-azul-drizzle",
+      "order": 3,
+      "title": "Integra sin grumos",
+      "detail": "Mezcla con la cuchara de Mocha Blanco hasta formar una pasta uniforme.",
+      "icon": "blend",
+      "values": "",
+      "timer": 0,
+      "stage": "Integra sin grumos",
+      "media": ""
+    },
+    {
+      "route": "salsa-azul-drizzle",
+      "order": 4,
+      "title": "Agrega mocha blanco",
+      "detail": "Añade más salsa de mocha blanco a la misma preparación.",
+      "icon": "sauce",
+      "values": "GRANDE=8 pumps",
+      "timer": 0,
+      "stage": "Agrega mocha blanco",
+      "media": ""
+    },
+    {
+      "route": "salsa-azul-drizzle",
+      "order": 5,
+      "title": "Agrega clásico",
+      "detail": "Usa el pump plástico espresso.",
+      "icon": "bottle",
+      "values": "GRANDE=6 pumps",
+      "timer": 0,
+      "stage": "Agrega clásico",
+      "media": ""
+    },
+    {
+      "route": "salsa-azul-drizzle",
+      "order": 6,
+      "title": "Mezcla",
+      "detail": "Integra hasta obtener una mezcla homogénea.",
+      "icon": "blend",
+      "values": "",
+      "timer": 0,
+      "stage": "Mezcla",
+      "media": ""
+    },
+    {
+      "route": "salsa-azul-drizzle",
+      "order": 7,
+      "title": "Almacena",
+      "detail": "Vierte el premix en una mamila plástica, etiqueta y conserva por 24 horas.",
+      "icon": "store",
+      "values": "GRANDE=24 horas",
+      "timer": 86400,
+      "stage": "Conserva",
       "media": ""
     },
     {
@@ -1404,6 +2075,215 @@
       "values": "TODOS=5 días",
       "timer": 0,
       "stage": "Listo",
+      "media": ""
+    },
+    {
+      "route": "unicorn-frappuccino",
+      "order": 1,
+      "title": "Vierte la leche",
+      "detail": "Llena hasta la línea inferior del vaso Grande.",
+      "icon": "milk",
+      "values": "",
+      "timer": 0,
+      "stage": "Vierte la leche",
+      "media": ""
+    },
+    {
+      "route": "unicorn-frappuccino",
+      "order": 2,
+      "title": "Pasa a la licuadora",
+      "detail": "Vierte el contenido del vaso en el vaso de la licuadora.",
+      "icon": "pour",
+      "values": "",
+      "timer": 0,
+      "stage": "Pasa a la licuadora",
+      "media": ""
+    },
+    {
+      "route": "unicorn-frappuccino",
+      "order": 3,
+      "title": "Agrega polvo rosa",
+      "detail": "Usa la cuchara de 1 TSP.",
+      "icon": "pour",
+      "values": "GRANDE=2 medidas copeteadas",
+      "timer": 0,
+      "stage": "Agrega polvo rosa",
+      "media": ""
+    },
+    {
+      "route": "unicorn-frappuccino",
+      "order": 4,
+      "title": "Agrega mango",
+      "detail": "Usa el pump plástico espresso.",
+      "icon": "bottle",
+      "values": "GRANDE=2 pumps",
+      "timer": 0,
+      "stage": "Agrega mango",
+      "media": ""
+    },
+    {
+      "route": "unicorn-frappuccino",
+      "order": 5,
+      "title": "Agrega hielo",
+      "detail": "Usa la medida volumétrica apropiada para Grande.",
+      "icon": "ice",
+      "values": "",
+      "timer": 0,
+      "stage": "Agrega hielo",
+      "media": ""
+    },
+    {
+      "route": "unicorn-frappuccino",
+      "order": 6,
+      "title": "Agrega base Cream",
+      "detail": "Añade base Cream para Frappuccino.",
+      "icon": "bottle",
+      "values": "GRANDE=3 pumps",
+      "timer": 0,
+      "stage": "Agrega base Cream",
+      "media": ""
+    },
+    {
+      "route": "unicorn-frappuccino",
+      "order": 7,
+      "title": "Mezcla",
+      "detail": "Presiona el botón número 1. No prepares dos bebidas al mismo tiempo.",
+      "icon": "blend",
+      "values": "GRANDE=Botón 1",
+      "timer": 0,
+      "stage": "Mezcla",
+      "media": ""
+    },
+    {
+      "route": "unicorn-frappuccino",
+      "order": 8,
+      "title": "Forma la espiral azul",
+      "detail": "Agrega una espiral de Salsa Azul Drizzle alrededor de la línea superior del vaso.",
+      "icon": "sauce",
+      "values": "GRANDE=1 espiral",
+      "timer": 0,
+      "stage": "Forma la espiral azul",
+      "media": ""
+    },
+    {
+      "route": "unicorn-frappuccino",
+      "order": 9,
+      "title": "Termina",
+      "detail": "Vierte a 1 cm del borde, agrega 2½ vueltas de crema batida, espolvorea azul y rosa 3 veces cada uno, coloca tapa domo y popote.",
+      "icon": "serve",
+      "values": "GRANDE=2½ vueltas + 3/3",
+      "timer": 0,
+      "stage": "Termina",
+      "media": ""
+    },
+    {
+      "route": "vainilla-lavanda-latte",
+      "order": 1,
+      "title": "Vaporiza la leche",
+      "detail": "Vaporiza la leche a la temperatura correspondiente.",
+      "icon": "heat",
+      "values": "",
+      "timer": 0,
+      "stage": "Vaporiza la leche",
+      "media": ""
+    },
+    {
+      "route": "vainilla-lavanda-latte",
+      "order": 2,
+      "title": "Agrega espresso",
+      "detail": "Sirve los shots en el vaso.",
+      "icon": "coffee",
+      "values": "ALTO=1 shot|GRANDE=2 shots|VENTI=2 shots",
+      "timer": 0,
+      "stage": "Agrega espresso",
+      "media": ""
+    },
+    {
+      "route": "vainilla-lavanda-latte",
+      "order": 3,
+      "title": "Agrega sabores",
+      "detail": "Añade vainilla y polvo de lavanda.",
+      "icon": "bottle",
+      "values": "ALTO=3 vainilla + 2 lavanda|GRANDE=4 vainilla + 3 lavanda|VENTI=5 vainilla + 4 lavanda",
+      "timer": 0,
+      "stage": "Agrega sabores",
+      "media": ""
+    },
+    {
+      "route": "vainilla-lavanda-latte",
+      "order": 4,
+      "title": "Mezcla",
+      "detail": "Integra espresso, vainilla y lavanda.",
+      "icon": "blend",
+      "values": "",
+      "timer": 0,
+      "stage": "Mezcla",
+      "media": ""
+    },
+    {
+      "route": "vainilla-lavanda-latte",
+      "order": 5,
+      "title": "Termina",
+      "detail": "Vierte leche a 6 mm del borde y espolvorea lavanda cuatro veces.",
+      "icon": "serve",
+      "values": "TODOS=4 veces",
+      "timer": 0,
+      "stage": "Termina",
+      "media": ""
+    },
+    {
+      "route": "vainilla-lavanda-latte-helado",
+      "order": 1,
+      "title": "Agrega espresso",
+      "detail": "Sirve los shots en el vaso.",
+      "icon": "coffee",
+      "values": "ALTO=1 shot|GRANDE=2 shots|VENTI=2 shots",
+      "timer": 0,
+      "stage": "Agrega espresso",
+      "media": ""
+    },
+    {
+      "route": "vainilla-lavanda-latte-helado",
+      "order": 2,
+      "title": "Agrega sabores",
+      "detail": "Añade vainilla y polvo de lavanda.",
+      "icon": "bottle",
+      "values": "ALTO=3 vainilla + 2 lavanda|GRANDE=4 vainilla + 3 lavanda|VENTI=5 vainilla + 4 lavanda",
+      "timer": 0,
+      "stage": "Agrega sabores",
+      "media": ""
+    },
+    {
+      "route": "vainilla-lavanda-latte-helado",
+      "order": 3,
+      "title": "Agrega leche",
+      "detail": "Vierte leche fría hasta la línea superior.",
+      "icon": "milk",
+      "values": "",
+      "timer": 0,
+      "stage": "Agrega leche",
+      "media": ""
+    },
+    {
+      "route": "vainilla-lavanda-latte-helado",
+      "order": 4,
+      "title": "Agrega hielo",
+      "detail": "Llena con hielo hasta 6 mm debajo del borde.",
+      "icon": "ice",
+      "values": "",
+      "timer": 0,
+      "stage": "Agrega hielo",
+      "media": ""
+    },
+    {
+      "route": "vainilla-lavanda-latte-helado",
+      "order": 5,
+      "title": "Termina",
+      "detail": "Espolvorea lavanda cuatro veces y coloca tapa Nitro.",
+      "icon": "serve",
+      "values": "TODOS=4 veces",
+      "timer": 0,
+      "stage": "Termina",
       "media": ""
     }
   ]

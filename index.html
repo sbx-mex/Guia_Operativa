@@ -45,6 +45,15 @@
       <button class="resume-card" id="resumeTraining" type="button" hidden>
         <span>Continuar donde me quedé</span><b id="resumeLabel"></b><i>→</i>
       </button>
+      <section class="campaign-spotlight" id="campaignSpotlight" hidden aria-labelledby="campaignSpotlightTitle">
+        <div class="campaign-art"><img id="campaignSpotlightImage" alt=""></div>
+        <div class="campaign-copy">
+          <span class="campaign-pill">PRIORIDAD · 13–17 AGO</span>
+          <h2 id="campaignSpotlightTitle">Semana Unicorn</h2>
+          <p>Domina primero Salsa Azul Drizzle y después practica Unicorn Frappuccino. Únicamente Grande.</p>
+          <div><button class="primary-button" id="campaignPrimary" type="button">Practicar Unicorn</button><button id="campaignSecondary" type="button">Preparar Salsa Azul</button></div>
+        </div>
+      </section>
       <div class="home-proof">
         <div><strong id="catalogCount">0</strong><span>referencias</span></div>
         <div><strong id="moduleCount">0</strong><span>rutas guiadas</span></div>
@@ -97,6 +106,19 @@
       <p>Referencia rápida</p>
       <img class="reference-sheet" id="dialogReference" alt="Ficha original de la receta">
       <button class="primary-button" id="dialogTrain" type="button">Iniciar capacitación</button>
+    </div>
+  </dialog>
+
+  <dialog id="campaignDialog" class="campaign-dialog">
+    <button class="dialog-close" id="closeCampaign" type="button" aria-label="Cerrar">×</button>
+    <div class="campaign-dialog-hero"><img id="campaignHero" alt="Unicorn Frappuccino"></div>
+    <div class="campaign-dialog-copy">
+      <span class="campaign-pill">VENTANA OPERATIVA · 13–17 AGO</span>
+      <h2 id="campaignTitle">Semana Unicorn</h2>
+      <p id="campaignSubtitle">Practica Unicorn y Salsa Azul antes del servicio.</p>
+      <div class="campaign-facts"><span><b>Grande</b>Único tamaño</span><span><b>24 h</b>Salsa Azul</span><span><b>1 bebida</b>Por licuadora</span></div>
+      <div class="campaign-actions"><button class="primary-button" id="campaignDialogPrimary" type="button">Practicar Unicorn</button><button id="campaignDialogSecondary" type="button">Preparar Salsa Azul</button></div>
+      <div class="campaign-resources" id="campaignResources" aria-label="Materiales adicionales"></div>
     </div>
   </dialog>
 

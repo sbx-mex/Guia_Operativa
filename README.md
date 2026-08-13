@@ -2,12 +2,21 @@
 
 Aplicación estática para capacitación paso a paso y consulta rápida de recetas. El único motor editable es `outputs/CMS_Guia_Operativa_v2.xlsx`.
 
+## Prioridad Unicorn · 13–17 de agosto
+
+- **Unicorn Frappuccino:** práctica guiada únicamente en tamaño Grande.
+- **Salsa Azul Drizzle:** preparación separada, mezcla sin grumos y vida útil de 24 horas.
+- La ventana emergente se activa del **13 al 17 de agosto** en horario `America/Mexico_City`.
+- Las recetas Lavanda W33 quedan disponibles como temporada adicional, sin desplazar la prioridad Unicorn.
+
 ## Flujo seguro
 
 1. Edita el CMS sin cambiar nombres de pestañas ni encabezados.
 2. Ejecuta `python scripts/build_content.py`.
 3. Valida con `python scripts/audit_project.py` y `python -m pytest -q`.
 4. Sube el proyecto. GitHub Actions regenera, audita, prueba y publica únicamente el sitio limpio.
+
+El workflow instala siempre `requirements.txt`; esto incluye `openpyxl`, requerido para leer el CMS Excel.
 
 Si actualizas un repositorio que todavía conserva archivos heredados, ejecuta **Actions → Limpiar archivos obsoletos → Run workflow** y confirma `ELIMINAR`. Sólo se pueden borrar las rutas explícitas de `scripts/cleanup_obsolete.py`.
 

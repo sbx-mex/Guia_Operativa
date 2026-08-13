@@ -17,6 +17,51 @@
     Alimentos: ["Alimentos", "Sigue ensamble y horneo sin perder parámetros."],
   };
 
+  function localDate(timezone) {
+    return new Intl.DateTimeFormat("en-CA", {timeZone: timezone, year: "numeric", month: "2-digit", day: "2-digit"}).format(new Date());
+  }
+  function activeCampaign() {
+    return (cms.meta.campaigns || []).find(item => {
+      const today = localDate(item.timezone || "America/Mexico_City");
+      return today >= item.start && today <= item.end;
+    });
+  }
+  function launchTraining(id) {
+    showView("training");
+    selectContent(id);
+  }
+  function configureCampaign() {
+    const campaign = activeCampaign();
+    if (!campaign) return;
+    const primary = cms.contents.find(item => item.id === campaign.primary);
+    const secondary = cms.contents.find(item => item.id === campaign.secondary);
+    if (!primary || !secondary) return;
+    $("campaignSpotlight").hidden = false;
+    $("campaignSpotlightImage").src = primary.productImage;
+    $("campaignSpotlightImage").alt = primary.name;
+    $("campaignSpotlightTitle").textContent = campaign.title;
+    $("campaignTitle").textContent = campaign.title;
+    $("campaignSubtitle").textContent = campaign.subtitle;
+    $("campaignHero").src = primary.productImage;
+    const practice = (id, dialog = false) => {
+      if (dialog) $("campaignDialog").close();
+      launchTraining(id);
+    };
+    $("campaignPrimary").onclick = () => practice(primary.id);
+    $("campaignSecondary").onclick = () => practice(secondary.id);
+    $("campaignDialogPrimary").onclick = () => practice(primary.id, true);
+    $("campaignDialogSecondary").onclick = () => practice(secondary.id, true);
+    const labels = ["Checklist operativo", "Buenas prácticas", "Concurso"];
+    $("campaignResources").innerHTML = campaign.resources.map((resource, index) => `<button type="button" data-campaign-resource="${index}"><img src="${resource}" alt=""><span>${labels[index]}</span></button>`).join("");
+    document.querySelectorAll("[data-campaign-resource]").forEach(button => button.addEventListener("click", () => {
+      const index = Number(button.dataset.campaignResource);
+      $("campaignHero").src = campaign.resources[index];
+      $("campaignHero").alt = labels[index];
+    }));
+    $("closeCampaign").onclick = () => { sessionStorage.setItem(`campaign-${campaign.id}`, "closed"); $("campaignDialog").close(); };
+    if (!sessionStorage.getItem(`campaign-${campaign.id}`)) $("campaignDialog").showModal();
+  }
+
   function normalize(value) {
     return String(value || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
   }
@@ -70,7 +115,10 @@
     state.category = category;
     const [title, intro] = categoryCopy[category];
     setTrainingHeader(title, intro);
-    const contents = cms.contents.filter(item => item.category === category);
+    const contents = cms.contents.filter(item => item.category === category).sort((a, b) => {
+      const priority = value => value.subcategory.includes("prioridad") ? 0 : value.subcategory.includes("temporada") ? 1 : 2;
+      return priority(a) - priority(b) || a.name.localeCompare(b.name, "es");
+    });
     $("trainingStage").innerHTML = `<button class="back-link inline" id="changeArea" type="button">← Cambiar área</button>
       <div class="training-card-grid">${contents.map(item => `<button class="training-card" data-content="${item.id}" type="button"><img src="${item.productImage}" alt="${item.name}"><span><small>${item.subcategory}</small><b>${item.name}</b><em>${item.description}</em><i>Practicar →</i></span></button>`).join("")}</div>`;
     $("changeArea").addEventListener("click", resetTraining);
@@ -170,7 +218,7 @@
     $("recipeGrid").innerHTML = filtered.slice(0, state.visible).map(item => `<article class="recipe-card"><div class="product-frame"><img loading="lazy" src="${item.productImage}" alt="${item.name}"></div><div class="recipe-copy"><small>${item.subcategory}</small><h2>${item.name}</h2><div><button class="text-button" data-reference="${item.id}" type="button">Ver receta</button>${cms.contents.some(content => content.name === item.name) ? `<button class="mini-primary" data-train="${cms.contents.find(content => content.name === item.name).id}" type="button">Practicar</button>` : ""}</div></div></article>`).join("") || `<div class="empty-state"><span>⌕</span><h2>Sin coincidencias</h2><p>Prueba con otra palabra o categoría.</p></div>`;
     $("showMore").hidden = state.visible >= filtered.length;
     document.querySelectorAll("[data-reference]").forEach(button => button.addEventListener("click", () => openReference(button.dataset.reference)));
-    document.querySelectorAll("[data-train]").forEach(button => button.addEventListener("click", () => { showView("training"); selectContent(button.dataset.train); }));
+    document.querySelectorAll("[data-train]").forEach(button => button.addEventListener("click", () => launchTraining(button.dataset.train)));
   }
   function openReference(id) {
     const item = cms.catalog.find(entry => entry.id === id);
@@ -214,6 +262,7 @@
   $("catalogCount").textContent = cms.meta.catalogItems;
   $("moduleCount").textContent = cms.meta.trainingModules;
   updateResume();
+  configureCampaign();
   const initialView = location.hash === "#capacitar" ? "training" : location.hash === "#recetario" ? "search" : "home";
   showView(initialView, {history: false});
   if ("serviceWorker" in navigator && location.protocol.startsWith("http")) navigator.serviceWorker.register("sw.js");

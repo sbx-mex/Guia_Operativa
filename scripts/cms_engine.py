@@ -55,6 +55,7 @@ def load_cms(path: Path = CMS_PATH) -> dict[str, Any]:
     equipment_rows = _rows(book, "Equipo", ("ID_CONTENIDO", "ORDEN", "ELEMENTO", "ACTIVO"))
     rule_rows = _rows(book, "Normas", ("ID_CONTENIDO", "ORDEN", "NORMA", "ACTIVO"))
     media_rows = _rows(book, "Medios", ("ID_MEDIO", "NOMBRE", "CATEGORIA", "SUBCATEGORIA", "IMAGEN_PRODUCTO", "FICHA_REFERENCIA"))
+    campaign_rows = _rows(book, "Campanas", ("ID_CAMPANA", "TITULO", "FECHA_INICIO", "FECHA_FIN", "ZONA_HORARIA", "ID_PRINCIPAL", "ID_SECUNDARIO", "ACTIVO"))
     book.close()
 
     active_contents = [row for row in contents_rows if _active(row.get("ACTIVO"))]
@@ -139,6 +140,21 @@ def load_cms(path: Path = CMS_PATH) -> dict[str, Any]:
     if len(media_ids) != len(set(media_ids)):
         raise CMSValidationError("Medios: ID_MEDIO duplicado")
 
-    return {"meta": {"version": "3.0.0", "catalogItems": len(catalog), "trainingModules": len(contents),
-                     "source": "outputs/CMS_Guia_Operativa_v2.xlsx"}, "labels": labels, "catalog": catalog,
+    campaigns = []
+    for row in campaign_rows:
+        if not _active(row.get("ACTIVO")):
+            continue
+        primary, secondary = str(row["ID_PRINCIPAL"]).strip(), str(row["ID_SECUNDARIO"]).strip()
+        if primary not in content_ids or secondary not in content_ids:
+            raise CMSValidationError(f"Campaña con contenidos desconocidos: {primary}, {secondary}")
+        campaigns.append({
+            "id": str(row["ID_CAMPANA"]).strip(), "title": str(row["TITULO"]).strip(),
+            "subtitle": str(row.get("SUBTITULO") or "").strip(), "start": str(row["FECHA_INICIO"]).strip(),
+            "end": str(row["FECHA_FIN"]).strip(), "timezone": str(row["ZONA_HORARIA"]).strip(),
+            "primary": primary, "secondary": secondary,
+            "resources": [_safe_media(row[key]) for key in ("IMAGEN_CHECKLIST", "IMAGEN_PRACTICAS", "IMAGEN_CONCURSO")],
+        })
+
+    return {"meta": {"version": "4.0.0", "catalogItems": len(catalog), "trainingModules": len(contents),
+                     "source": "outputs/CMS_Guia_Operativa_v2.xlsx", "campaigns": campaigns}, "labels": labels, "catalog": catalog,
             "contents": contents, "steps": sorted(steps, key=lambda item: (item["route"], item["order"]))}

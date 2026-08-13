@@ -1,4 +1,4 @@
-const CACHE = "guia-operativa-v3-20260813";
+const CACHE = "guia-operativa-v4-unicorn-20260813";
 const CORE = ["./", "index.html", "styles.css", "app.js", "data/content.js", "assets/icon-192.png", "assets/icon-512.png", "manifest.webmanifest"];
 self.addEventListener("install", event => event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(CORE))));
 self.addEventListener("activate", event => event.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(key => key !== CACHE).map(key => caches.delete(key))))));
