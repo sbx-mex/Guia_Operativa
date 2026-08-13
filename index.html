@@ -5,9 +5,14 @@
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#006241">
   <meta name="description" content="Capacitación operativa guiada para bebidas, procesos y alimentos.">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Guía Operativa">
+  <meta name="mobile-web-app-capable" content="yes">
   <title>Guía Operativa · Capacitación</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="assets/icon-192.png">
+  <link rel="apple-touch-icon" href="assets/icon-192.png">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -20,6 +25,7 @@
     <nav aria-label="Navegación principal">
       <button class="nav-button" data-view="training" type="button">Capacitarme</button>
       <button class="nav-button" data-view="search" type="button">Buscar receta</button>
+      <button class="install-button" id="installApp" type="button">Instalar app</button>
     </nav>
   </header>
 
@@ -30,6 +36,15 @@
         <h1>¿Qué necesitas hacer?</h1>
         <p>Elige una ruta. La guía mostrará sólo lo necesario para avanzar.</p>
       </div>
+      <section class="campaign-spotlight" id="campaignSpotlight" hidden aria-labelledby="campaignSpotlightTitle">
+        <div class="campaign-art"><img id="campaignSpotlightImage" alt=""></div>
+        <div class="campaign-copy">
+          <span class="campaign-pill">PRIORIDAD · 13–17 AGO</span>
+          <h2 id="campaignSpotlightTitle">Semana Unicorn</h2>
+          <p>Domina Salsa Azul Drizzle y Unicorn Frappuccino. Únicamente Grande.</p>
+          <div><button class="primary-button" id="campaignPrimary" type="button">Practicar Unicorn</button><button id="campaignSecondary" type="button">Preparar Salsa Azul</button><button id="campaignEvaluateHome" type="button">Evaluar preparación</button></div>
+        </div>
+      </section>
       <div class="mode-grid">
         <button class="mode-card training-mode" data-view="training" type="button">
           <span class="mode-icon">▶</span>
@@ -45,15 +60,6 @@
       <button class="resume-card" id="resumeTraining" type="button" hidden>
         <span>Continuar donde me quedé</span><b id="resumeLabel"></b><i>→</i>
       </button>
-      <section class="campaign-spotlight" id="campaignSpotlight" hidden aria-labelledby="campaignSpotlightTitle">
-        <div class="campaign-art"><img id="campaignSpotlightImage" alt=""></div>
-        <div class="campaign-copy">
-          <span class="campaign-pill">PRIORIDAD · 13–17 AGO</span>
-          <h2 id="campaignSpotlightTitle">Semana Unicorn</h2>
-          <p>Domina primero Salsa Azul Drizzle y después practica Unicorn Frappuccino. Únicamente Grande.</p>
-          <div><button class="primary-button" id="campaignPrimary" type="button">Practicar Unicorn</button><button id="campaignSecondary" type="button">Preparar Salsa Azul</button></div>
-        </div>
-      </section>
       <div class="home-proof">
         <div><strong id="catalogCount">0</strong><span>referencias</span></div>
         <div><strong id="moduleCount">0</strong><span>rutas guiadas</span></div>
@@ -117,9 +123,24 @@
       <h2 id="campaignTitle">Semana Unicorn</h2>
       <p id="campaignSubtitle">Practica Unicorn y Salsa Azul antes del servicio.</p>
       <div class="campaign-facts"><span><b>Grande</b>Único tamaño</span><span><b>24 h</b>Salsa Azul</span><span><b>1 bebida</b>Por licuadora</span></div>
-      <div class="campaign-actions"><button class="primary-button" id="campaignDialogPrimary" type="button">Practicar Unicorn</button><button id="campaignDialogSecondary" type="button">Preparar Salsa Azul</button></div>
+      <div class="campaign-actions"><button class="primary-button" id="campaignDialogPrimary" type="button">Practicar Unicorn</button><button id="campaignDialogSecondary" type="button">Preparar Salsa Azul</button><button id="campaignEvaluate" type="button">Evaluar preparación</button></div>
       <div class="campaign-resources" id="campaignResources" aria-label="Materiales adicionales"></div>
+      <div class="campaign-resource-context" id="campaignResourceContext" aria-live="polite"></div>
     </div>
+  </dialog>
+
+  <dialog id="evaluationDialog" class="evaluation-dialog">
+    <button class="dialog-close" id="closeEvaluation" type="button" aria-label="Cerrar">×</button>
+    <div class="evaluation-head"><span class="campaign-pill">VALIDACIÓN UNICORN</span><b id="evaluationProgress">Pregunta 1 de 5</b></div>
+    <div id="evaluationStage"></div>
+  </dialog>
+
+  <dialog id="installDialog" class="install-dialog">
+    <button class="dialog-close" id="closeInstall" type="button" aria-label="Cerrar">×</button>
+    <span class="eyebrow">ACCESO RÁPIDO</span>
+    <h2>Instala la Guía Operativa</h2>
+    <div id="installGuide"></div>
+    <button class="primary-button" id="confirmInstall" type="button">Instalar ahora</button>
   </dialog>
 
   <div class="sr-only" id="statusRegion" role="status" aria-live="polite"></div>

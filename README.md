@@ -6,7 +6,9 @@ Aplicación estática para capacitación paso a paso y consulta rápida de recet
 
 - **Unicorn Frappuccino:** práctica guiada únicamente en tamaño Grande.
 - **Salsa Azul Drizzle:** preparación separada, mezcla sin grumos y vida útil de 24 horas.
+- Los dosificadores de mocha blanco muestran **6 pumps CBS** y **8 pumps CBS** sin ambigüedad.
 - La ventana emergente se activa del **13 al 17 de agosto** en horario `America/Mexico_City`.
+- La campaña integra contexto para Checklist, Buenas prácticas y Concurso, más una evaluación de cinco reactivos.
 - Las recetas Lavanda W33 quedan disponibles como temporada adicional, sin desplazar la prioridad Unicorn.
 
 ## Flujo seguro
@@ -24,19 +26,19 @@ Si actualizas un repositorio que todavía conserva archivos heredados, ejecuta *
 
 1. Restauración de las tres fichas de proceso faltantes, incluida Cold Brew Toddy.
 2. CMS Excel convertido en fuente única del catálogo, módulos, rutas y pasos.
-3. Escritura atómica de `content.json`, `content.js` y `catalog.json`.
+3. Escritura atómica de `content.json` y `content.js`.
 4. Validación estricta de pestañas, encabezados, IDs, opciones y rutas.
 5. Auditoría de imágenes reales, archivos vacíos, límite de 25 MB y carpetas menores a 100 archivos.
 6. Eliminación de motores Python/JSON duplicados, CMS heredado y medio temporal de cero bytes.
 7. Workflow con dependencias fijadas, caché pip y etapas separadas de generación, auditoría y pruebas.
 8. Publicación mínima mediante `prepare_site.py`, sin CMS, scripts, pruebas ni fuentes privadas.
-9. Navegación con URL, botón Atrás, reanudación de capacitación y filtros por subcategoría.
-10. Accesibilidad, mensajes en vivo, atajo `/`, imagen de respaldo y caché offline renovada.
+9. Navegación con URL, botón Atrás, reanudación y salto automático del selector Grande cuando es la única opción.
+10. PWA para iOS/Android con guía de instalación, atajos, áreas seguras, caché offline y evaluación Unicorn.
 
 ## Contenido validado
 
-- 82 referencias visuales.
-- 5 módulos interactivos y 45 pasos.
+- 90 referencias visuales.
+- 13 módulos interactivos y 92 pasos.
 - Bebidas, procesos y alimentos.
 - Cajeta Cream omite Roast; Cold Brew conserva parámetros de tanda completa y media.
 

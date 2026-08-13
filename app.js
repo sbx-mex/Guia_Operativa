@@ -4,6 +4,7 @@
   const state = {
     view: "home", category: "", content: null, selections: {}, selectorIndex: 0,
     route: "", step: 0, filter: "Todos", subfilter: "Todas", query: "", visible: 6, timer: null,
+    deferredInstall: null, evaluationIndex: 0, evaluationScore: 0,
   };
   const iconMap = {
     coffee: "☕", milk: "🥛", pour: "↘", ice: "❄", bottle: "▤", blend: "◎",
@@ -16,6 +17,18 @@
     Procesos: ["Procesos", "Practica preparación, almacenamiento y controles críticos."],
     Alimentos: ["Alimentos", "Sigue ensamble y horneo sin perder parámetros."],
   };
+  const campaignResourceCopy = [
+    {title: "Checklist operativo", description: "Valida personal, insumos, layout y seguimiento antes de abrir."},
+    {title: "Buenas prácticas", description: "Confirma Grande, vida útil de 24 h, smallwares y una bebida por licuadora."},
+    {title: "Concurso", description: "Consulta vigencia, condiciones y objetivos comerciales de la activación."},
+  ];
+  const unicornQuiz = [
+    {question: "¿En qué tamaño se prepara Unicorn Frappuccino?", options: ["Alto", "Grande", "Venti"], answer: "Grande", note: "Unicorn se ofrece únicamente en tamaño Grande."},
+    {question: "¿Cuál es la vida útil de Salsa Azul Drizzle?", options: ["12 horas", "24 horas", "48 horas"], answer: "24 horas", note: "Etiqueta la Salsa Azul con vida útil de 24 horas."},
+    {question: "¿Qué dosificador se usa para el mocha blanco de Salsa Azul?", options: ["Pump espresso", "Pump CBS", "Cuchara"], answer: "Pump CBS", note: "Los 6 y 8 pumps indicados son pumps CBS."},
+    {question: "¿Cuántas bebidas Unicorn se preparan a la vez en la licuadora?", options: ["1 bebida", "2 bebidas", "3 bebidas"], answer: "1 bebida", note: "Prepara una sola bebida por ciclo de licuadora."},
+    {question: "¿Qué debes dominar antes del servicio?", options: ["Sólo el concurso", "Salsa Azul y Unicorn", "Sólo etiquetado"], answer: "Salsa Azul y Unicorn", note: "Practica primero Salsa Azul y después la bebida completa."},
+  ];
 
   function localDate(timezone) {
     return new Intl.DateTimeFormat("en-CA", {timeZone: timezone, year: "numeric", month: "2-digit", day: "2-digit"}).format(new Date());
@@ -51,13 +64,18 @@
     $("campaignSecondary").onclick = () => practice(secondary.id);
     $("campaignDialogPrimary").onclick = () => practice(primary.id, true);
     $("campaignDialogSecondary").onclick = () => practice(secondary.id, true);
-    const labels = ["Checklist operativo", "Buenas prácticas", "Concurso"];
-    $("campaignResources").innerHTML = campaign.resources.map((resource, index) => `<button type="button" data-campaign-resource="${index}"><img src="${resource}" alt=""><span>${labels[index]}</span></button>`).join("");
-    document.querySelectorAll("[data-campaign-resource]").forEach(button => button.addEventListener("click", () => {
-      const index = Number(button.dataset.campaignResource);
+    $("campaignResources").innerHTML = campaign.resources.map((resource, index) => `<button type="button" data-campaign-resource="${index}"><img src="${resource}" alt=""><span>${campaignResourceCopy[index].title}</span><small>${campaignResourceCopy[index].description}</small></button>`).join("");
+    const selectResource = index => {
+      const context = campaignResourceCopy[index];
       $("campaignHero").src = campaign.resources[index];
-      $("campaignHero").alt = labels[index];
-    }));
+      $("campaignHero").alt = context.title;
+      $("campaignResourceContext").innerHTML = `<b>${context.title}</b><span>${context.description}</span>`;
+      document.querySelectorAll("[data-campaign-resource]").forEach(button => button.classList.toggle("active", Number(button.dataset.campaignResource) === index));
+    };
+    document.querySelectorAll("[data-campaign-resource]").forEach(button => button.addEventListener("click", () => selectResource(Number(button.dataset.campaignResource))));
+    selectResource(0);
+    $("campaignEvaluate").onclick = () => { $("campaignDialog").close(); openEvaluation(); };
+    $("campaignEvaluateHome").onclick = openEvaluation;
     $("closeCampaign").onclick = () => { sessionStorage.setItem(`campaign-${campaign.id}`, "closed"); $("campaignDialog").close(); };
     if (!sessionStorage.getItem(`campaign-${campaign.id}`)) $("campaignDialog").showModal();
   }
@@ -128,6 +146,12 @@
     state.content = cms.contents.find(item => item.id === id);
     state.selections = {}; state.selectorIndex = 0;
     if (!state.content.selectors.length) { state.route = state.content.routes.default; startRoute(); return; }
+    if (state.content.selectors.length === 1 && state.content.selectors[0].options.length === 1) {
+      const selector = state.content.selectors[0];
+      state.selections[selector.id] = selector.options[0];
+      resolveRoute();
+      return;
+    }
     renderSelector();
   }
   function renderSelector() {
@@ -200,9 +224,64 @@
   }
   function renderDone() {
     sessionStorage.removeItem("guia-progress"); updateResume();
-    $("trainingStage").innerHTML = `<div class="done-card"><span>✓</span><small>CAPACITACIÓN COMPLETA</small><h2>${state.content.name}</h2><p>Repasaste ${routeSteps().length} pasos operativos.</p><div><button id="repeatTraining" type="button">Repetir</button><button class="primary-button" id="newTraining" type="button">Nueva capacitación</button></div></div>`;
+    const evaluate = state.content.id === "unicorn-frappuccino" || state.content.id === "salsa-azul-drizzle";
+    $("trainingStage").innerHTML = `<div class="done-card"><span>✓</span><small>CAPACITACIÓN COMPLETA</small><h2>${state.content.name}</h2><p>Repasaste ${routeSteps().length} pasos operativos.</p><div><button id="repeatTraining" type="button">Repetir</button>${evaluate ? '<button id="evaluateTraining" type="button">Evaluar preparación</button>' : ""}<button class="primary-button" id="newTraining" type="button">Nueva capacitación</button></div></div>`;
     $("repeatTraining").addEventListener("click", startRoute);
     $("newTraining").addEventListener("click", resetTraining);
+    if ($("evaluateTraining")) $("evaluateTraining").addEventListener("click", openEvaluation);
+  }
+
+  function openEvaluation() {
+    state.evaluationIndex = 0; state.evaluationScore = 0;
+    renderEvaluation();
+    $("evaluationDialog").showModal();
+  }
+  function renderEvaluation() {
+    const item = unicornQuiz[state.evaluationIndex];
+    if (!item) {
+      const passed = state.evaluationScore >= 4;
+      localStorage.setItem("unicorn-evaluation", JSON.stringify({score: state.evaluationScore, total: unicornQuiz.length, date: localDate("America/Mexico_City")}));
+      $("evaluationProgress").textContent = "Resultado";
+      $("evaluationStage").innerHTML = `<div class="evaluation-result"><span>${passed ? "✓" : "↻"}</span><h2>${state.evaluationScore} de ${unicornQuiz.length}</h2><p>${passed ? "Preparación validada. Estás listo para practicar en barra." : "Repasa Salsa Azul y Unicorn antes de volver a evaluar."}</p><div><button id="retryEvaluation" type="button">Repetir evaluación</button><button class="primary-button" id="finishEvaluation" type="button">Finalizar</button></div></div>`;
+      $("retryEvaluation").onclick = () => { state.evaluationIndex = 0; state.evaluationScore = 0; renderEvaluation(); };
+      $("finishEvaluation").onclick = () => $("evaluationDialog").close();
+      return;
+    }
+    $("evaluationProgress").textContent = `Pregunta ${state.evaluationIndex + 1} de ${unicornQuiz.length}`;
+    $("evaluationStage").innerHTML = `<div class="evaluation-question"><h2>${item.question}</h2><div class="evaluation-options">${item.options.map(option => `<button type="button" data-evaluation-answer="${option}">${option}<span>→</span></button>`).join("")}</div><p id="evaluationFeedback" aria-live="polite"></p><button class="primary-button" id="nextEvaluation" type="button" hidden>${state.evaluationIndex === unicornQuiz.length - 1 ? "Ver resultado" : "Siguiente"}</button></div>`;
+    document.querySelectorAll("[data-evaluation-answer]").forEach(button => button.onclick = () => {
+      const correct = button.dataset.evaluationAnswer === item.answer;
+      if (correct) state.evaluationScore += 1;
+      document.querySelectorAll("[data-evaluation-answer]").forEach(option => { option.disabled = true; option.classList.toggle("correct", option.dataset.evaluationAnswer === item.answer); option.classList.toggle("wrong", option === button && !correct); });
+      $("evaluationFeedback").textContent = `${correct ? "Correcto. " : "Revisa. "}${item.note}`;
+      $("nextEvaluation").hidden = false;
+      $("nextEvaluation").focus();
+    });
+    $("nextEvaluation").onclick = () => { state.evaluationIndex += 1; renderEvaluation(); };
+  }
+
+  function setupPwaInstall() {
+    const standalone = window.matchMedia("(display-mode: standalone)").matches || navigator.standalone === true;
+    const ios = /iphone|ipad|ipod/i.test(navigator.userAgent);
+    const updateStatus = () => {
+      $("installApp").textContent = standalone ? "App instalada" : "Instalar app";
+      $("installApp").classList.toggle("installed", standalone);
+    };
+    updateStatus();
+    window.addEventListener("beforeinstallprompt", event => { event.preventDefault(); state.deferredInstall = event; });
+    window.addEventListener("appinstalled", () => { state.deferredInstall = null; $("installDialog").close(); $("installApp").textContent = "App instalada"; $("installApp").classList.add("installed"); announce("Aplicación instalada"); });
+    $("installApp").onclick = async () => {
+      if (standalone) { announce("La aplicación ya está instalada"); return; }
+      if (state.deferredInstall) {
+        await state.deferredInstall.prompt();
+        state.deferredInstall = null;
+        return;
+      }
+      $("installGuide").innerHTML = ios ? '<ol><li>Toca <b>Compartir</b> en Safari.</li><li>Elige <b>Agregar a inicio</b>.</li><li>Confirma con <b>Agregar</b>.</li></ol>' : '<p>Abre el menú del navegador y selecciona <b>Instalar aplicación</b> o <b>Agregar a pantalla principal</b>.</p>';
+      $("confirmInstall").textContent = "Entendido";
+      $("confirmInstall").onclick = () => $("installDialog").close();
+      $("installDialog").showModal();
+    };
   }
   function renderSearch() {
     const categories = ["Todos", ...new Set(cms.catalog.map(item => item.category))];
@@ -247,6 +326,8 @@
   $("clearSearch").addEventListener("click", () => { state.query = ""; $("recipeSearch").value = ""; renderSearch(); $("recipeSearch").focus(); });
   $("showMore").addEventListener("click", () => { state.visible += 6; renderSearch(); });
   $("closeDialog").addEventListener("click", () => $("referenceDialog").close());
+  $("closeEvaluation").addEventListener("click", () => $("evaluationDialog").close());
+  $("closeInstall").addEventListener("click", () => $("installDialog").close());
   $("resumeTraining").addEventListener("click", resumeTraining);
   document.addEventListener("keydown", event => {
     if (event.key === "/" && state.view === "search" && document.activeElement !== $("recipeSearch")) { event.preventDefault(); $("recipeSearch").focus(); }
@@ -262,6 +343,7 @@
   $("catalogCount").textContent = cms.meta.catalogItems;
   $("moduleCount").textContent = cms.meta.trainingModules;
   updateResume();
+  setupPwaInstall();
   configureCampaign();
   const initialView = location.hash === "#capacitar" ? "training" : location.hash === "#recetario" ? "search" : "home";
   showView(initialView, {history: false});

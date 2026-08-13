@@ -84,6 +84,8 @@ def test_html_references_and_accessibility_landmarks_exist():
         if not match.startswith(("http://", "https://")):
             assert (ROOT / match).exists(), match
     assert 'class="skip-link"' in html and 'aria-live="polite"' in html
+    assert 'apple-mobile-web-app-capable' in html
+    assert 'id="installApp"' in html and 'id="evaluationDialog"' in html
 
 
 def test_unicorn_campaign_and_grande_only_routes_are_safe():
@@ -100,3 +102,25 @@ def test_unicorn_campaign_and_grande_only_routes_are_safe():
     assert campaign["timezone"] == "America/Mexico_City"
     for media in campaign["resources"]:
         assert (ROOT / media).is_file()
+    salsa = [step for step in data["steps"] if step["route"] == "salsa-azul-drizzle"]
+    assert salsa[0]["values"] == "GRANDE=6 pumps CBS"
+    assert salsa[3]["values"] == "GRANDE=8 pumps CBS"
+
+
+def test_pwa_is_ios_ready_offline_and_contextual():
+    manifest = json.loads((ROOT / "manifest.webmanifest").read_text(encoding="utf-8"))
+    assert manifest["id"] == "./" and manifest["scope"] == "./"
+    assert manifest["orientation"] == "portrait-primary"
+    assert {item["url"] for item in manifest["shortcuts"]} == {"./#capacitar", "./#recetario"}
+    worker = (ROOT / "sw.js").read_text(encoding="utf-8")
+    assert "self.skipWaiting()" in worker and "self.clients.claim()" in worker
+    assert "offline.html" in worker
+    app = (ROOT / "app.js").read_text(encoding="utf-8")
+    assert "campaignResourceCopy" in app and "unicornQuiz" in app
+    assert "beforeinstallprompt" in app and "Agregar a inicio" in app
+
+
+def test_clean_site_builder_excludes_legacy_data():
+    subprocess.run([sys.executable, "scripts/prepare_site.py"], cwd=ROOT, check=True)
+    assert {path.name for path in (ROOT / "_site" / "data").iterdir()} == {"content.js", "content.json"}
+    assert (ROOT / "_site" / "offline.html").is_file()

@@ -1872,9 +1872,9 @@
       "route": "salsa-azul-drizzle",
       "order": 1,
       "title": "Agrega mocha blanco",
-      "detail": "Coloca la salsa de mocha blanco en una jarra vaporizadora.",
+      "detail": "Coloca la salsa de mocha blanco en una jarra vaporizadora usando el pump CBS.",
       "icon": "sauce",
-      "values": "GRANDE=6 pumps",
+      "values": "GRANDE=6 pumps CBS",
       "timer": 0,
       "stage": "Agrega mocha blanco",
       "media": ""
@@ -1905,9 +1905,9 @@
       "route": "salsa-azul-drizzle",
       "order": 4,
       "title": "Agrega mocha blanco",
-      "detail": "Añade más salsa de mocha blanco a la misma preparación.",
+      "detail": "Añade más salsa de mocha blanco con el pump CBS a la misma preparación.",
       "icon": "sauce",
-      "values": "GRANDE=8 pumps",
+      "values": "GRANDE=8 pumps CBS",
       "timer": 0,
       "stage": "Agrega mocha blanco",
       "media": ""
