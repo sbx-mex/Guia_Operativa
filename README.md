@@ -1,27 +1,26 @@
-# Muestra · Recetarios y Manuales
+# Guía Operativa · Capacitación
 
-Prototipo operativo para convertir un recetario en una experiencia guiada.
+Aplicación estática para capacitación paso a paso y consulta rápida de recetas.
 
-## Flujo
+## Experiencia
 
-1. El usuario elige **Tamaño**.
-2. Elige la bebida: **Café Frappuccino** o **Cajeta Frappuccino**.
-3. Cajeta pregunta **Café o Cream**.
-4. La preparación avanza paso a paso mostrando sólo la cantidad del tamaño elegido.
-5. Cajeta Cream omite Frappuccino Roast y comienza con leche.
+- **Capacitarme:** el usuario elige área, receta/proceso, configuración y avanza una acción a la vez.
+- **Buscar una receta:** muestra sólo el producto; la ficha completa aparece bajo demanda.
+- **CMS:** `outputs/CMS_Guia_Operativa_v2.xlsx` separa contenidos, selectores, opciones, rutas, pasos, equipo, normas y medios.
 
-## Actualizar el motor
+## Contenido incluido
 
-Edita `CMS_Recetarios_Manuales_Frappuccino.xlsx` y ejecuta:
+- 82 referencias visuales reales clasificadas en bebidas, procesos y alimentos.
+- Rutas interactivas de Café Frappuccino, Cajeta Café/Cream, Cold Brew Toddy, Pan de queso y Croissant.
+- Cold Brew Toddy con tanda completa/media, 20 horas de preparación y 5 días refrigerado.
+- Pie de página y canal de comentarios solicitados.
 
-```bash
-python scripts/build_recipes.py
-```
+## Actualización segura
 
-El script valida pestañas, recetas activas, variantes, tamaños y la regla Cream antes de generar `data/recipes.js`.
+1. Actualiza el CMS sin cambiar sus encabezados.
+2. Mantén IDs únicos y rutas relativas.
+3. Regenera `data/content.js` con `python scripts/build_content.py`.
+4. Ejecuta `python -m pytest -q`.
+5. Sube únicamente el contenido del ZIP. El workflow valida y publica GitHub Pages.
 
-## Abrir la muestra
-
-Abre `index.html`. No requiere servidor, instalación ni conexión a internet.
-
-Fuente de la muestra: `RECETARIO BEBIDAS FRAPPUCCINO.pdf`, páginas 4 y 5.
+Las carpetas de medios están separadas por categoría, contienen menos de 100 archivos y ningún archivo excede 25 MB.

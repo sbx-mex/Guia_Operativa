@@ -1,95 +1,101 @@
 <!doctype html>
-<html lang="es">
+<html lang="es-MX">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#006241">
-  <title>Guía Operativa · Frappuccino</title>
+  <meta name="description" content="Capacitación operativa guiada para bebidas, procesos y alimentos.">
+  <title>Guía Operativa · Capacitación</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="assets/icon-192.png">
   <link rel="stylesheet" href="styles.css">
-  <script src="data/recipes.js" defer></script>
-  <script src="app.js" defer></script>
 </head>
 <body>
-  <header class="topbar">
-    <a class="brand" href="#" aria-label="Inicio"><span class="brand-mark">✦</span><span><b>Guía Operativa</b><small>Recetarios y manuales</small></span></a>
-    <button id="restartTop" class="text-button" type="button">Nueva consulta</button>
+  <header class="app-header">
+    <button class="brand" id="homeButton" type="button" aria-label="Ir al inicio">
+      <img src="assets/icon-192.png" alt="">
+      <span><b>Guía Operativa</b><small>Capacitación paso a paso</small></span>
+    </button>
+    <nav aria-label="Navegación principal">
+      <button class="nav-button" data-view="training" type="button">Capacitarme</button>
+      <button class="nav-button" data-view="search" type="button">Buscar receta</button>
+    </nav>
   </header>
 
-  <main class="shell">
-    <nav class="progress" aria-label="Progreso">
-      <span data-stage="size"><b>1</b>Tamaño</span>
-      <span data-stage="recipe"><b>2</b>Bebida</span>
-      <span data-stage="variant"><b>3</b>Versión</span>
-      <span data-stage="steps"><b>4</b>Preparación</span>
-    </nav>
-
-    <section id="selection" class="selection" aria-live="polite"></section>
-
-    <section id="sizeScreen" class="screen active" aria-labelledby="sizeTitle">
-      <div class="intro">
-        <span class="eyebrow">Paso 1 de 4</span>
-        <h1 id="sizeTitle">¿Qué tamaño vas a preparar?</h1>
-        <p>Comenzamos por el tamaño para mostrar sólo las cantidades correctas.</p>
+  <main id="main">
+    <section class="view home-view active" id="homeView">
+      <div class="home-copy">
+        <span class="eyebrow">APRENDE · PRACTICA · CONFIRMA</span>
+        <h1>¿Qué necesitas hacer?</h1>
+        <p>Elige una ruta. La guía mostrará sólo lo necesario para avanzar.</p>
       </div>
-      <div id="sizeCards" class="size-grid"></div>
-    </section>
-
-    <section id="recipeScreen" class="screen" aria-labelledby="recipeTitle" hidden>
-      <button class="back" data-back="size" type="button">← Cambiar tamaño</button>
-      <div class="intro compact">
-        <span class="eyebrow">Paso 2 de 4</span>
-        <h2 id="recipeTitle">Elige la bebida</h2>
-        <p>Esta muestra inicia con las recetas base de Café y Cajeta.</p>
+      <div class="mode-grid">
+        <button class="mode-card training-mode" data-view="training" type="button">
+          <span class="mode-icon">▶</span>
+          <span><b>Capacitarme</b><small>Preparación guiada, un paso a la vez</small></span>
+          <span class="arrow">→</span>
+        </button>
+        <button class="mode-card" data-view="search" type="button">
+          <span class="mode-icon">⌕</span>
+          <span><b>Buscar una receta</b><small>Consulta rápida por nombre o categoría</small></span>
+          <span class="arrow">→</span>
+        </button>
       </div>
-      <div id="recipeCards" class="recipe-grid"></div>
-    </section>
-
-    <section id="variantScreen" class="screen" aria-labelledby="variantTitle" hidden>
-      <button class="back" data-back="recipe" type="button">← Cambiar bebida</button>
-      <div class="variant-layout">
-        <div class="variant-image" id="variantImage" role="img"></div>
-        <div>
-          <span class="eyebrow">Paso 3 de 4</span>
-          <h2 id="variantTitle">¿Café o Cream?</h2>
-          <p>Elige la versión. Cream omite Roast y comienza directamente con leche.</p>
-          <div id="variantCards" class="variant-grid"></div>
-        </div>
+      <div class="home-proof">
+        <div><strong id="catalogCount">0</strong><span>referencias</span></div>
+        <div><strong id="moduleCount">0</strong><span>rutas guiadas</span></div>
+        <div><strong>3</strong><span>áreas operativas</span></div>
       </div>
     </section>
 
-    <section id="stepsScreen" class="screen" aria-labelledby="stepsTitle" hidden>
-      <div class="recipe-header">
-        <button class="back" data-back="recipe" type="button">← Cambiar bebida</button>
-        <div id="recipeHero" class="recipe-hero-image" role="img"></div>
-        <div class="recipe-title-block">
-          <span id="recipeMeta" class="eyebrow"></span>
-          <h2 id="stepsTitle"></h2>
-          <p id="recipeDescription"></p>
-        </div>
+    <section class="view" id="trainingView">
+      <div class="section-head">
+        <button class="back-link" data-view="home" type="button">← Inicio</button>
+        <span class="eyebrow">ENTRENAMIENTO GUIADO</span>
+        <h1 id="trainingHeading">Elige un área</h1>
+        <p id="trainingIntro">Comienza por el tipo de preparación.</p>
       </div>
-      <div class="step-layout">
-        <aside class="step-list-panel">
-          <div class="step-list-head"><b>Preparación</b><span id="stepCounter"></span></div>
-          <div id="stepList" class="step-list"></div>
-        </aside>
-        <article id="stepCard" class="step-card" aria-live="polite"></article>
-      </div>
-      <div class="step-actions">
-        <button id="prevStep" class="secondary" type="button">Anterior</button>
-        <button id="nextStep" type="button">Siguiente paso</button>
-      </div>
+      <div class="selection-trail" id="selectionTrail" aria-live="polite"></div>
+      <div id="trainingStage"></div>
     </section>
 
-    <section id="doneScreen" class="screen" aria-labelledby="doneTitle" hidden>
-      <div class="done-card">
-        <div class="done-icon">✓</div>
-        <span class="eyebrow">Receta completada</span>
-        <h2 id="doneTitle">¡Bebida lista!</h2>
-        <p id="doneSummary"></p>
-        <button id="restart" type="button">Preparar otra bebida</button>
+    <section class="view" id="searchView">
+      <div class="section-head search-head">
+        <button class="back-link" data-view="home" type="button">← Inicio</button>
+        <span class="eyebrow">RECETARIO</span>
+        <h1>Encuentra una receta</h1>
+        <p>Escribe el nombre o filtra por categoría. Abre la ficha sólo cuando la necesites.</p>
       </div>
+      <div class="search-bar">
+        <span aria-hidden="true">⌕</span>
+        <input id="recipeSearch" type="search" placeholder="Ej. cajeta, cold brew, croissant…" autocomplete="off">
+        <button id="clearSearch" type="button">Limpiar</button>
+      </div>
+      <div class="filter-row" id="filterRow" aria-label="Filtros de categoría"></div>
+      <div class="results-meta"><b id="resultCount">0 recetas</b><span>Visual del producto · ficha completa bajo demanda</span></div>
+      <div class="recipe-grid" id="recipeGrid"></div>
+      <button class="more-button" id="showMore" type="button">Mostrar más</button>
     </section>
   </main>
-  <footer>Prototipo operativo · información basada en el recetario proporcionado · valida siempre la versión vigente.</footer>
+
+  <footer>
+    <span>Diseñado: Jorge Alcantar Aguiar &amp; Enrique César Flores</span>
+    <a href="https://wa.me/message/ENKDSAHYHIGAN1" target="_blank" rel="noopener">Comentarios y/o Sugerencias</a>
+  </footer>
+
+  <dialog id="referenceDialog" class="reference-dialog">
+    <button class="dialog-close" id="closeDialog" type="button" aria-label="Cerrar">×</button>
+    <div class="dialog-product"><img id="dialogProduct" alt=""></div>
+    <div class="dialog-copy">
+      <span class="eyebrow" id="dialogCategory"></span>
+      <h2 id="dialogTitle"></h2>
+      <p>Referencia rápida</p>
+      <img class="reference-sheet" id="dialogReference" alt="Ficha original de la receta">
+      <button class="primary-button" id="dialogTrain" type="button">Iniciar capacitación</button>
+    </div>
+  </dialog>
+
+  <script src="data/content.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>
