@@ -1,0 +1,13 @@
+ELIMINAR ESTOS ARCHIVOS DEL REPOSITORIO
+
+assets/references/frias/frias-06.tmp.webp
+data/catalog.json
+data/catalog_audit.json
+data/recipes.js
+outputs/CMS_Recetarios_Manuales_Frappuccino.xlsx
+scripts/build_recipes.py
+scripts/catalog_import.py
+scripts/process_media.py
+
+Después de cargar los archivos del ZIP, también puedes ejecutar manualmente:
+Actions > Limpiar archivos obsoletos > Run workflow > confirmación: ELIMINAR

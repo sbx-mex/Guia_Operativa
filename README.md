@@ -1,26 +1,34 @@
 # Guía Operativa · Capacitación
 
-Aplicación estática para capacitación paso a paso y consulta rápida de recetas.
+Aplicación estática para capacitación paso a paso y consulta rápida de recetas. El único motor editable es `outputs/CMS_Guia_Operativa_v2.xlsx`.
 
-## Experiencia
+## Flujo seguro
 
-- **Capacitarme:** el usuario elige área, receta/proceso, configuración y avanza una acción a la vez.
-- **Buscar una receta:** muestra sólo el producto; la ficha completa aparece bajo demanda.
-- **CMS:** `outputs/CMS_Guia_Operativa_v2.xlsx` separa contenidos, selectores, opciones, rutas, pasos, equipo, normas y medios.
+1. Edita el CMS sin cambiar nombres de pestañas ni encabezados.
+2. Ejecuta `python scripts/build_content.py`.
+3. Valida con `python scripts/audit_project.py` y `python -m pytest -q`.
+4. Sube el proyecto. GitHub Actions regenera, audita, prueba y publica únicamente el sitio limpio.
 
-## Contenido incluido
+Si actualizas un repositorio que todavía conserva archivos heredados, ejecuta **Actions → Limpiar archivos obsoletos → Run workflow** y confirma `ELIMINAR`. Sólo se pueden borrar las rutas explícitas de `scripts/cleanup_obsolete.py`.
 
-- 82 referencias visuales reales clasificadas en bebidas, procesos y alimentos.
-- Rutas interactivas de Café Frappuccino, Cajeta Café/Cream, Cold Brew Toddy, Pan de queso y Croissant.
-- Cold Brew Toddy con tanda completa/media, 20 horas de preparación y 5 días refrigerado.
-- Pie de página y canal de comentarios solicitados.
+## Diez correcciones integradas
 
-## Actualización segura
+1. Restauración de las tres fichas de proceso faltantes, incluida Cold Brew Toddy.
+2. CMS Excel convertido en fuente única del catálogo, módulos, rutas y pasos.
+3. Escritura atómica de `content.json`, `content.js` y `catalog.json`.
+4. Validación estricta de pestañas, encabezados, IDs, opciones y rutas.
+5. Auditoría de imágenes reales, archivos vacíos, límite de 25 MB y carpetas menores a 100 archivos.
+6. Eliminación de motores Python/JSON duplicados, CMS heredado y medio temporal de cero bytes.
+7. Workflow con dependencias fijadas, caché pip y etapas separadas de generación, auditoría y pruebas.
+8. Publicación mínima mediante `prepare_site.py`, sin CMS, scripts, pruebas ni fuentes privadas.
+9. Navegación con URL, botón Atrás, reanudación de capacitación y filtros por subcategoría.
+10. Accesibilidad, mensajes en vivo, atajo `/`, imagen de respaldo y caché offline renovada.
 
-1. Actualiza el CMS sin cambiar sus encabezados.
-2. Mantén IDs únicos y rutas relativas.
-3. Regenera `data/content.js` con `python scripts/build_content.py`.
-4. Ejecuta `python -m pytest -q`.
-5. Sube únicamente el contenido del ZIP. El workflow valida y publica GitHub Pages.
+## Contenido validado
 
-Las carpetas de medios están separadas por categoría, contienen menos de 100 archivos y ningún archivo excede 25 MB.
+- 82 referencias visuales.
+- 5 módulos interactivos y 45 pasos.
+- Bebidas, procesos y alimentos.
+- Cajeta Cream omite Roast; Cold Brew conserva parámetros de tanda completa y media.
+
+Ningún archivo del proyecto supera 25 MB.

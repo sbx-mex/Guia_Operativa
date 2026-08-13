@@ -11,6 +11,7 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+  <a class="skip-link" href="#main">Saltar al contenido</a>
   <header class="app-header">
     <button class="brand" id="homeButton" type="button" aria-label="Ir al inicio">
       <img src="assets/icon-192.png" alt="">
@@ -41,6 +42,9 @@
           <span class="arrow">→</span>
         </button>
       </div>
+      <button class="resume-card" id="resumeTraining" type="button" hidden>
+        <span>Continuar donde me quedé</span><b id="resumeLabel"></b><i>→</i>
+      </button>
       <div class="home-proof">
         <div><strong id="catalogCount">0</strong><span>referencias</span></div>
         <div><strong id="moduleCount">0</strong><span>rutas guiadas</span></div>
@@ -72,6 +76,7 @@
         <button id="clearSearch" type="button">Limpiar</button>
       </div>
       <div class="filter-row" id="filterRow" aria-label="Filtros de categoría"></div>
+      <div class="filter-row subfilters" id="subfilterRow" aria-label="Filtros de subcategoría" hidden></div>
       <div class="results-meta"><b id="resultCount">0 recetas</b><span>Visual del producto · ficha completa bajo demanda</span></div>
       <div class="recipe-grid" id="recipeGrid"></div>
       <button class="more-button" id="showMore" type="button">Mostrar más</button>
@@ -94,6 +99,8 @@
       <button class="primary-button" id="dialogTrain" type="button">Iniciar capacitación</button>
     </div>
   </dialog>
+
+  <div class="sr-only" id="statusRegion" role="status" aria-live="polite"></div>
 
   <script src="data/content.js"></script>
   <script src="app.js"></script>

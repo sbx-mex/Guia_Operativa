@@ -3,7 +3,7 @@
   const $ = id => document.getElementById(id);
   const state = {
     view: "home", category: "", content: null, selections: {}, selectorIndex: 0,
-    route: "", step: 0, filter: "Todos", query: "", visible: 6, timer: null,
+    route: "", step: 0, filter: "Todos", subfilter: "Todas", query: "", visible: 6, timer: null,
   };
   const iconMap = {
     coffee: "☕", milk: "🥛", pour: "↘", ice: "❄", bottle: "▤", blend: "◎",
@@ -20,12 +20,27 @@
   function normalize(value) {
     return String(value || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
   }
-  function showView(view) {
+  function announce(message) { $("statusRegion").textContent = message; }
+  function saveProgress() {
+    if (!state.content || !state.route) return;
+    sessionStorage.setItem("guia-progress", JSON.stringify({contentId: state.content.id, selections: state.selections, route: state.route, step: state.step}));
+    updateResume();
+  }
+  function updateResume() {
+    const saved = JSON.parse(sessionStorage.getItem("guia-progress") || "null");
+    const content = saved && cms.contents.find(item => item.id === saved.contentId);
+    $("resumeTraining").hidden = !content;
+    if (content) $("resumeLabel").textContent = `${content.name} · paso ${Number(saved.step || 0) + 1}`;
+  }
+  function showView(view, options = {}) {
     state.view = view;
     document.querySelectorAll(".view").forEach(node => node.classList.toggle("active", node.id === `${view}View`));
     document.querySelectorAll(".nav-button").forEach(node => node.classList.toggle("active", node.dataset.view === view));
-    if (view === "training") resetTraining();
+    if (view === "training" && options.reset !== false) resetTraining();
     if (view === "search") renderSearch();
+    const hash = view === "training" ? "#capacitar" : view === "search" ? "#recetario" : "#inicio";
+    if (options.history !== false && location.hash !== hash) history.pushState({view}, "", hash);
+    announce(view === "home" ? "Inicio" : view === "training" ? "Capacitación" : "Buscador de recetas");
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
   function trail() {
@@ -90,7 +105,7 @@
     return entries[primary] || entries.TODOS || "";
   }
   function startRoute() {
-    state.step = 0;
+    state.step = 0; saveProgress();
     setTrainingHeader(state.content.name, "Avanza a tu ritmo. La guía conserva el contexto de cada paso.");
     renderRunner();
   }
@@ -113,8 +128,8 @@
         <div class="runner-actions"><button id="prevStep" type="button" ${state.step === 0 ? "disabled" : ""}>← Anterior</button><button class="primary-button" id="nextStep" type="button">${state.step === steps.length - 1 ? "Completar" : "Siguiente →"}</button></div>
       </section>
     </div>`;
-    $("prevStep").addEventListener("click", () => { if (state.step > 0) { state.step--; renderRunner(); } });
-    $("nextStep").addEventListener("click", () => { if (state.step < steps.length - 1) { state.step++; renderRunner(); } else renderDone(); });
+    $("prevStep").addEventListener("click", () => { if (state.step > 0) { state.step--; saveProgress(); renderRunner(); } });
+    $("nextStep").addEventListener("click", () => { if (state.step < steps.length - 1) { state.step++; saveProgress(); renderRunner(); } else renderDone(); });
     $("openRules").addEventListener("click", renderRules);
     if ($("timerButton")) $("timerButton").addEventListener("click", startTimer);
   }
@@ -136,6 +151,7 @@
     tick(); state.timer = setInterval(tick, 1000);
   }
   function renderDone() {
+    sessionStorage.removeItem("guia-progress"); updateResume();
     $("trainingStage").innerHTML = `<div class="done-card"><span>✓</span><small>CAPACITACIÓN COMPLETA</small><h2>${state.content.name}</h2><p>Repasaste ${routeSteps().length} pasos operativos.</p><div><button id="repeatTraining" type="button">Repetir</button><button class="primary-button" id="newTraining" type="button">Nueva capacitación</button></div></div>`;
     $("repeatTraining").addEventListener("click", startRoute);
     $("newTraining").addEventListener("click", resetTraining);
@@ -143,10 +159,14 @@
   function renderSearch() {
     const categories = ["Todos", ...new Set(cms.catalog.map(item => item.category))];
     $("filterRow").innerHTML = categories.map(category => `<button class="${state.filter === category ? "active" : ""}" data-filter="${category}" type="button">${category}</button>`).join("");
-    document.querySelectorAll("[data-filter]").forEach(button => button.addEventListener("click", () => { state.filter = button.dataset.filter; state.visible = 6; renderSearch(); }));
+    document.querySelectorAll("[data-filter]").forEach(button => button.addEventListener("click", () => { state.filter = button.dataset.filter; state.subfilter = "Todas"; state.visible = 6; renderSearch(); }));
+    const subcategories = state.filter === "Todos" ? [] : [...new Set(cms.catalog.filter(item => item.category === state.filter).map(item => item.subcategory))];
+    $("subfilterRow").hidden = subcategories.length < 2;
+    $("subfilterRow").innerHTML = ["Todas", ...subcategories].map(value => `<button class="${state.subfilter === value ? "active" : ""}" data-subfilter="${value}" type="button">${value}</button>`).join("");
+    document.querySelectorAll("[data-subfilter]").forEach(button => button.addEventListener("click", () => { state.subfilter = button.dataset.subfilter; state.visible = 6; renderSearch(); }));
     const query = normalize(state.query);
-    const filtered = cms.catalog.filter(item => (state.filter === "Todos" || item.category === state.filter) && (!query || normalize(`${item.name} ${item.category} ${item.subcategory} ${item.search}`).includes(query)));
-    $("resultCount").textContent = `${filtered.length} ${filtered.length === 1 ? "receta" : "recetas"}`;
+    const filtered = cms.catalog.filter(item => (state.filter === "Todos" || item.category === state.filter) && (state.subfilter === "Todas" || item.subcategory === state.subfilter) && (!query || normalize(`${item.name} ${item.category} ${item.subcategory} ${item.search}`).includes(query)));
+    $("resultCount").textContent = `${filtered.length} ${filtered.length === 1 ? "receta" : "recetas"}`; announce(`${filtered.length} resultados`);
     $("recipeGrid").innerHTML = filtered.slice(0, state.visible).map(item => `<article class="recipe-card"><div class="product-frame"><img loading="lazy" src="${item.productImage}" alt="${item.name}"></div><div class="recipe-copy"><small>${item.subcategory}</small><h2>${item.name}</h2><div><button class="text-button" data-reference="${item.id}" type="button">Ver receta</button>${cms.contents.some(content => content.name === item.name) ? `<button class="mini-primary" data-train="${cms.contents.find(content => content.name === item.name).id}" type="button">Practicar</button>` : ""}</div></div></article>`).join("") || `<div class="empty-state"><span>⌕</span><h2>Sin coincidencias</h2><p>Prueba con otra palabra o categoría.</p></div>`;
     $("showMore").hidden = state.visible >= filtered.length;
     document.querySelectorAll("[data-reference]").forEach(button => button.addEventListener("click", () => openReference(button.dataset.reference)));
@@ -163,14 +183,38 @@
     $("referenceDialog").showModal();
   }
 
+  function resumeTraining() {
+    const saved = JSON.parse(sessionStorage.getItem("guia-progress") || "null");
+    const content = saved && cms.contents.find(item => item.id === saved.contentId);
+    if (!content) return;
+    state.content = content; state.category = content.category; state.selections = saved.selections || {};
+    state.route = saved.route; state.step = Math.min(Number(saved.step || 0), Math.max(0, cms.steps.filter(item => item.route === saved.route).length - 1));
+    showView("training", {reset: false});
+    setTrainingHeader(content.name, "Continuaste tu capacitación guardada en este dispositivo."); renderRunner();
+  }
+
   document.querySelectorAll("[data-view]").forEach(button => button.addEventListener("click", () => showView(button.dataset.view)));
   $("homeButton").addEventListener("click", () => showView("home"));
   $("recipeSearch").addEventListener("input", event => { state.query = event.target.value; state.visible = 6; renderSearch(); });
   $("clearSearch").addEventListener("click", () => { state.query = ""; $("recipeSearch").value = ""; renderSearch(); $("recipeSearch").focus(); });
   $("showMore").addEventListener("click", () => { state.visible += 6; renderSearch(); });
   $("closeDialog").addEventListener("click", () => $("referenceDialog").close());
+  $("resumeTraining").addEventListener("click", resumeTraining);
+  document.addEventListener("keydown", event => {
+    if (event.key === "/" && state.view === "search" && document.activeElement !== $("recipeSearch")) { event.preventDefault(); $("recipeSearch").focus(); }
+  });
+  document.addEventListener("error", event => {
+    if (event.target.tagName !== "IMG") return;
+    event.target.hidden = true; event.target.parentElement?.classList.add("image-unavailable");
+  }, true);
+  window.addEventListener("popstate", () => {
+    const view = location.hash === "#capacitar" ? "training" : location.hash === "#recetario" ? "search" : "home";
+    showView(view, {history: false, reset: view === "training" && !state.content});
+  });
   $("catalogCount").textContent = cms.meta.catalogItems;
   $("moduleCount").textContent = cms.meta.trainingModules;
-  showView("home");
+  updateResume();
+  const initialView = location.hash === "#capacitar" ? "training" : location.hash === "#recetario" ? "search" : "home";
+  showView(initialView, {history: false});
   if ("serviceWorker" in navigator && location.protocol.startsWith("http")) navigator.serviceWorker.register("sw.js");
 })();

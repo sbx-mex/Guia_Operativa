@@ -1,8 +1,9 @@
 {
   "meta": {
-    "version": "2.0.0",
+    "version": "3.0.0",
     "catalogItems": 82,
-    "trainingModules": 5
+    "trainingModules": 5,
+    "source": "outputs/CMS_Guia_Operativa_v2.xlsx"
   },
   "labels": {
     "ALTO": "Alto",
@@ -21,9 +22,7 @@
       "subcategory": "Frappuccino",
       "productImage": "assets/products/frappuccino/frappuccino-04.webp",
       "referenceImage": "assets/references/frappuccino/frappuccino-04.webp",
-      "sourcePage": 4,
-      "sourcePack": "RECETARIO BEBIDAS FRAPPUCCINO",
-      "search": "cafe frappuccino"
+      "search": "Café Frappuccino Bebidas Frappuccino RECETARIO BEBIDAS FRAPPUCCINO"
     },
     {
       "id": "frappuccino-05",
@@ -32,9 +31,7 @@
       "subcategory": "Frappuccino",
       "productImage": "assets/products/frappuccino/frappuccino-05.webp",
       "referenceImage": "assets/references/frappuccino/frappuccino-05.webp",
-      "sourcePage": 5,
-      "sourcePack": "RECETARIO BEBIDAS FRAPPUCCINO",
-      "search": "cajeta frappuccino"
+      "search": "Cajeta Frappuccino Bebidas Frappuccino RECETARIO BEBIDAS FRAPPUCCINO"
     },
     {
       "id": "frappuccino-06",
@@ -43,9 +40,7 @@
       "subcategory": "Frappuccino",
       "productImage": "assets/products/frappuccino/frappuccino-06.webp",
       "referenceImage": "assets/references/frappuccino/frappuccino-06.webp",
-      "sourcePage": 6,
-      "sourcePack": "RECETARIO BEBIDAS FRAPPUCCINO",
-      "search": "caramel frappuccino"
+      "search": "Caramel Frappuccino Bebidas Frappuccino RECETARIO BEBIDAS FRAPPUCCINO"
     },
     {
       "id": "frappuccino-07",
@@ -54,9 +49,7 @@
       "subcategory": "Frappuccino",
       "productImage": "assets/products/frappuccino/frappuccino-07.webp",
       "referenceImage": "assets/references/frappuccino/frappuccino-07.webp",
-      "sourcePage": 7,
-      "sourcePack": "RECETARIO BEBIDAS FRAPPUCCINO",
-      "search": "cinnamon dolce frappuccino"
+      "search": "Cinnamon Dolce Frappuccino Bebidas Frappuccino RECETARIO BEBIDAS FRAPPUCCINO"
     },
     {
       "id": "frappuccino-08",
@@ -65,9 +58,7 @@
       "subcategory": "Frappuccino",
       "productImage": "assets/products/frappuccino/frappuccino-08.webp",
       "referenceImage": "assets/references/frappuccino/frappuccino-08.webp",
-      "sourcePage": 8,
-      "sourcePack": "RECETARIO BEBIDAS FRAPPUCCINO",
-      "search": "espresso frappuccino"
+      "search": "Espresso Frappuccino Bebidas Frappuccino RECETARIO BEBIDAS FRAPPUCCINO"
     },
     {
       "id": "frappuccino-09",
@@ -76,9 +67,7 @@
       "subcategory": "Frappuccino",
       "productImage": "assets/products/frappuccino/frappuccino-09.webp",
       "referenceImage": "assets/references/frappuccino/frappuccino-09.webp",
-      "sourcePage": 9,
-      "sourcePack": "RECETARIO BEBIDAS FRAPPUCCINO",
-      "search": "frappuccino chip"
+      "search": "Frappuccino Chip Bebidas Frappuccino RECETARIO BEBIDAS FRAPPUCCINO"
     },
     {
       "id": "frappuccino-10",
@@ -87,9 +76,7 @@
       "subcategory": "Frappuccino",
       "productImage": "assets/products/frappuccino/frappuccino-10.webp",
       "referenceImage": "assets/references/frappuccino/frappuccino-10.webp",
-      "sourcePage": 10,
-      "sourcePack": "RECETARIO BEBIDAS FRAPPUCCINO",
-      "search": "mocha blanco frappuccino"
+      "search": "Mocha Blanco Frappuccino Bebidas Frappuccino RECETARIO BEBIDAS FRAPPUCCINO"
     },
     {
       "id": "frappuccino-11",
@@ -98,9 +85,7 @@
       "subcategory": "Frappuccino",
       "productImage": "assets/products/frappuccino/frappuccino-11.webp",
       "referenceImage": "assets/references/frappuccino/frappuccino-11.webp",
-      "sourcePage": 11,
-      "sourcePack": "RECETARIO BEBIDAS FRAPPUCCINO",
-      "search": "mocha frappuccino"
+      "search": "Mocha Frappuccino Bebidas Frappuccino RECETARIO BEBIDAS FRAPPUCCINO"
     },
     {
       "id": "frappuccino-13",
@@ -109,9 +94,7 @@
       "subcategory": "Frappuccino",
       "productImage": "assets/products/frappuccino/frappuccino-13.webp",
       "referenceImage": "assets/references/frappuccino/frappuccino-13.webp",
-      "sourcePage": 13,
-      "sourcePack": "RECETARIO BEBIDAS FRAPPUCCINO",
-      "search": "berry yogurt frappuccino"
+      "search": "Berry Yogurt Frappuccino Bebidas Frappuccino RECETARIO BEBIDAS FRAPPUCCINO"
     },
     {
       "id": "frappuccino-14",
@@ -120,9 +103,7 @@
       "subcategory": "Frappuccino",
       "productImage": "assets/products/frappuccino/frappuccino-14.webp",
       "referenceImage": "assets/references/frappuccino/frappuccino-14.webp",
-      "sourcePage": 14,
-      "sourcePack": "RECETARIO BEBIDAS FRAPPUCCINO",
-      "search": "chai cream frappuccino"
+      "search": "Chai Cream Frappuccino Bebidas Frappuccino RECETARIO BEBIDAS FRAPPUCCINO"
     },
     {
       "id": "frappuccino-15",
@@ -131,9 +112,7 @@
       "subcategory": "Frappuccino",
       "productImage": "assets/products/frappuccino/frappuccino-15.webp",
       "referenceImage": "assets/references/frappuccino/frappuccino-15.webp",
-      "sourcePage": 15,
-      "sourcePack": "RECETARIO BEBIDAS FRAPPUCCINO",
-      "search": "chocolate blanco cream frappuccino"
+      "search": "Chocolate Blanco Cream Frappuccino Bebidas Frappuccino RECETARIO BEBIDAS FRAPPUCCINO"
     },
     {
       "id": "frappuccino-16",
@@ -142,9 +121,7 @@
       "subcategory": "Frappuccino",
       "productImage": "assets/products/frappuccino/frappuccino-16.webp",
       "referenceImage": "assets/references/frappuccino/frappuccino-16.webp",
-      "sourcePage": 16,
-      "sourcePack": "RECETARIO BEBIDAS FRAPPUCCINO",
-      "search": "chocolate cream frappuccino"
+      "search": "Chocolate Cream Frappuccino Bebidas Frappuccino RECETARIO BEBIDAS FRAPPUCCINO"
     },
     {
       "id": "frappuccino-17",
@@ -153,9 +130,7 @@
       "subcategory": "Frappuccino",
       "productImage": "assets/products/frappuccino/frappuccino-17.webp",
       "referenceImage": "assets/references/frappuccino/frappuccino-17.webp",
-      "sourcePage": 17,
-      "sourcePack": "RECETARIO BEBIDAS FRAPPUCCINO",
-      "search": "chocolate mexicano frappuccino"
+      "search": "Chocolate Mexicano Frappuccino Bebidas Frappuccino RECETARIO BEBIDAS FRAPPUCCINO"
     },
     {
       "id": "frappuccino-18",
@@ -164,9 +139,7 @@
       "subcategory": "Frappuccino",
       "productImage": "assets/products/frappuccino/frappuccino-18.webp",
       "referenceImage": "assets/references/frappuccino/frappuccino-18.webp",
-      "sourcePage": 18,
-      "sourcePack": "RECETARIO BEBIDAS FRAPPUCCINO",
-      "search": "cookies cream frappuccino"
+      "search": "Cookies & Cream Frappuccino Bebidas Frappuccino RECETARIO BEBIDAS FRAPPUCCINO"
     },
     {
       "id": "frappuccino-19",
@@ -175,9 +148,7 @@
       "subcategory": "Frappuccino",
       "productImage": "assets/products/frappuccino/frappuccino-19.webp",
       "referenceImage": "assets/references/frappuccino/frappuccino-19.webp",
-      "sourcePage": 19,
-      "sourcePack": "RECETARIO BEBIDAS FRAPPUCCINO",
-      "search": "fresa cream frappuccino"
+      "search": "Fresa Cream Frappuccino Bebidas Frappuccino RECETARIO BEBIDAS FRAPPUCCINO"
     },
     {
       "id": "frappuccino-20",
@@ -186,9 +157,7 @@
       "subcategory": "Frappuccino",
       "productImage": "assets/products/frappuccino/frappuccino-20.webp",
       "referenceImage": "assets/references/frappuccino/frappuccino-20.webp",
-      "sourcePage": 20,
-      "sourcePack": "RECETARIO BEBIDAS FRAPPUCCINO",
-      "search": "matcha green tea cream frappuccino"
+      "search": "Matcha Green Tea Cream Frappuccino Bebidas Frappuccino RECETARIO BEBIDAS FRAPPUCCINO"
     },
     {
       "id": "frappuccino-21",
@@ -197,9 +166,7 @@
       "subcategory": "Frappuccino",
       "productImage": "assets/products/frappuccino/frappuccino-21.webp",
       "referenceImage": "assets/references/frappuccino/frappuccino-21.webp",
-      "sourcePage": 21,
-      "sourcePack": "RECETARIO BEBIDAS FRAPPUCCINO",
-      "search": "pinacoco yogurt frappuccino"
+      "search": "Piñacoco Yogurt Frappuccino Bebidas Frappuccino RECETARIO BEBIDAS FRAPPUCCINO"
     },
     {
       "id": "frappuccino-22",
@@ -208,9 +175,7 @@
       "subcategory": "Frappuccino",
       "productImage": "assets/products/frappuccino/frappuccino-22.webp",
       "referenceImage": "assets/references/frappuccino/frappuccino-22.webp",
-      "sourcePage": 22,
-      "sourcePack": "RECETARIO BEBIDAS FRAPPUCCINO",
-      "search": "vainilla cream frappuccino"
+      "search": "Vainilla Cream Frappuccino Bebidas Frappuccino RECETARIO BEBIDAS FRAPPUCCINO"
     },
     {
       "id": "frappuccino-24",
@@ -219,9 +184,7 @@
       "subcategory": "Frappuccino",
       "productImage": "assets/products/frappuccino/frappuccino-24.webp",
       "referenceImage": "assets/references/frappuccino/frappuccino-24.webp",
-      "sourcePage": 24,
-      "sourcePack": "RECETARIO BEBIDAS FRAPPUCCINO",
-      "search": "dragon fruit frozen lemonade"
+      "search": "Dragon Fruit Frozen Lemonade Bebidas Frappuccino RECETARIO BEBIDAS FRAPPUCCINO"
     },
     {
       "id": "frappuccino-25",
@@ -230,9 +193,7 @@
       "subcategory": "Frappuccino",
       "productImage": "assets/products/frappuccino/frappuccino-25.webp",
       "referenceImage": "assets/references/frappuccino/frappuccino-25.webp",
-      "sourcePage": 25,
-      "sourcePack": "RECETARIO BEBIDAS FRAPPUCCINO",
-      "search": "mango dragon fruit frozen refresher"
+      "search": "Mango Dragon Fruit Frozen Refresher Bebidas Frappuccino RECETARIO BEBIDAS FRAPPUCCINO"
     },
     {
       "id": "frappuccino-26",
@@ -241,9 +202,7 @@
       "subcategory": "Frappuccino",
       "productImage": "assets/products/frappuccino/frappuccino-26.webp",
       "referenceImage": "assets/references/frappuccino/frappuccino-26.webp",
-      "sourcePage": 26,
-      "sourcePack": "RECETARIO BEBIDAS FRAPPUCCINO",
-      "search": "strawberry acai frozen refresher"
+      "search": "Strawberry Acaí Frozen Refresher Bebidas Frappuccino RECETARIO BEBIDAS FRAPPUCCINO"
     },
     {
       "id": "frappuccino-27",
@@ -252,9 +211,7 @@
       "subcategory": "Frappuccino",
       "productImage": "assets/products/frappuccino/frappuccino-27.webp",
       "referenceImage": "assets/references/frappuccino/frappuccino-27.webp",
-      "sourcePage": 27,
-      "sourcePack": "RECETARIO BEBIDAS FRAPPUCCINO",
-      "search": "strawberry frozen lemonade"
+      "search": "Strawberry Frozen Lemonade Bebidas Frappuccino RECETARIO BEBIDAS FRAPPUCCINO"
     },
     {
       "id": "frias-04",
@@ -263,9 +220,7 @@
       "subcategory": "Frías",
       "productImage": "assets/products/frias/frias-04.webp",
       "referenceImage": "assets/references/frias/frias-04.webp",
-      "sourcePage": 4,
-      "sourcePack": "RECETARIO BEBIDAS FRIAS",
-      "search": "avellana shaken espresso helado"
+      "search": "Avellana Shaken Espresso Helado Bebidas Frías RECETARIO BEBIDAS FRIAS"
     },
     {
       "id": "frias-05",
@@ -274,9 +229,7 @@
       "subcategory": "Frías",
       "productImage": "assets/products/frias/frias-05.webp",
       "referenceImage": "assets/references/frias/frias-05.webp",
-      "sourcePage": 5,
-      "sourcePack": "RECETARIO BEBIDAS FRIAS",
-      "search": "brown sugar shaken espresso helado"
+      "search": "Brown Sugar Shaken Espresso Helado Bebidas Frías RECETARIO BEBIDAS FRIAS"
     },
     {
       "id": "frias-06",
@@ -285,9 +238,7 @@
       "subcategory": "Frías",
       "productImage": "assets/products/frias/frias-06.webp",
       "referenceImage": "assets/references/frias/frias-06.webp",
-      "sourcePage": 6,
-      "sourcePack": "RECETARIO BEBIDAS FRIAS",
-      "search": "caramel macchiato helado"
+      "search": "Caramel Macchiato Helado Bebidas Frías RECETARIO BEBIDAS FRIAS"
     },
     {
       "id": "frias-07",
@@ -296,9 +247,7 @@
       "subcategory": "Frías",
       "productImage": "assets/products/frias/frias-07.webp",
       "referenceImage": "assets/references/frias/frias-07.webp",
-      "sourcePage": 7,
-      "sourcePack": "RECETARIO BEBIDAS FRIAS",
-      "search": "chocolate cream cold brew"
+      "search": "Chocolate Cream Cold Brew Bebidas Frías RECETARIO BEBIDAS FRIAS"
     },
     {
       "id": "frias-08",
@@ -307,9 +256,7 @@
       "subcategory": "Frías",
       "productImage": "assets/products/frias/frias-08.webp",
       "referenceImage": "assets/references/frias/frias-08.webp",
-      "sourcePage": 8,
-      "sourcePack": "RECETARIO BEBIDAS FRIAS",
-      "search": "vainilla sweet cream"
+      "search": "Vainilla Sweet Cream Bebidas Frías RECETARIO BEBIDAS FRIAS"
     },
     {
       "id": "frias-09",
@@ -318,9 +265,7 @@
       "subcategory": "Frías",
       "productImage": "assets/products/frias/frias-09.webp",
       "referenceImage": "assets/references/frias/frias-09.webp",
-      "sourcePage": 9,
-      "sourcePack": "RECETARIO BEBIDAS FRIAS",
-      "search": "cold brew"
+      "search": "Cold Brew Bebidas Frías RECETARIO BEBIDAS FRIAS"
     },
     {
       "id": "frias-10",
@@ -329,9 +274,7 @@
       "subcategory": "Frías",
       "productImage": "assets/products/frias/frias-10.webp",
       "referenceImage": "assets/references/frias/frias-10.webp",
-      "sourcePage": 10,
-      "sourcePack": "RECETARIO BEBIDAS FRIAS",
-      "search": "cold foam cappuccino helado"
+      "search": "Cold Foam Cappuccino Helado Bebidas Frías RECETARIO BEBIDAS FRIAS"
     },
     {
       "id": "frias-11",
@@ -340,9 +283,7 @@
       "subcategory": "Frías",
       "productImage": "assets/products/frias/frias-11.webp",
       "referenceImage": "assets/references/frias/frias-11.webp",
-      "sourcePage": 11,
-      "sourcePack": "RECETARIO BEBIDAS FRIAS",
-      "search": "espresso americano helado"
+      "search": "Espresso Americano Helado Bebidas Frías RECETARIO BEBIDAS FRIAS"
     },
     {
       "id": "frias-12",
@@ -351,9 +292,7 @@
       "subcategory": "Frías",
       "productImage": "assets/products/frias/frias-12.webp",
       "referenceImage": "assets/references/frias/frias-12.webp",
-      "sourcePage": 12,
-      "sourcePack": "RECETARIO BEBIDAS FRIAS",
-      "search": "latte helado"
+      "search": "Latte Helado Bebidas Frías RECETARIO BEBIDAS FRIAS"
     },
     {
       "id": "frias-13",
@@ -362,9 +301,7 @@
       "subcategory": "Frías",
       "productImage": "assets/products/frias/frias-13.webp",
       "referenceImage": "assets/references/frias/frias-13.webp",
-      "sourcePage": 13,
-      "sourcePack": "RECETARIO BEBIDAS FRIAS",
-      "search": "latte macchiato helado"
+      "search": "Latte Macchiato Helado Bebidas Frías RECETARIO BEBIDAS FRIAS"
     },
     {
       "id": "frias-14",
@@ -373,9 +310,7 @@
       "subcategory": "Frías",
       "productImage": "assets/products/frias/frias-14.webp",
       "referenceImage": "assets/references/frias/frias-14.webp",
-      "sourcePage": 14,
-      "sourcePack": "RECETARIO BEBIDAS FRIAS",
-      "search": "mocha blanco helado"
+      "search": "Mocha Blanco Helado Bebidas Frías RECETARIO BEBIDAS FRIAS"
     },
     {
       "id": "frias-15",
@@ -384,9 +319,7 @@
       "subcategory": "Frías",
       "productImage": "assets/products/frias/frias-15.webp",
       "referenceImage": "assets/references/frias/frias-15.webp",
-      "sourcePage": 15,
-      "sourcePack": "RECETARIO BEBIDAS FRIAS",
-      "search": "mocha blanco shaken espresso helado"
+      "search": "Mocha Blanco Shaken Espresso Helado Bebidas Frías RECETARIO BEBIDAS FRIAS"
     },
     {
       "id": "frias-16",
@@ -395,9 +328,7 @@
       "subcategory": "Frías",
       "productImage": "assets/products/frias/frias-16.webp",
       "referenceImage": "assets/references/frias/frias-16.webp",
-      "sourcePage": 16,
-      "sourcePack": "RECETARIO BEBIDAS FRIAS",
-      "search": "mocha helado"
+      "search": "Mocha Helado Bebidas Frías RECETARIO BEBIDAS FRIAS"
     },
     {
       "id": "frias-17",
@@ -406,9 +337,7 @@
       "subcategory": "Frías",
       "productImage": "assets/products/frias/frias-17.webp",
       "referenceImage": "assets/references/frias/frias-17.webp",
-      "sourcePage": 17,
-      "sourcePack": "RECETARIO BEBIDAS FRIAS",
-      "search": "mocha shaken espresso helado"
+      "search": "Mocha Shaken Espresso Helado Bebidas Frías RECETARIO BEBIDAS FRIAS"
     },
     {
       "id": "frias-18",
@@ -417,9 +346,7 @@
       "subcategory": "Frías",
       "productImage": "assets/products/frias/frias-18.webp",
       "referenceImage": "assets/references/frias/frias-18.webp",
-      "sourcePage": 18,
-      "sourcePack": "RECETARIO BEBIDAS FRIAS",
-      "search": "vainilla sweet cream cold brew"
+      "search": "Vainilla Sweet Cream Cold Brew Bebidas Frías RECETARIO BEBIDAS FRIAS"
     },
     {
       "id": "frias-21",
@@ -428,9 +355,7 @@
       "subcategory": "Frías",
       "productImage": "assets/products/frias/frias-21.webp",
       "referenceImage": "assets/references/frias/frias-21.webp",
-      "sourcePage": 21,
-      "sourcePack": "RECETARIO BEBIDAS FRIAS",
-      "search": "chai latte helado"
+      "search": "Chai Latte Helado Bebidas Frías RECETARIO BEBIDAS FRIAS"
     },
     {
       "id": "frias-22",
@@ -439,9 +364,7 @@
       "subcategory": "Frías",
       "productImage": "assets/products/frias/frias-22.webp",
       "referenceImage": "assets/references/frias/frias-22.webp",
-      "sourcePage": 22,
-      "sourcePack": "RECETARIO BEBIDAS FRIAS",
-      "search": "chocolate helado"
+      "search": "Chocolate Helado Bebidas Frías RECETARIO BEBIDAS FRIAS"
     },
     {
       "id": "frias-23",
@@ -450,9 +373,7 @@
       "subcategory": "Frías",
       "productImage": "assets/products/frias/frias-23.webp",
       "referenceImage": "assets/references/frias/frias-23.webp",
-      "sourcePage": 23,
-      "sourcePack": "RECETARIO BEBIDAS FRIAS",
-      "search": "chocolate mexicano helado"
+      "search": "Chocolate Mexicano Helado Bebidas Frías RECETARIO BEBIDAS FRIAS"
     },
     {
       "id": "frias-24",
@@ -461,9 +382,7 @@
       "subcategory": "Frías",
       "productImage": "assets/products/frias/frias-24.webp",
       "referenceImage": "assets/references/frias/frias-24.webp",
-      "sourcePage": 24,
-      "sourcePack": "RECETARIO BEBIDAS FRIAS",
-      "search": "dragon drink refresher"
+      "search": "Dragon Drink Refresher Bebidas Frías RECETARIO BEBIDAS FRIAS"
     },
     {
       "id": "frias-25",
@@ -472,9 +391,7 @@
       "subcategory": "Frías",
       "productImage": "assets/products/frias/frias-25.webp",
       "referenceImage": "assets/references/frias/frias-25.webp",
-      "sourcePage": 25,
-      "sourcePack": "RECETARIO BEBIDAS FRIAS",
-      "search": "mango dragon lemonade refresher"
+      "search": "Mango Dragon Lemonade Refresher Bebidas Frías RECETARIO BEBIDAS FRIAS"
     },
     {
       "id": "frias-26",
@@ -483,9 +400,7 @@
       "subcategory": "Frías",
       "productImage": "assets/products/frias/frias-26.webp",
       "referenceImage": "assets/references/frias/frias-26.webp",
-      "sourcePage": 26,
-      "sourcePack": "RECETARIO BEBIDAS FRIAS",
-      "search": "mango dragon refresher"
+      "search": "Mango Dragon Refresher Bebidas Frías RECETARIO BEBIDAS FRIAS"
     },
     {
       "id": "frias-27",
@@ -494,9 +409,7 @@
       "subcategory": "Frías",
       "productImage": "assets/products/frias/frias-27.webp",
       "referenceImage": "assets/references/frias/frias-27.webp",
-      "sourcePage": 27,
-      "sourcePack": "RECETARIO BEBIDAS FRIAS",
-      "search": "matcha green tea helado"
+      "search": "Matcha Green Tea Helado Bebidas Frías RECETARIO BEBIDAS FRIAS"
     },
     {
       "id": "frias-28",
@@ -505,9 +418,7 @@
       "subcategory": "Frías",
       "productImage": "assets/products/frias/frias-28.webp",
       "referenceImage": "assets/references/frias/frias-28.webp",
-      "sourcePage": 28,
-      "sourcePack": "RECETARIO BEBIDAS FRIAS",
-      "search": "matcha lemonade helado"
+      "search": "Matcha Lemonade Helado Bebidas Frías RECETARIO BEBIDAS FRIAS"
     },
     {
       "id": "frias-29",
@@ -516,9 +427,7 @@
       "subcategory": "Frías",
       "productImage": "assets/products/frias/frias-29.webp",
       "referenceImage": "assets/references/frias/frias-29.webp",
-      "sourcePage": 29,
-      "sourcePack": "RECETARIO BEBIDAS FRIAS",
-      "search": "pink drink refresher"
+      "search": "Pink Drink Refresher Bebidas Frías RECETARIO BEBIDAS FRIAS"
     },
     {
       "id": "frias-30",
@@ -527,9 +436,7 @@
       "subcategory": "Frías",
       "productImage": "assets/products/frias/frias-30.webp",
       "referenceImage": "assets/references/frias/frias-30.webp",
-      "sourcePage": 30,
-      "sourcePack": "RECETARIO BEBIDAS FRIAS",
-      "search": "shaken lemon black tea"
+      "search": "Shaken Lemon Black Tea Bebidas Frías RECETARIO BEBIDAS FRIAS"
     },
     {
       "id": "frias-31",
@@ -538,9 +445,7 @@
       "subcategory": "Frías",
       "productImage": "assets/products/frias/frias-31.webp",
       "referenceImage": "assets/references/frias/frias-31.webp",
-      "sourcePage": 31,
-      "sourcePack": "RECETARIO BEBIDAS FRIAS",
-      "search": "shaken lemon green tea"
+      "search": "Shaken Lemon Green Tea Bebidas Frías RECETARIO BEBIDAS FRIAS"
     },
     {
       "id": "frias-32",
@@ -549,9 +454,7 @@
       "subcategory": "Frías",
       "productImage": "assets/products/frias/frias-32.webp",
       "referenceImage": "assets/references/frias/frias-32.webp",
-      "sourcePage": 32,
-      "sourcePack": "RECETARIO BEBIDAS FRIAS",
-      "search": "shaken lemon hibiscus tea"
+      "search": "Shaken Lemon Hibiscus Tea Bebidas Frías RECETARIO BEBIDAS FRIAS"
     },
     {
       "id": "frias-33",
@@ -560,9 +463,7 @@
       "subcategory": "Frías",
       "productImage": "assets/products/frias/frias-33.webp",
       "referenceImage": "assets/references/frias/frias-33.webp",
-      "sourcePage": 33,
-      "sourcePack": "RECETARIO BEBIDAS FRIAS",
-      "search": "strawberry acai lemonade refresher"
+      "search": "Strawberry Acaí Lemonade Refresher Bebidas Frías RECETARIO BEBIDAS FRIAS"
     },
     {
       "id": "frias-34",
@@ -571,9 +472,7 @@
       "subcategory": "Frías",
       "productImage": "assets/products/frias/frias-34.webp",
       "referenceImage": "assets/references/frias/frias-34.webp",
-      "sourcePage": 34,
-      "sourcePack": "RECETARIO BEBIDAS FRIAS",
-      "search": "strawberry acai refresher"
+      "search": "Strawberry Acaí Refresher Bebidas Frías RECETARIO BEBIDAS FRIAS"
     },
     {
       "id": "frias-35",
@@ -582,9 +481,7 @@
       "subcategory": "Frías",
       "productImage": "assets/products/frias/frias-35.webp",
       "referenceImage": "assets/references/frias/frias-35.webp",
-      "sourcePage": 35,
-      "sourcePack": "RECETARIO BEBIDAS FRIAS",
-      "search": "te helado teavana"
+      "search": "Té Helado Teavana Bebidas Frías RECETARIO BEBIDAS FRIAS"
     },
     {
       "id": "calientes-04",
@@ -593,9 +490,7 @@
       "subcategory": "Calientes",
       "productImage": "assets/products/calientes/calientes-04.webp",
       "referenceImage": "assets/references/calientes/calientes-04.webp",
-      "sourcePage": 4,
-      "sourcePack": "RECETAS BEBIDAS HOT CORE 26",
-      "search": "cafe misto"
+      "search": "Café Misto Bebidas Calientes RECETAS BEBIDAS HOT CORE 26"
     },
     {
       "id": "calientes-05",
@@ -604,9 +499,7 @@
       "subcategory": "Calientes",
       "productImage": "assets/products/calientes/calientes-05.webp",
       "referenceImage": "assets/references/calientes/calientes-05.webp",
-      "sourcePage": 5,
-      "sourcePack": "RECETAS BEBIDAS HOT CORE 26",
-      "search": "cajeta latte"
+      "search": "Cajeta Latte Bebidas Calientes RECETAS BEBIDAS HOT CORE 26"
     },
     {
       "id": "calientes-06",
@@ -615,9 +508,7 @@
       "subcategory": "Calientes",
       "productImage": "assets/products/calientes/calientes-06.webp",
       "referenceImage": "assets/references/calientes/calientes-06.webp",
-      "sourcePage": 6,
-      "sourcePack": "RECETAS BEBIDAS HOT CORE 26",
-      "search": "cappuccino"
+      "search": "Cappuccino Bebidas Calientes RECETAS BEBIDAS HOT CORE 26"
     },
     {
       "id": "calientes-07",
@@ -626,9 +517,7 @@
       "subcategory": "Calientes",
       "productImage": "assets/products/calientes/calientes-07.webp",
       "referenceImage": "assets/references/calientes/calientes-07.webp",
-      "sourcePage": 7,
-      "sourcePack": "RECETAS BEBIDAS HOT CORE 26",
-      "search": "caramel macchiato"
+      "search": "Caramel Macchiato Bebidas Calientes RECETAS BEBIDAS HOT CORE 26"
     },
     {
       "id": "calientes-08",
@@ -637,9 +526,7 @@
       "subcategory": "Calientes",
       "productImage": "assets/products/calientes/calientes-08.webp",
       "referenceImage": "assets/references/calientes/calientes-08.webp",
-      "sourcePage": 8,
-      "sourcePack": "RECETAS BEBIDAS HOT CORE 26",
-      "search": "cinnamon dolce latte"
+      "search": "Cinnamon Dolce Latte Bebidas Calientes RECETAS BEBIDAS HOT CORE 26"
     },
     {
       "id": "calientes-09",
@@ -648,9 +535,7 @@
       "subcategory": "Calientes",
       "productImage": "assets/products/calientes/calientes-09.webp",
       "referenceImage": "assets/references/calientes/calientes-09.webp",
-      "sourcePage": 9,
-      "sourcePack": "RECETAS BEBIDAS HOT CORE 26",
-      "search": "espresso americano"
+      "search": "Espresso Americano Bebidas Calientes RECETAS BEBIDAS HOT CORE 26"
     },
     {
       "id": "calientes-10",
@@ -659,9 +544,7 @@
       "subcategory": "Calientes",
       "productImage": "assets/products/calientes/calientes-10.webp",
       "referenceImage": "assets/references/calientes/calientes-10.webp",
-      "sourcePage": 10,
-      "sourcePack": "RECETAS BEBIDAS HOT CORE 26",
-      "search": "espresso con panna"
+      "search": "Espresso con Panna Bebidas Calientes RECETAS BEBIDAS HOT CORE 26"
     },
     {
       "id": "calientes-11",
@@ -670,9 +553,7 @@
       "subcategory": "Calientes",
       "productImage": "assets/products/calientes/calientes-11.webp",
       "referenceImage": "assets/references/calientes/calientes-11.webp",
-      "sourcePage": 11,
-      "sourcePack": "RECETAS BEBIDAS HOT CORE 26",
-      "search": "espresso macchiato"
+      "search": "Espresso Macchiato Bebidas Calientes RECETAS BEBIDAS HOT CORE 26"
     },
     {
       "id": "calientes-12",
@@ -681,9 +562,7 @@
       "subcategory": "Calientes",
       "productImage": "assets/products/calientes/calientes-12.webp",
       "referenceImage": "assets/references/calientes/calientes-12.webp",
-      "sourcePage": 12,
-      "sourcePack": "RECETAS BEBIDAS HOT CORE 26",
-      "search": "espresso"
+      "search": "Espresso Bebidas Calientes RECETAS BEBIDAS HOT CORE 26"
     },
     {
       "id": "calientes-13",
@@ -692,9 +571,7 @@
       "subcategory": "Calientes",
       "productImage": "assets/products/calientes/calientes-13.webp",
       "referenceImage": "assets/references/calientes/calientes-13.webp",
-      "sourcePage": 13,
-      "sourcePack": "RECETAS BEBIDAS HOT CORE 26",
-      "search": "flat white"
+      "search": "Flat White Bebidas Calientes RECETAS BEBIDAS HOT CORE 26"
     },
     {
       "id": "calientes-14",
@@ -703,9 +580,7 @@
       "subcategory": "Calientes",
       "productImage": "assets/products/calientes/calientes-14.webp",
       "referenceImage": "assets/references/calientes/calientes-14.webp",
-      "sourcePage": 14,
-      "sourcePack": "RECETAS BEBIDAS HOT CORE 26",
-      "search": "latte macchiato"
+      "search": "Latte Macchiato Bebidas Calientes RECETAS BEBIDAS HOT CORE 26"
     },
     {
       "id": "calientes-15",
@@ -714,9 +589,7 @@
       "subcategory": "Calientes",
       "productImage": "assets/products/calientes/calientes-15.webp",
       "referenceImage": "assets/references/calientes/calientes-15.webp",
-      "sourcePage": 15,
-      "sourcePack": "RECETAS BEBIDAS HOT CORE 26",
-      "search": "latte"
+      "search": "Latte Bebidas Calientes RECETAS BEBIDAS HOT CORE 26"
     },
     {
       "id": "calientes-16",
@@ -725,9 +598,7 @@
       "subcategory": "Calientes",
       "productImage": "assets/products/calientes/calientes-16.webp",
       "referenceImage": "assets/references/calientes/calientes-16.webp",
-      "sourcePage": 16,
-      "sourcePack": "RECETAS BEBIDAS HOT CORE 26",
-      "search": "mocha"
+      "search": "Mocha Bebidas Calientes RECETAS BEBIDAS HOT CORE 26"
     },
     {
       "id": "calientes-17",
@@ -736,9 +607,7 @@
       "subcategory": "Calientes",
       "productImage": "assets/products/calientes/calientes-17.webp",
       "referenceImage": "assets/references/calientes/calientes-17.webp",
-      "sourcePage": 17,
-      "sourcePack": "RECETAS BEBIDAS HOT CORE 26",
-      "search": "mocha blanco"
+      "search": "Mocha Blanco Bebidas Calientes RECETAS BEBIDAS HOT CORE 26"
     },
     {
       "id": "calientes-18",
@@ -747,9 +616,7 @@
       "subcategory": "Calientes",
       "productImage": "assets/products/calientes/calientes-18.webp",
       "referenceImage": "assets/references/calientes/calientes-18.webp",
-      "sourcePage": 18,
-      "sourcePack": "RECETAS BEBIDAS HOT CORE 26",
-      "search": "te caliente teavana"
+      "search": "Té Caliente Teavana Bebidas Calientes RECETAS BEBIDAS HOT CORE 26"
     },
     {
       "id": "calientes-19",
@@ -758,9 +625,7 @@
       "subcategory": "Calientes",
       "productImage": "assets/products/calientes/calientes-19.webp",
       "referenceImage": "assets/references/calientes/calientes-19.webp",
-      "sourcePage": 19,
-      "sourcePack": "RECETAS BEBIDAS HOT CORE 26",
-      "search": "cortado"
+      "search": "Cortado Bebidas Calientes RECETAS BEBIDAS HOT CORE 26"
     },
     {
       "id": "calientes-20",
@@ -769,9 +634,7 @@
       "subcategory": "Calientes",
       "productImage": "assets/products/calientes/calientes-20.webp",
       "referenceImage": "assets/references/calientes/calientes-20.webp",
-      "sourcePage": 20,
-      "sourcePack": "RECETAS BEBIDAS HOT CORE 26",
-      "search": "vainilla protein latte"
+      "search": "Vainilla Protein Latte Bebidas Calientes RECETAS BEBIDAS HOT CORE 26"
     },
     {
       "id": "calientes-21",
@@ -780,9 +643,7 @@
       "subcategory": "Calientes",
       "productImage": "assets/products/calientes/calientes-21.webp",
       "referenceImage": "assets/references/calientes/calientes-21.webp",
-      "sourcePage": 21,
-      "sourcePack": "RECETAS BEBIDAS HOT CORE 26",
-      "search": "vainilla sugar free protein latte"
+      "search": "Vainilla Sugar Free Protein Latte Bebidas Calientes RECETAS BEBIDAS HOT CORE 26"
     },
     {
       "id": "calientes-24",
@@ -791,9 +652,7 @@
       "subcategory": "Calientes",
       "productImage": "assets/products/calientes/calientes-24.webp",
       "referenceImage": "assets/references/calientes/calientes-24.webp",
-      "sourcePage": 24,
-      "sourcePack": "RECETAS BEBIDAS HOT CORE 26",
-      "search": "chai latte"
+      "search": "Chai Latte Bebidas Calientes RECETAS BEBIDAS HOT CORE 26"
     },
     {
       "id": "calientes-25",
@@ -802,9 +661,7 @@
       "subcategory": "Calientes",
       "productImage": "assets/products/calientes/calientes-25.webp",
       "referenceImage": "assets/references/calientes/calientes-25.webp",
-      "sourcePage": 25,
-      "sourcePack": "RECETAS BEBIDAS HOT CORE 26",
-      "search": "chocolate"
+      "search": "Chocolate Bebidas Calientes RECETAS BEBIDAS HOT CORE 26"
     },
     {
       "id": "calientes-26",
@@ -813,9 +670,7 @@
       "subcategory": "Calientes",
       "productImage": "assets/products/calientes/calientes-26.webp",
       "referenceImage": "assets/references/calientes/calientes-26.webp",
-      "sourcePage": 26,
-      "sourcePack": "RECETAS BEBIDAS HOT CORE 26",
-      "search": "chocolate blanco"
+      "search": "Chocolate Blanco Bebidas Calientes RECETAS BEBIDAS HOT CORE 26"
     },
     {
       "id": "calientes-27",
@@ -824,9 +679,7 @@
       "subcategory": "Calientes",
       "productImage": "assets/products/calientes/calientes-27.webp",
       "referenceImage": "assets/references/calientes/calientes-27.webp",
-      "sourcePage": 27,
-      "sourcePack": "RECETAS BEBIDAS HOT CORE 26",
-      "search": "chocolate mexicano"
+      "search": "Chocolate Mexicano Bebidas Calientes RECETAS BEBIDAS HOT CORE 26"
     },
     {
       "id": "calientes-28",
@@ -835,9 +688,7 @@
       "subcategory": "Calientes",
       "productImage": "assets/products/calientes/calientes-28.webp",
       "referenceImage": "assets/references/calientes/calientes-28.webp",
-      "sourcePage": 28,
-      "sourcePack": "RECETAS BEBIDAS HOT CORE 26",
-      "search": "leche al vapor"
+      "search": "Leche al Vapor Bebidas Calientes RECETAS BEBIDAS HOT CORE 26"
     },
     {
       "id": "calientes-29",
@@ -846,9 +697,7 @@
       "subcategory": "Calientes",
       "productImage": "assets/products/calientes/calientes-29.webp",
       "referenceImage": "assets/references/calientes/calientes-29.webp",
-      "sourcePage": 29,
-      "sourcePack": "RECETAS BEBIDAS HOT CORE 26",
-      "search": "matcha green tea latte"
+      "search": "Matcha Green Tea Latte Bebidas Calientes RECETAS BEBIDAS HOT CORE 26"
     },
     {
       "id": "calientes-30",
@@ -857,9 +706,7 @@
       "subcategory": "Calientes",
       "productImage": "assets/products/calientes/calientes-30.webp",
       "referenceImage": "assets/references/calientes/calientes-30.webp",
-      "sourcePage": 30,
-      "sourcePack": "RECETAS BEBIDAS HOT CORE 26",
-      "search": "matcha protein latte"
+      "search": "Matcha Protein Latte Bebidas Calientes RECETAS BEBIDAS HOT CORE 26"
     },
     {
       "id": "temporada-01",
@@ -868,9 +715,7 @@
       "subcategory": "Temporada",
       "productImage": "assets/products/temporada/temporada-01.webp",
       "referenceImage": "assets/references/temporada/temporada-01.webp",
-      "sourcePage": 1,
-      "sourcePack": "Recetas_Bebidas_CFS_Summer_2026",
-      "search": "ube coco latte"
+      "search": "Ube Coco Latte Bebidas Temporada Recetas_Bebidas_CFS_Summer_2026"
     },
     {
       "id": "temporada-02",
@@ -879,9 +724,7 @@
       "subcategory": "Temporada",
       "productImage": "assets/products/temporada/temporada-02.webp",
       "referenceImage": "assets/references/temporada/temporada-02.webp",
-      "sourcePage": 2,
-      "sourcePack": "Recetas_Bebidas_CFS_Summer_2026",
-      "search": "ube coco frappuccino"
+      "search": "Ube Coco Frappuccino Bebidas Temporada Recetas_Bebidas_CFS_Summer_2026"
     },
     {
       "id": "cold-brew-toddy",
@@ -890,9 +733,7 @@
       "subcategory": "Preparación base",
       "productImage": "assets/products/procesos/cold-brew-toddy.webp",
       "referenceImage": "assets/references/procesos/cold-brew-toddy.webp",
-      "sourcePage": 1,
-      "sourcePack": "Cold Brew Toddy",
-      "search": "cold brew toddy"
+      "search": "Cold Brew Toddy Procesos Preparación base Cold Brew Toddy"
     },
     {
       "id": "pan-queso",
@@ -901,9 +742,7 @@
       "subcategory": "Horneo",
       "productImage": "assets/products/procesos/pan-queso.webp",
       "referenceImage": "assets/references/procesos/pan-queso.webp",
-      "sourcePage": 1,
-      "sourcePack": "Alimentos Croissant y Pan de queso",
-      "search": "pan de queso"
+      "search": "Pan de queso Alimentos Horneo Alimentos Croissant y Pan de queso"
     },
     {
       "id": "croissant-mantequilla",
@@ -912,9 +751,7 @@
       "subcategory": "Horneo",
       "productImage": "assets/products/procesos/croissant-mantequilla.webp",
       "referenceImage": "assets/references/procesos/croissant-mantequilla.webp",
-      "sourcePage": 3,
-      "sourcePack": "Alimentos Croissant y Pan de queso",
-      "search": "croissant mantequilla"
+      "search": "Croissant mantequilla Alimentos Horneo Alimentos Croissant y Pan de queso"
     }
   ],
   "contents": [
@@ -1075,406 +912,6 @@
   ],
   "steps": [
     {
-      "route": "frap-cafe",
-      "order": 1,
-      "title": "Agrega Frappuccino Roast",
-      "detail": "Usa el dosificador metal.",
-      "icon": "coffee",
-      "values": "ALTO=2|GRANDE=3|VENTI=4",
-      "timer": 0,
-      "stage": "Base de café"
-    },
-    {
-      "route": "frap-cafe",
-      "order": 2,
-      "title": "Vierte la leche",
-      "detail": "Hasta la línea inferior del vaso.",
-      "icon": "milk",
-      "values": "TODOS=Línea inferior",
-      "timer": 0,
-      "stage": "Leche"
-    },
-    {
-      "route": "frap-cafe",
-      "order": 3,
-      "title": "Pasa a la licuadora",
-      "detail": "Vierte todo el contenido del vaso.",
-      "icon": "pour",
-      "values": "TODOS=Contenido completo",
-      "timer": 0,
-      "stage": "Integrar"
-    },
-    {
-      "route": "frap-cafe",
-      "order": 4,
-      "title": "Agrega hielo",
-      "detail": "Usa la medida volumétrica apropiada.",
-      "icon": "ice",
-      "values": "ALTO=Alto|GRANDE=Grande|VENTI=Venti",
-      "timer": 0,
-      "stage": "Hielo"
-    },
-    {
-      "route": "frap-cafe",
-      "order": 5,
-      "title": "Agrega base Coffee",
-      "detail": "Añade base Coffee para Frappuccino.",
-      "icon": "bottle",
-      "values": "ALTO=2|GRANDE=3|VENTI=4",
-      "timer": 0,
-      "stage": "Base"
-    },
-    {
-      "route": "frap-cafe",
-      "order": 6,
-      "title": "Mezcla",
-      "detail": "Presiona el botón número 1.",
-      "icon": "blend",
-      "values": "TODOS=Botón 1",
-      "timer": 0,
-      "stage": "Mezclar"
-    },
-    {
-      "route": "frap-cafe",
-      "order": 7,
-      "title": "Termina",
-      "detail": "Vierte 6 mm debajo del borde. Coloca tapa plana y popote.",
-      "icon": "check",
-      "values": "TODOS=6 mm",
-      "timer": 0,
-      "stage": "Listo"
-    },
-    {
-      "route": "frap-cajeta-cafe",
-      "order": 1,
-      "title": "Agrega Frappuccino Roast",
-      "detail": "Usa el dosificador metal.",
-      "icon": "coffee",
-      "values": "ALTO=2|GRANDE=3|VENTI=4",
-      "timer": 0,
-      "stage": "Base de café"
-    },
-    {
-      "route": "frap-cajeta-cafe",
-      "order": 2,
-      "title": "Vierte la leche",
-      "detail": "Hasta la línea inferior del vaso.",
-      "icon": "milk",
-      "values": "TODOS=Línea inferior",
-      "timer": 0,
-      "stage": "Leche"
-    },
-    {
-      "route": "frap-cajeta-cafe",
-      "order": 3,
-      "title": "Pasa a la licuadora",
-      "detail": "Vierte el contenido del vaso.",
-      "icon": "pour",
-      "values": "TODOS=Contenido completo",
-      "timer": 0,
-      "stage": "Integrar"
-    },
-    {
-      "route": "frap-cajeta-cafe",
-      "order": 4,
-      "title": "Agrega salsa de cajeta",
-      "detail": "Dosificador metal espresso.",
-      "icon": "sauce",
-      "values": "ALTO=1|GRANDE=2|VENTI=2",
-      "timer": 0,
-      "stage": "Cajeta"
-    },
-    {
-      "route": "frap-cajeta-cafe",
-      "order": 5,
-      "title": "Agrega hielo",
-      "detail": "Usa la medida correspondiente.",
-      "icon": "ice",
-      "values": "ALTO=Alto|GRANDE=Grande|VENTI=Venti",
-      "timer": 0,
-      "stage": "Hielo"
-    },
-    {
-      "route": "frap-cajeta-cafe",
-      "order": 6,
-      "title": "Agrega base Coffee",
-      "detail": "Base Coffee para Frappuccino.",
-      "icon": "bottle",
-      "values": "ALTO=2|GRANDE=3|VENTI=4",
-      "timer": 0,
-      "stage": "Base"
-    },
-    {
-      "route": "frap-cajeta-cafe",
-      "order": 7,
-      "title": "Mezcla",
-      "detail": "Presiona el botón número 1.",
-      "icon": "blend",
-      "values": "TODOS=Botón 1",
-      "timer": 0,
-      "stage": "Mezclar"
-    },
-    {
-      "route": "frap-cajeta-cafe",
-      "order": 8,
-      "title": "Termina",
-      "detail": "Crema batida, 5 vueltas de caramelo, tapa domo y popote.",
-      "icon": "check",
-      "values": "TODOS=1 cm bajo el borde",
-      "timer": 0,
-      "stage": "Listo"
-    },
-    {
-      "route": "frap-cajeta-cream",
-      "order": 1,
-      "title": "Vierte la leche",
-      "detail": "La versión Cream comienza aquí; omite el Roast.",
-      "icon": "milk",
-      "values": "TODOS=Línea inferior",
-      "timer": 0,
-      "stage": "Leche"
-    },
-    {
-      "route": "frap-cajeta-cream",
-      "order": 2,
-      "title": "Pasa a la licuadora",
-      "detail": "Vierte el contenido del vaso.",
-      "icon": "pour",
-      "values": "TODOS=Contenido completo",
-      "timer": 0,
-      "stage": "Integrar"
-    },
-    {
-      "route": "frap-cajeta-cream",
-      "order": 3,
-      "title": "Agrega salsa de cajeta",
-      "detail": "Dosificador metal espresso.",
-      "icon": "sauce",
-      "values": "ALTO=1|GRANDE=2|VENTI=2",
-      "timer": 0,
-      "stage": "Cajeta"
-    },
-    {
-      "route": "frap-cajeta-cream",
-      "order": 4,
-      "title": "Agrega hielo",
-      "detail": "Usa la medida correspondiente.",
-      "icon": "ice",
-      "values": "ALTO=Alto|GRANDE=Grande|VENTI=Venti",
-      "timer": 0,
-      "stage": "Hielo"
-    },
-    {
-      "route": "frap-cajeta-cream",
-      "order": 5,
-      "title": "Agrega base Cream",
-      "detail": "Base Cream para Frappuccino.",
-      "icon": "bottle",
-      "values": "ALTO=2|GRANDE=3|VENTI=4",
-      "timer": 0,
-      "stage": "Base"
-    },
-    {
-      "route": "frap-cajeta-cream",
-      "order": 6,
-      "title": "Mezcla",
-      "detail": "Presiona el botón número 1.",
-      "icon": "blend",
-      "values": "TODOS=Botón 1",
-      "timer": 0,
-      "stage": "Mezclar"
-    },
-    {
-      "route": "frap-cajeta-cream",
-      "order": 7,
-      "title": "Termina",
-      "detail": "Crema batida, 5 vueltas de caramelo, tapa domo y popote.",
-      "icon": "check",
-      "values": "TODOS=1 cm bajo el borde",
-      "timer": 0,
-      "stage": "Listo"
-    },
-    {
-      "route": "toddy-completa",
-      "order": 1,
-      "title": "Muele la mezcla",
-      "detail": "Ditting #9, Grindmaster 890 #15 o Grindmaster 875 grueso.",
-      "icon": "grind",
-      "values": "TODOS=5 lb",
-      "timer": 0,
-      "stage": "Café molido"
-    },
-    {
-      "route": "toddy-completa",
-      "order": 2,
-      "title": "Coloca el filtro",
-      "detail": "Dobla 2 pulgadas y colócalo en la cafetera Toddy en seco.",
-      "icon": "filter",
-      "values": "TODOS=Filtro seco",
-      "timer": 0,
-      "stage": "Filtro"
-    },
-    {
-      "route": "toddy-completa",
-      "order": 3,
-      "title": "Agrega café y agua",
-      "detail": "Vierte agua fría filtrada y moja todo el café molido.",
-      "icon": "water",
-      "values": "TODOS=5 lb + 7 L",
-      "timer": 0,
-      "stage": "Primera agua"
-    },
-    {
-      "route": "toddy-completa",
-      "order": 4,
-      "title": "Cierra y satura",
-      "detail": "Ata el filtro dejando 3 a 4 pulgadas arriba y agrega agua adicional.",
-      "icon": "tie",
-      "values": "TODOS=7 L adicionales",
-      "timer": 0,
-      "stage": "Saturar"
-    },
-    {
-      "route": "toddy-completa",
-      "order": 5,
-      "title": "Deja preparar",
-      "detail": "Cubre, etiqueta la hora de finalización y deja sin refrigerar.",
-      "icon": "timer",
-      "values": "TODOS=20 horas",
-      "timer": 72000,
-      "stage": "Extracción"
-    },
-    {
-      "route": "toddy-completa",
-      "order": 6,
-      "title": "Transfiere y refrigera",
-      "detail": "Pasa el concentrado a jarras de 2 L o cubo plástico. Etiqueta.",
-      "icon": "store",
-      "values": "TODOS=5 días",
-      "timer": 0,
-      "stage": "Listo"
-    },
-    {
-      "route": "toddy-media",
-      "order": 1,
-      "title": "Muele la mezcla",
-      "detail": "Ditting #9, Grindmaster 890 #15 o Grindmaster 875 grueso.",
-      "icon": "grind",
-      "values": "TODOS=3 lb",
-      "timer": 0,
-      "stage": "Café molido"
-    },
-    {
-      "route": "toddy-media",
-      "order": 2,
-      "title": "Coloca el filtro",
-      "detail": "Dobla 2 pulgadas y colócalo en la cafetera Toddy en seco.",
-      "icon": "filter",
-      "values": "TODOS=Filtro seco",
-      "timer": 0,
-      "stage": "Filtro"
-    },
-    {
-      "route": "toddy-media",
-      "order": 3,
-      "title": "Agrega café y agua",
-      "detail": "Vierte agua fría filtrada y moja todo el café molido.",
-      "icon": "water",
-      "values": "TODOS=3 lb + 4.5 L",
-      "timer": 0,
-      "stage": "Primera agua"
-    },
-    {
-      "route": "toddy-media",
-      "order": 4,
-      "title": "Cierra y satura",
-      "detail": "Ata el filtro dejando 3 a 4 pulgadas arriba y agrega agua adicional.",
-      "icon": "tie",
-      "values": "TODOS=4.5 L adicionales",
-      "timer": 0,
-      "stage": "Saturar"
-    },
-    {
-      "route": "toddy-media",
-      "order": 5,
-      "title": "Deja preparar",
-      "detail": "Cubre, etiqueta la hora de finalización y deja sin refrigerar.",
-      "icon": "timer",
-      "values": "TODOS=20 horas",
-      "timer": 72000,
-      "stage": "Extracción"
-    },
-    {
-      "route": "toddy-media",
-      "order": 6,
-      "title": "Transfiere y refrigera",
-      "detail": "Pasa el concentrado a jarras de 2 L o cubo plástico. Etiqueta.",
-      "icon": "store",
-      "values": "TODOS=5 días",
-      "timer": 0,
-      "stage": "Listo"
-    },
-    {
-      "route": "pan-queso",
-      "order": 1,
-      "title": "Almacena",
-      "detail": "Mantén congelado a -18 °C.",
-      "icon": "freeze",
-      "values": "TODOS=-18 °C",
-      "timer": 0,
-      "stage": "Congelado"
-    },
-    {
-      "route": "pan-queso",
-      "order": 2,
-      "title": "Prepara",
-      "detail": "Descongela sólo las piezas necesarias y usa tapete siliconado.",
-      "icon": "tray",
-      "values": "TODOS=Según venta",
-      "timer": 0,
-      "stage": "Preparar"
-    },
-    {
-      "route": "pan-queso",
-      "order": 3,
-      "title": "Acomoda",
-      "detail": "Coloca máximo 6 piezas con 2 cm de separación. Sin descongelar.",
-      "icon": "layout",
-      "values": "TODOS=Máx. 6",
-      "timer": 0,
-      "stage": "Charola"
-    },
-    {
-      "route": "pan-queso",
-      "order": 4,
-      "title": "Hornea y reposa",
-      "detail": "Hornea a 325 °F y deja reposar.",
-      "icon": "oven",
-      "values": "TODOS=18 min + 20–25 min",
-      "timer": 1080,
-      "stage": "Horneo"
-    },
-    {
-      "route": "pan-queso",
-      "order": 5,
-      "title": "Recalienta",
-      "detail": "Programa Pan de queso (2 o 4 piezas).",
-      "icon": "heat",
-      "values": "TODOS=20 min de vida",
-      "timer": 0,
-      "stage": "Uso"
-    },
-    {
-      "route": "pan-queso",
-      "order": 6,
-      "title": "Entrega",
-      "detail": "Sirve en plato o bolsa pastry panini según canal.",
-      "icon": "serve",
-      "values": "TODOS=Listo",
-      "timer": 0,
-      "stage": "Entrega"
-    },
-    {
       "route": "croissant",
       "order": 1,
       "title": "Almacena",
@@ -1482,7 +919,8 @@
       "icon": "freeze",
       "values": "TODOS=-18 °C",
       "timer": 0,
-      "stage": "Congelado"
+      "stage": "Congelado",
+      "media": ""
     },
     {
       "route": "croissant",
@@ -1492,7 +930,8 @@
       "icon": "tray",
       "values": "TODOS=Según venta",
       "timer": 0,
-      "stage": "Preparar"
+      "stage": "Preparar",
+      "media": ""
     },
     {
       "route": "croissant",
@@ -1502,7 +941,8 @@
       "icon": "layout",
       "values": "TODOS=Máx. 5",
       "timer": 0,
-      "stage": "Charola"
+      "stage": "Charola",
+      "media": ""
     },
     {
       "route": "croissant",
@@ -1512,7 +952,8 @@
       "icon": "oven",
       "values": "TODOS=18 min + 20–25 min",
       "timer": 1080,
-      "stage": "Horneo"
+      "stage": "Horneo",
+      "media": ""
     },
     {
       "route": "croissant",
@@ -1522,7 +963,448 @@
       "icon": "heat",
       "values": "TODOS=Según uso",
       "timer": 0,
-      "stage": "Uso"
+      "stage": "Uso",
+      "media": ""
+    },
+    {
+      "route": "frap-cafe",
+      "order": 1,
+      "title": "Agrega Frappuccino Roast",
+      "detail": "Usa el dosificador metal.",
+      "icon": "coffee",
+      "values": "ALTO=2|GRANDE=3|VENTI=4",
+      "timer": 0,
+      "stage": "Base de café",
+      "media": ""
+    },
+    {
+      "route": "frap-cafe",
+      "order": 2,
+      "title": "Vierte la leche",
+      "detail": "Hasta la línea inferior del vaso.",
+      "icon": "milk",
+      "values": "TODOS=Línea inferior",
+      "timer": 0,
+      "stage": "Leche",
+      "media": ""
+    },
+    {
+      "route": "frap-cafe",
+      "order": 3,
+      "title": "Pasa a la licuadora",
+      "detail": "Vierte todo el contenido del vaso.",
+      "icon": "pour",
+      "values": "TODOS=Contenido completo",
+      "timer": 0,
+      "stage": "Integrar",
+      "media": ""
+    },
+    {
+      "route": "frap-cafe",
+      "order": 4,
+      "title": "Agrega hielo",
+      "detail": "Usa la medida volumétrica apropiada.",
+      "icon": "ice",
+      "values": "ALTO=Alto|GRANDE=Grande|VENTI=Venti",
+      "timer": 0,
+      "stage": "Hielo",
+      "media": ""
+    },
+    {
+      "route": "frap-cafe",
+      "order": 5,
+      "title": "Agrega base Coffee",
+      "detail": "Añade base Coffee para Frappuccino.",
+      "icon": "bottle",
+      "values": "ALTO=2|GRANDE=3|VENTI=4",
+      "timer": 0,
+      "stage": "Base",
+      "media": ""
+    },
+    {
+      "route": "frap-cafe",
+      "order": 6,
+      "title": "Mezcla",
+      "detail": "Presiona el botón número 1.",
+      "icon": "blend",
+      "values": "TODOS=Botón 1",
+      "timer": 0,
+      "stage": "Mezclar",
+      "media": ""
+    },
+    {
+      "route": "frap-cafe",
+      "order": 7,
+      "title": "Termina",
+      "detail": "Vierte 6 mm debajo del borde. Coloca tapa plana y popote.",
+      "icon": "check",
+      "values": "TODOS=6 mm",
+      "timer": 0,
+      "stage": "Listo",
+      "media": ""
+    },
+    {
+      "route": "frap-cajeta-cafe",
+      "order": 1,
+      "title": "Agrega Frappuccino Roast",
+      "detail": "Usa el dosificador metal.",
+      "icon": "coffee",
+      "values": "ALTO=2|GRANDE=3|VENTI=4",
+      "timer": 0,
+      "stage": "Base de café",
+      "media": ""
+    },
+    {
+      "route": "frap-cajeta-cafe",
+      "order": 2,
+      "title": "Vierte la leche",
+      "detail": "Hasta la línea inferior del vaso.",
+      "icon": "milk",
+      "values": "TODOS=Línea inferior",
+      "timer": 0,
+      "stage": "Leche",
+      "media": ""
+    },
+    {
+      "route": "frap-cajeta-cafe",
+      "order": 3,
+      "title": "Pasa a la licuadora",
+      "detail": "Vierte el contenido del vaso.",
+      "icon": "pour",
+      "values": "TODOS=Contenido completo",
+      "timer": 0,
+      "stage": "Integrar",
+      "media": ""
+    },
+    {
+      "route": "frap-cajeta-cafe",
+      "order": 4,
+      "title": "Agrega salsa de cajeta",
+      "detail": "Dosificador metal espresso.",
+      "icon": "sauce",
+      "values": "ALTO=1|GRANDE=2|VENTI=2",
+      "timer": 0,
+      "stage": "Cajeta",
+      "media": ""
+    },
+    {
+      "route": "frap-cajeta-cafe",
+      "order": 5,
+      "title": "Agrega hielo",
+      "detail": "Usa la medida correspondiente.",
+      "icon": "ice",
+      "values": "ALTO=Alto|GRANDE=Grande|VENTI=Venti",
+      "timer": 0,
+      "stage": "Hielo",
+      "media": ""
+    },
+    {
+      "route": "frap-cajeta-cafe",
+      "order": 6,
+      "title": "Agrega base Coffee",
+      "detail": "Base Coffee para Frappuccino.",
+      "icon": "bottle",
+      "values": "ALTO=2|GRANDE=3|VENTI=4",
+      "timer": 0,
+      "stage": "Base",
+      "media": ""
+    },
+    {
+      "route": "frap-cajeta-cafe",
+      "order": 7,
+      "title": "Mezcla",
+      "detail": "Presiona el botón número 1.",
+      "icon": "blend",
+      "values": "TODOS=Botón 1",
+      "timer": 0,
+      "stage": "Mezclar",
+      "media": ""
+    },
+    {
+      "route": "frap-cajeta-cafe",
+      "order": 8,
+      "title": "Termina",
+      "detail": "Crema batida, 5 vueltas de caramelo, tapa domo y popote.",
+      "icon": "check",
+      "values": "TODOS=1 cm bajo el borde",
+      "timer": 0,
+      "stage": "Listo",
+      "media": ""
+    },
+    {
+      "route": "frap-cajeta-cream",
+      "order": 1,
+      "title": "Vierte la leche",
+      "detail": "La versión Cream comienza aquí; omite el Roast.",
+      "icon": "milk",
+      "values": "TODOS=Línea inferior",
+      "timer": 0,
+      "stage": "Leche",
+      "media": ""
+    },
+    {
+      "route": "frap-cajeta-cream",
+      "order": 2,
+      "title": "Pasa a la licuadora",
+      "detail": "Vierte el contenido del vaso.",
+      "icon": "pour",
+      "values": "TODOS=Contenido completo",
+      "timer": 0,
+      "stage": "Integrar",
+      "media": ""
+    },
+    {
+      "route": "frap-cajeta-cream",
+      "order": 3,
+      "title": "Agrega salsa de cajeta",
+      "detail": "Dosificador metal espresso.",
+      "icon": "sauce",
+      "values": "ALTO=1|GRANDE=2|VENTI=2",
+      "timer": 0,
+      "stage": "Cajeta",
+      "media": ""
+    },
+    {
+      "route": "frap-cajeta-cream",
+      "order": 4,
+      "title": "Agrega hielo",
+      "detail": "Usa la medida correspondiente.",
+      "icon": "ice",
+      "values": "ALTO=Alto|GRANDE=Grande|VENTI=Venti",
+      "timer": 0,
+      "stage": "Hielo",
+      "media": ""
+    },
+    {
+      "route": "frap-cajeta-cream",
+      "order": 5,
+      "title": "Agrega base Cream",
+      "detail": "Base Cream para Frappuccino.",
+      "icon": "bottle",
+      "values": "ALTO=2|GRANDE=3|VENTI=4",
+      "timer": 0,
+      "stage": "Base",
+      "media": ""
+    },
+    {
+      "route": "frap-cajeta-cream",
+      "order": 6,
+      "title": "Mezcla",
+      "detail": "Presiona el botón número 1.",
+      "icon": "blend",
+      "values": "TODOS=Botón 1",
+      "timer": 0,
+      "stage": "Mezclar",
+      "media": ""
+    },
+    {
+      "route": "frap-cajeta-cream",
+      "order": 7,
+      "title": "Termina",
+      "detail": "Crema batida, 5 vueltas de caramelo, tapa domo y popote.",
+      "icon": "check",
+      "values": "TODOS=1 cm bajo el borde",
+      "timer": 0,
+      "stage": "Listo",
+      "media": ""
+    },
+    {
+      "route": "pan-queso",
+      "order": 1,
+      "title": "Almacena",
+      "detail": "Mantén congelado a -18 °C.",
+      "icon": "freeze",
+      "values": "TODOS=-18 °C",
+      "timer": 0,
+      "stage": "Congelado",
+      "media": ""
+    },
+    {
+      "route": "pan-queso",
+      "order": 2,
+      "title": "Prepara",
+      "detail": "Descongela sólo las piezas necesarias y usa tapete siliconado.",
+      "icon": "tray",
+      "values": "TODOS=Según venta",
+      "timer": 0,
+      "stage": "Preparar",
+      "media": ""
+    },
+    {
+      "route": "pan-queso",
+      "order": 3,
+      "title": "Acomoda",
+      "detail": "Coloca máximo 6 piezas con 2 cm de separación. Sin descongelar.",
+      "icon": "layout",
+      "values": "TODOS=Máx. 6",
+      "timer": 0,
+      "stage": "Charola",
+      "media": ""
+    },
+    {
+      "route": "pan-queso",
+      "order": 4,
+      "title": "Hornea y reposa",
+      "detail": "Hornea a 325 °F y deja reposar.",
+      "icon": "oven",
+      "values": "TODOS=18 min + 20–25 min",
+      "timer": 1080,
+      "stage": "Horneo",
+      "media": ""
+    },
+    {
+      "route": "pan-queso",
+      "order": 5,
+      "title": "Recalienta",
+      "detail": "Programa Pan de queso (2 o 4 piezas).",
+      "icon": "heat",
+      "values": "TODOS=20 min de vida",
+      "timer": 0,
+      "stage": "Uso",
+      "media": ""
+    },
+    {
+      "route": "pan-queso",
+      "order": 6,
+      "title": "Entrega",
+      "detail": "Sirve en plato o bolsa pastry panini según canal.",
+      "icon": "serve",
+      "values": "TODOS=Listo",
+      "timer": 0,
+      "stage": "Entrega",
+      "media": ""
+    },
+    {
+      "route": "toddy-completa",
+      "order": 1,
+      "title": "Muele la mezcla",
+      "detail": "Ditting #9, Grindmaster 890 #15 o Grindmaster 875 grueso.",
+      "icon": "grind",
+      "values": "TODOS=5 lb",
+      "timer": 0,
+      "stage": "Café molido",
+      "media": ""
+    },
+    {
+      "route": "toddy-completa",
+      "order": 2,
+      "title": "Coloca el filtro",
+      "detail": "Dobla 2 pulgadas y colócalo en la cafetera Toddy en seco.",
+      "icon": "filter",
+      "values": "TODOS=Filtro seco",
+      "timer": 0,
+      "stage": "Filtro",
+      "media": ""
+    },
+    {
+      "route": "toddy-completa",
+      "order": 3,
+      "title": "Agrega café y agua",
+      "detail": "Vierte agua fría filtrada y moja todo el café molido.",
+      "icon": "water",
+      "values": "TODOS=5 lb + 7 L",
+      "timer": 0,
+      "stage": "Primera agua",
+      "media": ""
+    },
+    {
+      "route": "toddy-completa",
+      "order": 4,
+      "title": "Cierra y satura",
+      "detail": "Ata el filtro dejando 3 a 4 pulgadas arriba y agrega agua adicional.",
+      "icon": "tie",
+      "values": "TODOS=7 L adicionales",
+      "timer": 0,
+      "stage": "Saturar",
+      "media": ""
+    },
+    {
+      "route": "toddy-completa",
+      "order": 5,
+      "title": "Deja preparar",
+      "detail": "Cubre, etiqueta la hora de finalización y deja sin refrigerar.",
+      "icon": "timer",
+      "values": "TODOS=20 horas",
+      "timer": 72000,
+      "stage": "Extracción",
+      "media": ""
+    },
+    {
+      "route": "toddy-completa",
+      "order": 6,
+      "title": "Transfiere y refrigera",
+      "detail": "Pasa el concentrado a jarras de 2 L o cubo plástico. Etiqueta.",
+      "icon": "store",
+      "values": "TODOS=5 días",
+      "timer": 0,
+      "stage": "Listo",
+      "media": ""
+    },
+    {
+      "route": "toddy-media",
+      "order": 1,
+      "title": "Muele la mezcla",
+      "detail": "Ditting #9, Grindmaster 890 #15 o Grindmaster 875 grueso.",
+      "icon": "grind",
+      "values": "TODOS=3 lb",
+      "timer": 0,
+      "stage": "Café molido",
+      "media": ""
+    },
+    {
+      "route": "toddy-media",
+      "order": 2,
+      "title": "Coloca el filtro",
+      "detail": "Dobla 2 pulgadas y colócalo en la cafetera Toddy en seco.",
+      "icon": "filter",
+      "values": "TODOS=Filtro seco",
+      "timer": 0,
+      "stage": "Filtro",
+      "media": ""
+    },
+    {
+      "route": "toddy-media",
+      "order": 3,
+      "title": "Agrega café y agua",
+      "detail": "Vierte agua fría filtrada y moja todo el café molido.",
+      "icon": "water",
+      "values": "TODOS=3 lb + 4.5 L",
+      "timer": 0,
+      "stage": "Primera agua",
+      "media": ""
+    },
+    {
+      "route": "toddy-media",
+      "order": 4,
+      "title": "Cierra y satura",
+      "detail": "Ata el filtro dejando 3 a 4 pulgadas arriba y agrega agua adicional.",
+      "icon": "tie",
+      "values": "TODOS=4.5 L adicionales",
+      "timer": 0,
+      "stage": "Saturar",
+      "media": ""
+    },
+    {
+      "route": "toddy-media",
+      "order": 5,
+      "title": "Deja preparar",
+      "detail": "Cubre, etiqueta la hora de finalización y deja sin refrigerar.",
+      "icon": "timer",
+      "values": "TODOS=20 horas",
+      "timer": 72000,
+      "stage": "Extracción",
+      "media": ""
+    },
+    {
+      "route": "toddy-media",
+      "order": 6,
+      "title": "Transfiere y refrigera",
+      "detail": "Pasa el concentrado a jarras de 2 L o cubo plástico. Etiqueta.",
+      "icon": "store",
+      "values": "TODOS=5 días",
+      "timer": 0,
+      "stage": "Listo",
+      "media": ""
     }
   ]
 }
