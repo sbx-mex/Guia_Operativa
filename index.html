@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#006241">
+  <title>Guía Operativa · Frappuccino</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="data/recipes.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#" aria-label="Inicio"><span class="brand-mark">✦</span><span><b>Guía Operativa</b><small>Recetarios y manuales</small></span></a>
+    <button id="restartTop" class="text-button" type="button">Nueva consulta</button>
+  </header>
+
+  <main class="shell">
+    <nav class="progress" aria-label="Progreso">
+      <span data-stage="size"><b>1</b>Tamaño</span>
+      <span data-stage="recipe"><b>2</b>Bebida</span>
+      <span data-stage="variant"><b>3</b>Versión</span>
+      <span data-stage="steps"><b>4</b>Preparación</span>
+    </nav>
+
+    <section id="selection" class="selection" aria-live="polite"></section>
+
+    <section id="sizeScreen" class="screen active" aria-labelledby="sizeTitle">
+      <div class="intro">
+        <span class="eyebrow">Paso 1 de 4</span>
+        <h1 id="sizeTitle">¿Qué tamaño vas a preparar?</h1>
+        <p>Comenzamos por el tamaño para mostrar sólo las cantidades correctas.</p>
+      </div>
+      <div id="sizeCards" class="size-grid"></div>
+    </section>
+
+    <section id="recipeScreen" class="screen" aria-labelledby="recipeTitle" hidden>
+      <button class="back" data-back="size" type="button">← Cambiar tamaño</button>
+      <div class="intro compact">
+        <span class="eyebrow">Paso 2 de 4</span>
+        <h2 id="recipeTitle">Elige la bebida</h2>
+        <p>Esta muestra inicia con las recetas base de Café y Cajeta.</p>
+      </div>
+      <div id="recipeCards" class="recipe-grid"></div>
+    </section>
+
+    <section id="variantScreen" class="screen" aria-labelledby="variantTitle" hidden>
+      <button class="back" data-back="recipe" type="button">← Cambiar bebida</button>
+      <div class="variant-layout">
+        <div class="variant-image" id="variantImage" role="img"></div>
+        <div>
+          <span class="eyebrow">Paso 3 de 4</span>
+          <h2 id="variantTitle">¿Café o Cream?</h2>
+          <p>Elige la versión. Cream omite Roast y comienza directamente con leche.</p>
+          <div id="variantCards" class="variant-grid"></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="stepsScreen" class="screen" aria-labelledby="stepsTitle" hidden>
+      <div class="recipe-header">
+        <button class="back" data-back="recipe" type="button">← Cambiar bebida</button>
+        <div id="recipeHero" class="recipe-hero-image" role="img"></div>
+        <div class="recipe-title-block">
+          <span id="recipeMeta" class="eyebrow"></span>
+          <h2 id="stepsTitle"></h2>
+          <p id="recipeDescription"></p>
+        </div>
+      </div>
+      <div class="step-layout">
+        <aside class="step-list-panel">
+          <div class="step-list-head"><b>Preparación</b><span id="stepCounter"></span></div>
+          <div id="stepList" class="step-list"></div>
+        </aside>
+        <article id="stepCard" class="step-card" aria-live="polite"></article>
+      </div>
+      <div class="step-actions">
+        <button id="prevStep" class="secondary" type="button">Anterior</button>
+        <button id="nextStep" type="button">Siguiente paso</button>
+      </div>
+    </section>
+
+    <section id="doneScreen" class="screen" aria-labelledby="doneTitle" hidden>
+      <div class="done-card">
+        <div class="done-icon">✓</div>
+        <span class="eyebrow">Receta completada</span>
+        <h2 id="doneTitle">¡Bebida lista!</h2>
+        <p id="doneSummary"></p>
+        <button id="restart" type="button">Preparar otra bebida</button>
+      </div>
+    </section>
+  </main>
+  <footer>Prototipo operativo · información basada en el recetario proporcionado · valida siempre la versión vigente.</footer>
+</body>
+</html>
