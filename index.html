@@ -25,6 +25,7 @@
     <nav aria-label="Navegación principal">
       <button class="nav-button" data-view="training" type="button">Capacitarme</button>
       <button class="nav-button" data-view="search" type="button">Buscar receta</button>
+      <button class="nav-button" data-view="objectives" type="button">Objetivos</button>
       <button class="install-button" id="installApp" type="button">Instalar app</button>
     </nav>
   </header>
@@ -54,6 +55,11 @@
         <button class="mode-card" data-view="search" type="button">
           <span class="mode-icon">⌕</span>
           <span><b>Buscar una receta</b><small>Consulta rápida por nombre o categoría</small></span>
+          <span class="arrow">→</span>
+        </button>
+        <button class="mode-card objective-mode" data-view="objectives" type="button">
+          <span class="mode-icon">◎</span>
+          <span><b>Objetivos y avance</b><small>Anticipa metas, registra reales y comparte</small></span>
           <span class="arrow">→</span>
         </button>
       </div>
@@ -96,7 +102,33 @@
       <div class="recipe-grid" id="recipeGrid"></div>
       <button class="more-button" id="showMore" type="button">Mostrar más</button>
     </section>
+
+    <section class="view objectives-view" id="objectivesView">
+      <div class="section-head objective-head">
+        <button class="back-link" data-view="home" type="button">← Inicio</button>
+        <span class="eyebrow">TABLERO OPERATIVO</span>
+        <h1>Objetivos y avance</h1>
+        <p>Primero captura la meta. Después actualiza únicamente los días que ya tienen venta real.</p>
+      </div>
+      <div class="objective-toolbar">
+        <label><span>CeCo <small>opcional</small></span><input id="objectiveCeco" inputmode="numeric" maxlength="12" placeholder="Ej. 38101"></label>
+        <label><span>Nombre de tienda</span><input id="objectiveStore" maxlength="80" placeholder="Ej. Luna Park" required></label>
+        <button id="loadObjectivesJson" type="button">Cargar JSON</button>
+        <input id="objectivesJsonFile" type="file" accept="application/json,.json" hidden>
+      </div>
+      <div class="objective-summary" id="objectiveSummary" aria-live="polite"></div>
+      <div class="objective-days" id="objectiveDays"></div>
+      <div class="objective-actions">
+        <button id="resetObjectives" type="button">Limpiar captura</button>
+        <button id="downloadObjectivesJson" type="button">Descargar JSON</button>
+        <button id="shareObjectives" type="button">Compartir en Workvivo</button>
+        <button class="primary-button" id="printObjectives" type="button">Descargar PDF</button>
+      </div>
+      <p class="objective-note">Los datos se guardan sólo en este dispositivo. El PDF mostrará fecha, hora, metas, reales y avance acumulado.</p>
+    </section>
   </main>
+
+  <section id="objectivePrintReport" class="objective-print-report" aria-hidden="true"></section>
 
   <footer>
     <span>Diseñado: Jorge Alcantar Aguiar &amp; Enrique César Flores</span>
@@ -132,6 +164,11 @@
   <dialog id="evaluationDialog" class="evaluation-dialog">
     <button class="dialog-close" id="closeEvaluation" type="button" aria-label="Cerrar">×</button>
     <div class="evaluation-head"><span class="campaign-pill">VALIDACIÓN UNICORN</span><b id="evaluationProgress">Pregunta 1 de 5</b></div>
+    <div class="evaluation-meta">
+      <label><span>Evalué a</span><input id="evaluatedPartner" maxlength="80" placeholder="Ej. Enrique"></label>
+      <label class="photo-button"><span>Foto de práctica <small>opcional</small></span><input id="evaluationPhoto" type="file" accept="image/*" capture="environment"><b id="evaluationPhotoLabel">Tomar foto</b></label>
+      <img id="evaluationPhotoPreview" alt="Evidencia de práctica" hidden>
+    </div>
     <div id="evaluationStage"></div>
   </dialog>
 
@@ -146,6 +183,8 @@
   <div class="sr-only" id="statusRegion" role="status" aria-live="polite"></div>
 
   <script src="data/content.js"></script>
+  <script src="data/objectives.js"></script>
+  <script src="objectives.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

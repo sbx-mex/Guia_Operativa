@@ -101,9 +101,10 @@
     document.querySelectorAll(".nav-button").forEach(node => node.classList.toggle("active", node.dataset.view === view));
     if (view === "training" && options.reset !== false) resetTraining();
     if (view === "search") renderSearch();
-    const hash = view === "training" ? "#capacitar" : view === "search" ? "#recetario" : "#inicio";
+    if (view === "objectives") window.Objectives?.render();
+    const hash = view === "training" ? "#capacitar" : view === "search" ? "#recetario" : view === "objectives" ? "#objetivos" : "#inicio";
     if (options.history !== false && location.hash !== hash) history.pushState({view}, "", hash);
-    announce(view === "home" ? "Inicio" : view === "training" ? "Capacitación" : "Buscador de recetas");
+    announce(view === "home" ? "Inicio" : view === "training" ? "Capacitación" : view === "search" ? "Buscador de recetas" : "Objetivos y avance");
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
   function trail() {
@@ -233,6 +234,7 @@
 
   function openEvaluation() {
     state.evaluationIndex = 0; state.evaluationScore = 0;
+    $("evaluatedPartner").value = localStorage.getItem("evaluated-partner") || "";
     renderEvaluation();
     $("evaluationDialog").showModal();
   }
@@ -242,8 +244,12 @@
       const passed = state.evaluationScore >= 4;
       localStorage.setItem("unicorn-evaluation", JSON.stringify({score: state.evaluationScore, total: unicornQuiz.length, date: localDate("America/Mexico_City")}));
       $("evaluationProgress").textContent = "Resultado";
-      $("evaluationStage").innerHTML = `<div class="evaluation-result"><span>${passed ? "✓" : "↻"}</span><h2>${state.evaluationScore} de ${unicornQuiz.length}</h2><p>${passed ? "Preparación validada. Estás listo para practicar en barra." : "Repasa Salsa Azul y Unicorn antes de volver a evaluar."}</p><div><button id="retryEvaluation" type="button">Repetir evaluación</button><button class="primary-button" id="finishEvaluation" type="button">Finalizar</button></div></div>`;
+      const partner = $("evaluatedPartner").value.trim() || "Partner";
+      const evaluatedAt = new Intl.DateTimeFormat("es-MX", {dateStyle:"long", timeStyle:"short", timeZone:"America/Mexico_City"}).format(new Date());
+      localStorage.setItem("evaluated-partner", partner);
+      $("evaluationStage").innerHTML = `<div class="evaluation-result"><span>${passed ? "✓" : "↻"}</span><small>EVALUÉ A ${partner.toUpperCase()}</small><h2>${state.evaluationScore} de ${unicornQuiz.length}</h2><p>${passed ? "Preparación validada. Estás listo para practicar en barra." : "Repasa Salsa Azul y Unicorn antes de volver a evaluar."}</p><time>${evaluatedAt}</time><div><button id="retryEvaluation" type="button">Repetir</button><button id="shareEvaluation" type="button">Compartir</button><button class="primary-button" id="finishEvaluation" type="button">Finalizar</button></div></div>`;
       $("retryEvaluation").onclick = () => { state.evaluationIndex = 0; state.evaluationScore = 0; renderEvaluation(); };
+      $("shareEvaluation").onclick = async () => { const message=`Práctica Unicorn · ${partner}\nResultado: ${state.evaluationScore}/${unicornQuiz.length}\n${evaluatedAt}`; if(navigator.share){try{await navigator.share({title:"Evaluación Unicorn",text:message});return}catch(error){if(error.name==="AbortError")return}} await navigator.clipboard.writeText(message); alert("Evaluación copiada. Pégala en Workvivo."); };
       $("finishEvaluation").onclick = () => $("evaluationDialog").close();
       return;
     }
@@ -328,6 +334,11 @@
   $("closeDialog").addEventListener("click", () => $("referenceDialog").close());
   $("closeEvaluation").addEventListener("click", () => $("evaluationDialog").close());
   $("closeInstall").addEventListener("click", () => $("installDialog").close());
+  $("evaluationPhoto").addEventListener("change", event => {
+    const file = event.target.files[0]; if (!file) return;
+    if (file.size > 8 * 1024 * 1024) { alert("La foto debe pesar menos de 8 MB."); event.target.value=""; return; }
+    const reader = new FileReader(); reader.onload = () => { $("evaluationPhotoPreview").src=reader.result; $("evaluationPhotoPreview").hidden=false; $("evaluationPhotoLabel").textContent="Cambiar foto"; }; reader.readAsDataURL(file);
+  });
   $("resumeTraining").addEventListener("click", resumeTraining);
   document.addEventListener("keydown", event => {
     if (event.key === "/" && state.view === "search" && document.activeElement !== $("recipeSearch")) { event.preventDefault(); $("recipeSearch").focus(); }
@@ -337,7 +348,7 @@
     event.target.hidden = true; event.target.parentElement?.classList.add("image-unavailable");
   }, true);
   window.addEventListener("popstate", () => {
-    const view = location.hash === "#capacitar" ? "training" : location.hash === "#recetario" ? "search" : "home";
+    const view = location.hash === "#capacitar" ? "training" : location.hash === "#recetario" ? "search" : location.hash === "#objetivos" ? "objectives" : "home";
     showView(view, {history: false, reset: view === "training" && !state.content});
   });
   $("catalogCount").textContent = cms.meta.catalogItems;
@@ -345,7 +356,7 @@
   updateResume();
   setupPwaInstall();
   configureCampaign();
-  const initialView = location.hash === "#capacitar" ? "training" : location.hash === "#recetario" ? "search" : "home";
+  const initialView = location.hash === "#capacitar" ? "training" : location.hash === "#recetario" ? "search" : location.hash === "#objetivos" ? "objectives" : "home";
   showView(initialView, {history: false});
   if ("serviceWorker" in navigator && location.protocol.startsWith("http")) navigator.serviceWorker.register("sw.js");
 })();

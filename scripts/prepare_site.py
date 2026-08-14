@@ -5,7 +5,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 SITE = ROOT / "_site"
-FILES = ("index.html", "offline.html", "app.js", "styles.css", "manifest.webmanifest", "sw.js", ".nojekyll")
+FILES = ("index.html", "offline.html", "app.js", "objectives.js", "styles.css", "manifest.webmanifest", "sw.js", ".nojekyll")
 
 
 def main() -> None:
@@ -16,7 +16,7 @@ def main() -> None:
         shutil.copy2(ROOT / name, SITE / name)
     shutil.copytree(ROOT / "assets", SITE / "assets")
     (SITE / "data").mkdir()
-    for name in ("content.js", "content.json"):
+    for name in ("content.js", "content.json", "objectives.js", "objectives.json"):
         shutil.copy2(ROOT / "data" / name, SITE / "data" / name)
     unexpected = {"source", "outputs", "scripts", "tests"}.intersection(path.name for path in SITE.iterdir())
     if unexpected:

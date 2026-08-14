@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "campaign": {
+    "id": "unicorn-2026",
+    "name": "Dash de ventas · Unicorn",
+    "timezone": "America/Mexico_City",
+    "start": "2026-08-15",
+    "end": "2026-08-17"
+  },
+  "store": {"ceco": "", "name": ""},
+  "products": [
+    {"id": "unicorn", "name": "Unicorn Frappuccino", "note": "Tamaño Grande únicamente", "image": "assets/products/temporada/unicorn-frappuccino.webp", "accent": "#e64f9b"},
+    {"id": "cake-pop", "name": "Cake Pop Unicornio", "note": "Venta sugerida", "image": "assets/campaigns/unicorn-concurso.webp", "accent": "#8e5aac", "focus": "67% 23%"}
+  ],
+  "days": [
+    {"id": "2026-08-15", "label": "Sábado 15 de agosto"},
+    {"id": "2026-08-16", "label": "Domingo 16 de agosto"},
+    {"id": "2026-08-17", "label": "Lunes 17 de agosto"}
+  ],
+  "values": {}
+}

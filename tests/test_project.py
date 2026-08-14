@@ -111,7 +111,7 @@ def test_pwa_is_ios_ready_offline_and_contextual():
     manifest = json.loads((ROOT / "manifest.webmanifest").read_text(encoding="utf-8"))
     assert manifest["id"] == "./" and manifest["scope"] == "./"
     assert manifest["orientation"] == "portrait-primary"
-    assert {item["url"] for item in manifest["shortcuts"]} == {"./#capacitar", "./#recetario"}
+    assert {item["url"] for item in manifest["shortcuts"]} == {"./#capacitar", "./#recetario", "./#objetivos"}
     worker = (ROOT / "sw.js").read_text(encoding="utf-8")
     assert "self.skipWaiting()" in worker and "self.clients.claim()" in worker
     assert "offline.html" in worker
@@ -122,5 +122,44 @@ def test_pwa_is_ios_ready_offline_and_contextual():
 
 def test_clean_site_builder_excludes_legacy_data():
     subprocess.run([sys.executable, "scripts/prepare_site.py"], cwd=ROOT, check=True)
-    assert {path.name for path in (ROOT / "_site" / "data").iterdir()} == {"content.js", "content.json"}
+    assert {path.name for path in (ROOT / "_site" / "data").iterdir()} == {"content.js", "content.json", "objectives.js", "objectives.json"}
     assert (ROOT / "_site" / "offline.html").is_file()
+
+
+def test_objectives_engine_and_practice_evidence_are_integrated():
+    template = json.loads((ROOT / "data" / "objectives.json").read_text(encoding="utf-8"))
+    assert template["schemaVersion"] == 1
+    assert {item["id"] for item in template["products"]} == {"unicorn", "cake-pop"}
+    assert len(template["days"]) == 3
+    assert all((ROOT / item["image"]).is_file() for item in template["products"])
+    html = (ROOT / "index.html").read_text(encoding="utf-8")
+    assert 'id="objectivesView"' in html and 'id="evaluationPhoto"' in html
+    assert 'capture="environment"' in html
+    engine = (ROOT / "objectives.js").read_text(encoding="utf-8")
+    assert "window.OBJECTIVES_TEMPLATE" in (ROOT / "data" / "objectives.js").read_text(encoding="utf-8")
+    assert "navigator.share" in engine and "window.print()" in engine
+
+
+def test_python_objectives_exporter_is_safe_and_available():
+    script = (ROOT / "scripts" / "export_objectives.py").read_text(encoding="utf-8")
+    assert "def validate" in script and "def create_pdf" in script
+    assert "schemaVersion" in script and "ZoneInfo" in script
+
+
+def test_python_objectives_exporter_generates_one_page_pdf(tmp_path):
+    from scripts.export_objectives import create_pdf
+    from pypdf import PdfReader
+
+    data = json.loads((ROOT / "data" / "objectives.json").read_text(encoding="utf-8"))
+    data["store"] = {"ceco": "38101", "name": "Luna Park"}
+    data["values"] = {
+        "2026-08-15": {"unicorn": {"goal": 30, "actual": 24}, "cake-pop": {"goal": 20, "actual": 18}},
+        "2026-08-16": {"unicorn": {"goal": 35, "actual": 0}, "cake-pop": {"goal": 22, "actual": 0}},
+        "2026-08-17": {"unicorn": {"goal": 28, "actual": 0}, "cake-pop": {"goal": 18, "actual": 0}},
+    }
+    output = tmp_path / "objetivos.pdf"
+    create_pdf(data, output)
+    reader = PdfReader(output)
+    assert len(reader.pages) == 1
+    extracted = reader.pages[0].extract_text()
+    assert all(value in extracted for value in ("Luna Park", "38101", "Unicorn Frappuccino", "Cake Pop Unicornio", "80%"))

@@ -20,6 +20,18 @@ Aplicación estática para capacitación paso a paso y consulta rápida de recet
 
 El workflow instala siempre `requirements.txt`; esto incluye `openpyxl`, requerido para leer el CMS Excel.
 
+## Objetivos y avance
+
+- Abre **Objetivos** desde el menú principal.
+- Captura CeCo, tienda y la meta diaria de Unicorn/Cake Pop antes de iniciar.
+- Actualiza el campo **Real vendido** al cierre o durante cada día; el avance acumulado se recalcula solo.
+- **Descargar PDF** abre una hoja A4 horizontal lista para guardar como PDF desde el navegador.
+- **Descargar JSON** conserva la captura y permite compartir/cargar nuevas metas sin cambiar código.
+- Para automatización por Python: `python scripts/export_objectives.py data/objectives.json output/pdf/objetivos.pdf`.
+- **Compartir en Workvivo** usa el menú nativo del dispositivo; si no está disponible, copia un resumen listo para pegar.
+
+La evaluación Unicorn permite registrar a quién se evaluó, fecha/hora automática y una foto opcional de práctica. La foto permanece en la sesión del dispositivo y no se envía a servidores.
+
 Si actualizas un repositorio que todavía conserva archivos heredados, ejecuta **Actions → Limpiar archivos obsoletos → Run workflow** y confirma `ELIMINAR`. Sólo se pueden borrar las rutas explícitas de `scripts/cleanup_obsolete.py`.
 
 ## Diez correcciones integradas

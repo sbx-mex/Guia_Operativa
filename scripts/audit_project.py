@@ -51,6 +51,21 @@ def main() -> None:
     for relative in re.findall(r'(?:src|href)="([^"#]+)"', html):
         if not relative.startswith(("http://", "https://")) and not (ROOT / relative).exists():
             failures.append(f"Recurso HTML ausente: {relative}")
+    objectives_path = ROOT / "data" / "objectives.json"
+    if not objectives_path.is_file():
+        failures.append("Motor de objetivos ausente: data/objectives.json")
+    else:
+        try:
+            objectives = json.loads(objectives_path.read_text(encoding="utf-8"))
+            if objectives.get("schemaVersion") != 1:
+                failures.append("Versión inválida del motor de objetivos")
+            if not objectives.get("products") or not objectives.get("days"):
+                failures.append("Motor de objetivos sin productos o días")
+            for product in objectives.get("products", []):
+                if not (ROOT / product.get("image", "")).is_file():
+                    failures.append(f"Imagen de objetivo ausente: {product.get('image')}")
+        except (json.JSONDecodeError, TypeError) as exc:
+            failures.append(f"JSON de objetivos inválido: {exc}")
     controls = {"cms_source": data["meta"]["source"], "modules": len(data["contents"]), "steps": len(data["steps"]),
                 "catalog_items": len(data["catalog"]), "media_checked": len(media), "failures": len(failures),
                 "routes": len({route for item in data["contents"] for route in item["routes"].values()}),
