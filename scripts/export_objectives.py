@@ -8,7 +8,7 @@ from zoneinfo import ZoneInfo
 
 from reportlab.lib import colors
 from reportlab.lib.enums import TA_CENTER
-from reportlab.lib.pagesizes import A4, landscape
+from reportlab.lib.pagesizes import letter, landscape
 from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
 from reportlab.lib.units import mm
 from reportlab.platypus import KeepTogether, PageBreak, Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
@@ -60,19 +60,20 @@ def create_pdf(data: dict, output: Path) -> None:
     styles.add(ParagraphStyle(name="TitleGreen", parent=styles["Title"], fontName="Helvetica-Bold", fontSize=28, leading=30, textColor=GREEN, alignment=TA_CENTER, spaceAfter=3 * mm))
     styles.add(ParagraphStyle(name="Meta", parent=styles["BodyText"], fontSize=9, leading=12, textColor=DEEP, alignment=TA_CENTER))
     styles.add(ParagraphStyle(name="TableHead", parent=styles["BodyText"], fontName="Helvetica-Bold", fontSize=8, leading=9, textColor=colors.white, alignment=TA_CENTER))
-    doc = SimpleDocTemplate(str(output), pagesize=landscape(A4), leftMargin=9 * mm, rightMargin=9 * mm, topMargin=8 * mm, bottomMargin=8 * mm, title="Dash de ventas · Logro de objetivos")
-    story = [Paragraph("DASH DE VENTAS", styles["TitleGreen"]), Paragraph("Logro de objetivos · Unicorn", styles["Heading2"])]
+    doc = SimpleDocTemplate(str(output), pagesize=landscape(letter), leftMargin=8 * mm, rightMargin=8 * mm, topMargin=7 * mm, bottomMargin=7 * mm, title="Dash de ventas · Logro de objetivos")
+    story = [Paragraph("META UNICORN", styles["TitleGreen"]), Paragraph("Objetivos y avance · 15, 16 y 17 de agosto", styles["Heading2"])]
     store_name = str(store.get("name") or "Tienda sin nombre")
     ceco = f" · CeCo {store['ceco']}" if store.get("ceco") else ""
-    story += [Paragraph(f"<b>{store_name}</b>{ceco}<br/><font color='#63736e'>Actualizado {generated}</font>", styles["Meta"]), Spacer(1, 5 * mm)]
+    update = campaign.get("operationsUpdate", "14 de agosto de 2026")
+    story += [Paragraph(f"<b>{store_name}</b>{ceco}<br/><font color='#63736e'>Voz de Operaciones · {update} &nbsp; | &nbsp; Exportado {generated}</font>", styles["Meta"]), Spacer(1, 4 * mm)]
 
     summary = []
     for index, product in enumerate(data["products"]):
         goal = sum(data["values"][day["id"]][product["id"]]["goal"] for day in data["days"])
         actual = sum(data["values"][day["id"]][product["id"]]["actual"] for day in data["days"])
         accent = PINK if index == 0 else PURPLE
-        summary.append(Table([[Paragraph(f"<b><font color='{accent.hexval()}'>{product['name']}</font></b><br/><font size='8'>{product.get('note','')}</font>", styles["BodyText"])], [Paragraph(f"META <b>{goal}</b> &nbsp;&nbsp; REAL <b>{actual}</b> &nbsp;&nbsp; AVANCE <b>{pct(actual, goal)}%</b>", styles["Meta"])]], colWidths=[126 * mm], style=TableStyle([("BOX",(0,0),(-1,-1),1,accent),("BACKGROUND",(0,1),(-1,-1),MINT),("PADDING",(0,0),(-1,-1),4 * mm)])))
-    story += [Table([summary], colWidths=[132 * mm] * len(summary), style=TableStyle([("VALIGN",(0,0),(-1,-1),"TOP"),("LEFTPADDING",(0,0),(-1,-1),2 * mm),("RIGHTPADDING",(0,0),(-1,-1),2 * mm)])), Spacer(1, 5 * mm)]
+        summary.append(Table([[Paragraph(f"<b><font color='{accent.hexval()}'>{product['name']}</font></b><br/><font size='8'>{product.get('note','')}</font>", styles["BodyText"])], [Paragraph(f"META <b>{goal}</b> &nbsp;&nbsp; REAL <b>{actual}</b> &nbsp;&nbsp; AVANCE <b>{pct(actual, goal)}%</b>", styles["Meta"])]], colWidths=[114 * mm], style=TableStyle([("BOX",(0,0),(-1,-1),1,accent),("BACKGROUND",(0,1),(-1,-1),MINT),("PADDING",(0,0),(-1,-1),3 * mm)])))
+    story += [Table([summary], colWidths=[119 * mm] * len(summary), style=TableStyle([("VALIGN",(0,0),(-1,-1),"TOP"),("LEFTPADDING",(0,0),(-1,-1),2 * mm),("RIGHTPADDING",(0,0),(-1,-1),2 * mm)])), Spacer(1, 4 * mm)]
 
     header_top = [Paragraph("Producto", styles["TableHead"])] + [Paragraph(day["label"], styles["TableHead"]) for day in data["days"] for _ in range(3)] + [Paragraph("Total campaña", styles["TableHead"]) for _ in range(3)]
     header_bottom = [""] + [label for _ in data["days"] for label in ("Objetivo", "Real", "Avance")] + ["Objetivo", "Real", "Avance"]
@@ -86,14 +87,14 @@ def create_pdf(data: dict, output: Path) -> None:
             row += [entry["goal"], entry["actual"], f"{pct(entry['actual'], entry['goal'])}%"]
         row += [sum(goals), sum(actuals), f"{pct(sum(actuals), sum(goals))}%"]
         rows.append(row)
-    widths = [42 * mm] + [18.2 * mm] * (3 * (len(data["days"]) + 1))
+    widths = [38 * mm] + [16.7 * mm] * (3 * (len(data["days"]) + 1))
     table = Table(rows, colWidths=widths, repeatRows=2)
     spans = []
     for index in range(len(data["days"]) + 1):
         start = 1 + index * 3
         spans.append(("SPAN", (start, 0), (start + 2, 0)))
     table.setStyle(TableStyle([("BACKGROUND",(0,0),(-1,1),GREEN),("TEXTCOLOR",(0,0),(-1,1),colors.white),("GRID",(0,0),(-1,-1),.45,colors.HexColor("#aebdb7")),("VALIGN",(0,0),(-1,-1),"MIDDLE"),("ALIGN",(1,0),(-1,-1),"CENTER"),("FONTSIZE",(0,0),(-1,-1),7),("TOPPADDING",(0,0),(-1,-1),3 * mm),("BOTTOMPADDING",(0,0),(-1,-1),3 * mm),("ROWBACKGROUNDS",(0,2),(-1,-1),[colors.white,colors.HexColor("#f7f3ea")]),*spans]))
-    story += [KeepTogether(table), Spacer(1, 5 * mm), Paragraph("Preparar · practicar · medir · compartir", styles["Meta"])]
+    story += [KeepTogether(table), Spacer(1, 4 * mm), Paragraph("Anticipar · practicar · medir · lograr", styles["Meta"])]
     doc.build(story)
 
 

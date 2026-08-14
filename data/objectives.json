@@ -3,6 +3,8 @@
   "campaign": {
     "id": "unicorn-2026",
     "name": "Dash de ventas · Unicorn",
+    "source": "Voz de Operaciones",
+    "operationsUpdate": "14 de agosto de 2026",
     "timezone": "America/Mexico_City",
     "start": "2026-08-15",
     "end": "2026-08-17"

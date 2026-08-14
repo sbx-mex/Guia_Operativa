@@ -106,25 +106,20 @@
     <section class="view objectives-view" id="objectivesView">
       <div class="section-head objective-head">
         <button class="back-link" data-view="home" type="button">← Inicio</button>
-        <span class="eyebrow">TABLERO OPERATIVO</span>
-        <h1>Objetivos y avance</h1>
-        <p>Primero captura la meta. Después actualiza únicamente los días que ya tienen venta real.</p>
+        <span class="eyebrow">VOZ DE OPERACIONES · 14 DE AGOSTO</span>
+        <h1>Meta Unicorn</h1>
+        <p>Anticipa la meta y registra sólo lo vendido. El avance se calcula automáticamente.</p>
       </div>
+      <div class="objective-steps" aria-label="Flujo"><span><b>1</b>Tienda</span><span><b>2</b>Metas y reales</span><span><b>3</b>PDF ejecutivo</span></div>
       <div class="objective-toolbar">
-        <label><span>CeCo <small>opcional</small></span><input id="objectiveCeco" inputmode="numeric" maxlength="12" placeholder="Ej. 38101"></label>
-        <label><span>Nombre de tienda</span><input id="objectiveStore" maxlength="80" placeholder="Ej. Luna Park" required></label>
-        <button id="loadObjectivesJson" type="button">Cargar JSON</button>
-        <input id="objectivesJsonFile" type="file" accept="application/json,.json" hidden>
+        <label><span>Nombre de tienda</span><input id="objectiveStore" maxlength="80" placeholder="Ej. Luna Park" autocomplete="organization" required></label>
       </div>
       <div class="objective-summary" id="objectiveSummary" aria-live="polite"></div>
       <div class="objective-days" id="objectiveDays"></div>
       <div class="objective-actions">
-        <button id="resetObjectives" type="button">Limpiar captura</button>
-        <button id="downloadObjectivesJson" type="button">Descargar JSON</button>
-        <button id="shareObjectives" type="button">Compartir en Workvivo</button>
-        <button class="primary-button" id="printObjectives" type="button">Descargar PDF</button>
+        <button class="primary-button" id="printObjectives" type="button">Descargar PDF ejecutivo</button>
       </div>
-      <p class="objective-note">Los datos se guardan sólo en este dispositivo. El PDF mostrará fecha, hora, metas, reales y avance acumulado.</p>
+      <p class="objective-note">Carta horizontal · fecha y hora automáticas · información guardada en este dispositivo.</p>
     </section>
   </main>
 
@@ -163,12 +158,7 @@
 
   <dialog id="evaluationDialog" class="evaluation-dialog">
     <button class="dialog-close" id="closeEvaluation" type="button" aria-label="Cerrar">×</button>
-    <div class="evaluation-head"><span class="campaign-pill">VALIDACIÓN UNICORN</span><b id="evaluationProgress">Pregunta 1 de 5</b></div>
-    <div class="evaluation-meta">
-      <label><span>Evalué a</span><input id="evaluatedPartner" maxlength="80" placeholder="Ej. Enrique"></label>
-      <label class="photo-button"><span>Foto de práctica <small>opcional</small></span><input id="evaluationPhoto" type="file" accept="image/*" capture="environment"><b id="evaluationPhotoLabel">Tomar foto</b></label>
-      <img id="evaluationPhotoPreview" alt="Evidencia de práctica" hidden>
-    </div>
+    <div class="evaluation-head"><span class="campaign-pill">VALIDACIÓN UNICORN</span><b id="evaluationProgress">Comenzar</b></div>
     <div id="evaluationStage"></div>
   </dialog>
 

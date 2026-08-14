@@ -1,6 +1,6 @@
 window.OBJECTIVES_TEMPLATE = {
   schemaVersion: 1,
-  campaign: {id: "unicorn-2026", name: "Dash de ventas · Unicorn", timezone: "America/Mexico_City", start: "2026-08-15", end: "2026-08-17"},
+  campaign: {id: "unicorn-2026", name: "Dash de ventas · Unicorn", source: "Voz de Operaciones", operationsUpdate: "14 de agosto de 2026", timezone: "America/Mexico_City", start: "2026-08-15", end: "2026-08-17"},
   store: {ceco: "", name: ""},
   products: [
     {id: "unicorn", name: "Unicorn Frappuccino", note: "Tamaño Grande únicamente", image: "assets/products/temporada/unicorn-frappuccino.webp", accent: "#e64f9b"},

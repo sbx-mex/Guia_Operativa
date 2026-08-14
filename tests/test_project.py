@@ -133,11 +133,14 @@ def test_objectives_engine_and_practice_evidence_are_integrated():
     assert len(template["days"]) == 3
     assert all((ROOT / item["image"]).is_file() for item in template["products"])
     html = (ROOT / "index.html").read_text(encoding="utf-8")
-    assert 'id="objectivesView"' in html and 'id="evaluationPhoto"' in html
-    assert 'capture="environment"' in html
+    assert 'id="objectivesView"' in html and 'id="objectiveStore"' in html
+    assert 'id="objectiveCeco"' not in html and 'id="downloadObjectivesJson"' not in html
+    app = (ROOT / "app.js").read_text(encoding="utf-8")
+    assert 'id="evaluationPhoto"' in app and 'capture="environment"' in app
+    assert "renderEvaluationStart" in app and "Tomar foto de práctica" in app
     engine = (ROOT / "objectives.js").read_text(encoding="utf-8")
     assert "window.OBJECTIVES_TEMPLATE" in (ROOT / "data" / "objectives.js").read_text(encoding="utf-8")
-    assert "navigator.share" in engine and "window.print()" in engine
+    assert "window.print()" in engine and "Descargar JSON" not in html
 
 
 def test_python_objectives_exporter_is_safe_and_available():
@@ -161,5 +164,8 @@ def test_python_objectives_exporter_generates_one_page_pdf(tmp_path):
     create_pdf(data, output)
     reader = PdfReader(output)
     assert len(reader.pages) == 1
+    page = reader.pages[0]
+    assert float(page.mediabox.width) > float(page.mediabox.height)
+    assert 610 < float(page.mediabox.width) < 800
     extracted = reader.pages[0].extract_text()
     assert all(value in extracted for value in ("Luna Park", "38101", "Unicorn Frappuccino", "Cake Pop Unicornio", "80%"))
