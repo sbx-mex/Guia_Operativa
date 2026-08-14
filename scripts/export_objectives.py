@@ -58,10 +58,8 @@ def safe_filename(value: str) -> str:
 
 
 def dynamic_output(data: dict, directory: Path) -> Path:
-    timezone = data.get("campaign", {}).get("timezone", "America/Mexico_City")
-    date = datetime.now(ZoneInfo(timezone)).strftime("%Y-%m-%d")
     store = safe_filename(str(data.get("store", {}).get("name") or "Tienda"))
-    return directory / f"{store}_{date}.pdf"
+    return directory / f"{store}_Unicorn_Frapp_Cake_Pop.pdf"
 
 
 def create_pdf(data: dict, output: Path) -> None:
@@ -125,7 +123,7 @@ def create_pdf(data: dict, output: Path) -> None:
 def main() -> None:
     parser = argparse.ArgumentParser(description="Exporta un tablero de objetivos JSON a PDF.")
     parser.add_argument("input", type=Path)
-    parser.add_argument("output", type=Path, nargs="?", help="Opcional; por defecto usa Tienda_Fecha.pdf")
+    parser.add_argument("output", type=Path, nargs="?", help="Ruta de salida opcional; si se omite, el nombre se genera a partir de la tienda.")
     args = parser.parse_args()
     data = json.loads(args.input.read_text(encoding="utf-8"))
     output = args.output or dynamic_output(data, args.input.parent)

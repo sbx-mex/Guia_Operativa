@@ -102,6 +102,7 @@ def test_unicorn_campaign_and_grande_only_routes_are_safe():
     assert campaign["timezone"] == "America/Mexico_City"
     for media in campaign["resources"]:
         assert (ROOT / media).is_file()
+    assert campaign["resources"][-1] == "assets/campaigns/unicorn-concurso.webp"
     salsa = [step for step in data["steps"] if step["route"] == "salsa-azul-drizzle"]
     assert salsa[0]["values"] == "GRANDE=6 pumps CBS"
     assert salsa[3]["values"] == "GRANDE=8 pumps CBS"
@@ -134,13 +135,13 @@ def test_objectives_engine_and_practice_evidence_are_integrated():
     assert all((ROOT / item["image"]).is_file() for item in template["products"])
     html = (ROOT / "index.html").read_text(encoding="utf-8")
     assert 'id="objectivesView"' in html and 'id="objectiveStore"' in html
-    assert 'id="objectiveCeco"' not in html and 'id="downloadObjectivesJson"' in html
+    assert 'id="objectiveCeco"' not in html and 'id="downloadObjectivesJson"' not in html
     app = (ROOT / "app.js").read_text(encoding="utf-8")
     assert 'id="evaluationPhoto"' in app and 'capture="environment"' in app
     assert "renderEvaluationStart" in app and "Tomar foto de práctica" in app
     engine = (ROOT / "objectives.js").read_text(encoding="utf-8")
     assert "window.OBJECTIVES_TEMPLATE" in (ROOT / "data" / "objectives.js").read_text(encoding="utf-8")
-    assert "window.print()" in engine and "downloadJson" in engine
+    assert "window.print()" in engine and "reportFileName" in engine
 
 
 def test_python_objectives_exporter_is_safe_and_available():
@@ -150,7 +151,7 @@ def test_python_objectives_exporter_is_safe_and_available():
 
 
 def test_python_objectives_exporter_generates_one_page_pdf(tmp_path):
-    from scripts.export_objectives import create_pdf
+    from scripts.export_objectives import create_pdf, dynamic_output
     from pypdf import PdfReader
 
     data = json.loads((ROOT / "data" / "objectives.json").read_text(encoding="utf-8"))
@@ -169,3 +170,4 @@ def test_python_objectives_exporter_generates_one_page_pdf(tmp_path):
     assert 610 < float(page.mediabox.width) < 800
     extracted = reader.pages[0].extract_text()
     assert all(value in extracted for value in ("Luna Park", "38101", "Unicorn Frappuccino", "Cake Pop Unicornio", "80%"))
+    assert dynamic_output(data, tmp_path).name == "Luna_Park_Unicorn_Frapp_Cake_Pop.pdf"

@@ -59,7 +59,7 @@
         </button>
         <button class="mode-card objective-mode" data-view="objectives" type="button">
           <span class="mode-icon">◎</span>
-          <span><b>Objetivos y avance</b><small>Enfócate en el 15, 16 y 17 de agosto</small></span>
+          <span><b>Impulso Unicorn</b><small>Objetivos y avance · 15, 16 y 17 de agosto</small></span>
           <span class="arrow">→</span>
         </button>
       </div>
@@ -106,11 +106,11 @@
     <section class="view objectives-view" id="objectivesView">
       <div class="section-head objective-head">
         <button class="back-link" data-view="home" type="button">← Inicio</button>
-        <span class="eyebrow">VOZ DE OPERACIONES · 14 DE AGOSTO</span>
-        <h1>Juntémonos más <span>·</span> preparémonos más</h1>
-        <p>Elige un día, captura las metas de Unicorn Frappuccino y Cake Pop, y actualiza lo vendido.</p>
+        <span class="eyebrow">IMPULSO UNICORN · 15, 16 Y 17 DE AGOSTO</span>
+        <h1>Objetivos y avance <span>Unicorn</span></h1>
+        <p>Define la meta diaria de Unicorn Frappuccino y Cake Pop, registra la venta real y consulta el avance al instante.</p>
       </div>
-      <div class="objective-steps" aria-label="Flujo"><span><b>1</b>Identifica tu tienda</span><span><b>2</b>Enfoca el día</span><span><b>3</b>Comparte el avance</span></div>
+      <div class="objective-steps" aria-label="Flujo"><span><b>1</b>Escribe tu tienda</span><span><b>2</b>Captura meta y venta</span><span><b>3</b>Genera el PDF</span></div>
       <div class="objective-toolbar">
         <label><span>Nombre de tienda</span><input id="objectiveStore" maxlength="80" placeholder="Ej. Luna Park" autocomplete="organization" required></label>
       </div>
@@ -118,10 +118,8 @@
       <nav class="day-jump" id="objectiveDayJump" aria-label="Ir al día de venta"></nav>
       <div class="objective-days" id="objectiveDays"></div>
       <div class="objective-actions">
-        <button id="downloadObjectivesJson" type="button">Descargar datos JSON</button>
         <button class="primary-button" id="printObjectives" type="button">Vista lista para PDF</button>
       </div>
-      <p class="objective-note">El JSON conserva tu captura y el exportador Python crea <b>Tienda_Fecha.pdf</b>.</p>
     </section>
   </main>
 

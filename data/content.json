@@ -16,7 +16,8 @@
         "secondary": "salsa-azul-drizzle",
         "resources": [
           "assets/campaigns/unicorn-checklist.webp",
-          "assets/campaigns/unicorn-buenas-practicas.webp"
+          "assets/campaigns/unicorn-buenas-practicas.webp",
+          "assets/campaigns/unicorn-concurso.webp"
         ]
       }
     ]

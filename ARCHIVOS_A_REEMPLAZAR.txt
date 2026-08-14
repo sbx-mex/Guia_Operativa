@@ -3,12 +3,15 @@ MEJORA DE NAVEGACIÓN Y EXPORTACIÓN · UNICORN 15–17 AGOSTO
 Copia estas rutas sobre la raíz del repositorio conservando las carpetas.
 
 README.md
+app.js
+assets/campaigns/unicorn-concurso.webp
 assets/products/temporada/cake-pop-unicornio.png
 data/content.js
 data/content.json
 data/objectives.js
 data/objectives.json
 index.html
+ELIMINAR_OBSOLETOS.txt
 objectives.js
 outputs/CMS_Guia_Operativa_v2.xlsx
 scripts/cms_engine.py

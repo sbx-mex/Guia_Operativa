@@ -20,7 +20,7 @@
   const campaignResourceCopy = [
     {title: "Checklist operativo", description: "Valida personal, insumos, layout y seguimiento antes de abrir."},
     {title: "Buenas prácticas", description: "Confirma Grande, vida útil de 24 h, smallwares y una bebida por licuadora."},
-    {title: "Concurso", description: "Consulta vigencia, condiciones y objetivos comerciales de la activación."},
+    {title: "¡Participa en el concurso!", description: "Informativo importante: revisa la dinámica, reúne a tu equipo y confirma cómo participar.", priority: true},
   ];
   const unicornQuiz = [
     {question: "¿En qué tamaño se prepara Unicorn Frappuccino?", options: ["Alto", "Grande", "Venti"], answer: "Grande", note: "Unicorn se ofrece únicamente en tamaño Grande."},
@@ -64,9 +64,9 @@
     $("campaignSecondary").onclick = () => practice(secondary.id);
     $("campaignDialogPrimary").onclick = () => practice(primary.id, true);
     $("campaignDialogSecondary").onclick = () => practice(secondary.id, true);
-    $("campaignResources").innerHTML = campaign.resources.map((resource, index) => `<button type="button" data-campaign-resource="${index}"><img src="${resource}" alt=""><span>${campaignResourceCopy[index].title}</span><small>${campaignResourceCopy[index].description}</small></button>`).join("");
+    $("campaignResources").innerHTML = campaign.resources.map((resource, index) => {const copy=campaignResourceCopy[index]||{title:`Material ${index+1}`,description:"Consulta el material de apoyo."};return `<button class="${copy.priority?"campaign-resource-priority":""}" type="button" data-campaign-resource="${index}"><img src="${resource}" alt=""><span>${copy.title}</span><small>${copy.description}</small></button>`;}).join("");
     const selectResource = index => {
-      const context = campaignResourceCopy[index];
+      const context = campaignResourceCopy[index] || {title:`Material ${index+1}`,description:"Consulta el material de apoyo."};
       $("campaignHero").src = campaign.resources[index];
       $("campaignHero").alt = context.title;
       $("campaignResourceContext").innerHTML = `<b>${context.title}</b><span>${context.description}</span>`;

@@ -22,15 +22,14 @@ objectives.js
 scripts/export_objectives.py
 
 VALIDACIÓN
-- 15 pruebas aprobadas.
+- Motor y sintaxis validados.
 - Motor CMS: 13 módulos, 92 pasos, 90 referencias.
 - 205 medios verificados.
-- Publicación: 8.23 MB.
 - Sin archivos de 25 MB o más.
-- PDF Python verificado en una página A4 horizontal.
+- PDF verificado en una página horizontal.
 
 USO
-1. Objetivos: captura CeCo, tienda y metas de cada día.
+1. Objetivos: escribe la tienda y captura las metas de cada día.
 2. Actualiza Real vendido durante o al cierre del día.
-3. Descarga el PDF o JSON; comparte el resumen en Workvivo.
+3. Abre la vista lista para PDF; el nombre sugerido será Tienda_Unicorn_Frapp_Cake_Pop.pdf.
 4. Evaluar preparación permite nombre, fecha/hora automática y foto opcional.
