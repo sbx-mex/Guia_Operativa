@@ -25,6 +25,12 @@ jobs:
         with:
           ref: main
           fetch-depth: 1
+          persist-credentials: true
+
+      - name: Verificar contexto seguro
+        run: |
+          test "$GITHUB_REF" = "refs/heads/main"
+          test -z "$(git status --porcelain)"
 
       - name: Vista previa
         run: python scripts/cleanup_obsolete.py | tee -a "$GITHUB_STEP_SUMMARY"
@@ -45,4 +51,5 @@ jobs:
           git add -u
           python scripts/cleanup_obsolete.py --verify-diff
           git commit -m "chore: eliminar archivos obsoletos autorizados"
-          git push
+          git push origin HEAD:main
+          echo "Limpieza aplicada y validada en main." >> "$GITHUB_STEP_SUMMARY"
