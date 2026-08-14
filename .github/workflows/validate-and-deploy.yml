@@ -35,6 +35,8 @@ jobs:
         run: |
           python scripts/build_content.py
           python scripts/build_content.py --check
+          python scripts/build_objectives.py
+          python scripts/build_objectives.py --check
           python scripts/cleanup_obsolete.py --apply
           python scripts/audit_project.py
           python scripts/export_objectives.py data/objectives.json /tmp/objetivos-auditoria.pdf
