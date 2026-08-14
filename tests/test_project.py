@@ -129,25 +129,34 @@ def test_clean_site_builder_excludes_legacy_data():
 
 def test_objectives_engine_and_practice_evidence_are_integrated():
     template = json.loads((ROOT / "data" / "objectives.json").read_text(encoding="utf-8"))
-    assert template["schemaVersion"] == 1
-    assert {item["id"] for item in template["products"]} == {"unicorn", "cake-pop"}
+    assert template["schemaVersion"] == 2
+    assert {item["id"] for item in template["products"]} == {"adt", "unicorn", "cake-pop"}
     assert len(template["days"]) == 3
-    assert all((ROOT / item["image"]).is_file() for item in template["products"])
+    assert len(template["stores"]) == 873
+    assert all((ROOT / item["image"]).is_file() for item in template["products"] if item.get("image"))
+    angel = next(store for store in template["stores"] if store["ceco"] == "38101")
+    assert angel["name"] == "Angel"
+    assert [angel["goals"][day]["adt"] for day in ("2026-08-15", "2026-08-16", "2026-08-17")] == [384, 401, 404]
+    assert all(angel["goals"][day]["unicorn"] == 28 for day in angel["goals"])
+    assert all(angel["goals"][day]["cake-pop"] == 13 for day in angel["goals"])
     html = (ROOT / "index.html").read_text(encoding="utf-8")
     assert 'id="objectivesView"' in html and 'id="objectiveStore"' in html
-    assert 'id="objectiveCeco"' not in html and 'id="downloadObjectivesJson"' not in html
+    assert '<select id="objectiveStore"' in html and 'id="downloadObjectivePdf"' in html
+    assert "terminos-y-condiciones-unicorn.pdf" in html
     app = (ROOT / "app.js").read_text(encoding="utf-8")
     assert 'id="evaluationPhoto"' in app and 'capture="environment"' in app
     assert "renderEvaluationStart" in app and "Tomar foto de práctica" in app
     engine = (ROOT / "objectives.js").read_text(encoding="utf-8")
     assert "window.OBJECTIVES_TEMPLATE" in (ROOT / "data" / "objectives.js").read_text(encoding="utf-8")
-    assert "window.print()" in engine and "reportFileName" in engine
+    assert "window.print()" in engine and "reportFileName" in engine and "captures" in engine
 
 
 def test_python_objectives_exporter_is_safe_and_available():
     script = (ROOT / "scripts" / "export_objectives.py").read_text(encoding="utf-8")
     assert "def validate" in script and "def create_pdf" in script
     assert "schemaVersion" in script and "ZoneInfo" in script and "dynamic_output" in script
+    builder = (ROOT / "scripts" / "build_objectives.py").read_text(encoding="utf-8")
+    assert "load_stores" in builder and "generate_pdfs" in builder
 
 
 def test_python_objectives_exporter_generates_one_page_pdf(tmp_path):
@@ -155,11 +164,12 @@ def test_python_objectives_exporter_generates_one_page_pdf(tmp_path):
     from pypdf import PdfReader
 
     data = json.loads((ROOT / "data" / "objectives.json").read_text(encoding="utf-8"))
+    data.pop("stores", None)
     data["store"] = {"ceco": "38101", "name": "Luna Park"}
     data["values"] = {
-        "2026-08-15": {"unicorn": {"goal": 30, "actual": 24}, "cake-pop": {"goal": 20, "actual": 18}},
-        "2026-08-16": {"unicorn": {"goal": 35, "actual": 0}, "cake-pop": {"goal": 22, "actual": 0}},
-        "2026-08-17": {"unicorn": {"goal": 28, "actual": 0}, "cake-pop": {"goal": 18, "actual": 0}},
+        "2026-08-15": {"adt": {"goal": 384, "actual": 390}, "unicorn": {"goal": 30, "actual": 24}, "cake-pop": {"goal": 20, "actual": 18}},
+        "2026-08-16": {"adt": {"goal": 401, "actual": 0}, "unicorn": {"goal": 35, "actual": 0}, "cake-pop": {"goal": 22, "actual": 0}},
+        "2026-08-17": {"adt": {"goal": 404, "actual": 0}, "unicorn": {"goal": 28, "actual": 0}, "cake-pop": {"goal": 18, "actual": 0}},
     }
     output = tmp_path / "objetivos.pdf"
     create_pdf(data, output)
@@ -169,5 +179,16 @@ def test_python_objectives_exporter_generates_one_page_pdf(tmp_path):
     assert float(page.mediabox.width) > float(page.mediabox.height)
     assert 610 < float(page.mediabox.width) < 800
     extracted = reader.pages[0].extract_text()
-    assert all(value in extracted for value in ("Luna Park", "38101", "Unicorn Frappuccino", "Cake Pop Unicornio", "80%"))
+    assert all(value in extracted for value in ("Luna Park", "38101", "ADT", "Unicorn Frappuccino", "Cake Pop Unicornio", "80%"))
     assert dynamic_output(data, tmp_path).name == "Luna_Park_Unicorn_Frapp_Cake_Pop.pdf"
+
+
+def test_terms_pdf_is_optimized_and_valid():
+    from pypdf import PdfReader
+
+    terms = ROOT / "assets" / "documents" / "terminos-y-condiciones-unicorn.pdf"
+    assert terms.is_file() and terms.stat().st_size < 100_000
+    reader = PdfReader(terms)
+    assert len(reader.pages) == 1
+    text = reader.pages[0].extract_text()
+    assert "TÉRMINOS Y CONDICIONES" in text and "15 al 17 de agosto de 2026" in text

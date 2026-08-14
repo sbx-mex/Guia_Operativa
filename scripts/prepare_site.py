@@ -3,6 +3,8 @@ from __future__ import annotations
 import shutil
 from pathlib import Path
 
+from build_objectives import build_template, generate_pdfs
+
 ROOT = Path(__file__).resolve().parents[1]
 SITE = ROOT / "_site"
 FILES = ("index.html", "offline.html", "app.js", "objectives.js", "styles.css", "manifest.webmanifest", "sw.js", ".nojekyll")
@@ -18,13 +20,16 @@ def main() -> None:
     (SITE / "data").mkdir()
     for name in ("content.js", "content.json", "objectives.js", "objectives.json"):
         shutil.copy2(ROOT / "data" / name, SITE / "data" / name)
+    generated_pdf_root = SITE / "assets" / "documents" / "objectives"
+    generated_pdf_root.mkdir(parents=True, exist_ok=True)
+    generated = generate_pdfs(build_template(), generated_pdf_root)
     unexpected = {"source", "outputs", "scripts", "tests"}.intersection(path.name for path in SITE.iterdir())
     if unexpected:
         raise SystemExit(f"Contenido privado en publicación: {sorted(unexpected)}")
     legacy = {"catalog.json", "catalog_audit.json", "recipes.js"}.intersection(path.name for path in (SITE / "data").iterdir())
     if legacy:
         raise SystemExit(f"Datos heredados en publicación: {sorted(legacy)}")
-    print(f"Sitio limpio: {sum(1 for path in SITE.rglob('*') if path.is_file())} archivos")
+    print(f"Sitio limpio: {sum(1 for path in SITE.rglob('*') if path.is_file())} archivos · {generated} PDFs de objetivos")
 
 
 if __name__ == "__main__":

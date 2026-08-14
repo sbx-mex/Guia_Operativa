@@ -57,13 +57,18 @@ def main() -> None:
     else:
         try:
             objectives = json.loads(objectives_path.read_text(encoding="utf-8"))
-            if objectives.get("schemaVersion") != 1:
+            if objectives.get("schemaVersion") != 2:
                 failures.append("Versión inválida del motor de objetivos")
             if not objectives.get("products") or not objectives.get("days"):
                 failures.append("Motor de objetivos sin productos o días")
+            if not objectives.get("stores"):
+                failures.append("Motor de objetivos sin tiendas")
             for product in objectives.get("products", []):
-                if not (ROOT / product.get("image", "")).is_file():
+                if product.get("image") and not (ROOT / product["image"]).is_file():
                     failures.append(f"Imagen de objetivo ausente: {product.get('image')}")
+            terms = ROOT / "assets" / "documents" / "terminos-y-condiciones-unicorn.pdf"
+            if not terms.is_file() or not terms.stat().st_size:
+                failures.append("PDF de términos y condiciones ausente")
         except (json.JSONDecodeError, TypeError) as exc:
             failures.append(f"JSON de objetivos inválido: {exc}")
     controls = {"cms_source": data["meta"]["source"], "modules": len(data["contents"]), "steps": len(data["steps"]),

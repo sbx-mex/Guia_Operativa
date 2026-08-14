@@ -108,18 +108,26 @@
         <button class="back-link" data-view="home" type="button">← Inicio</button>
         <span class="eyebrow">IMPULSO UNICORN · 15, 16 Y 17 DE AGOSTO</span>
         <h1>Objetivos y avance <span>Unicorn</span></h1>
-        <p>Define la meta diaria de Unicorn Frappuccino y Cake Pop, registra la venta real y consulta el avance al instante.</p>
+        <p>Selecciona tu tienda, registra los resultados reales de ADT, Unicorn Frappuccino y Cake Pop, y consulta el alcance diario y acumulado.</p>
       </div>
-      <div class="objective-steps" aria-label="Flujo"><span><b>1</b>Escribe tu tienda</span><span><b>2</b>Captura meta y venta</span><span><b>3</b>Genera el PDF</span></div>
+      <div class="objective-steps" aria-label="Flujo"><span><b>1</b>Selecciona tu tienda</span><span><b>2</b>Captura sólo los reales</span><span><b>3</b>Consulta y exporta</span></div>
       <div class="objective-toolbar">
-        <label><span>Nombre de tienda</span><input id="objectiveStore" maxlength="80" placeholder="Ej. Luna Park" autocomplete="organization" required></label>
+        <label><span>Tienda</span><select id="objectiveStore" required><option value="">Selecciona CC o nombre de tienda</option></select></label>
+        <div class="objective-store-meta" id="objectiveStoreMeta" aria-live="polite"><small>CC</small><b>—</b></div>
       </div>
-      <div class="objective-summary" id="objectiveSummary" aria-live="polite"></div>
-      <nav class="day-jump" id="objectiveDayJump" aria-label="Ir al día de venta"></nav>
-      <div class="objective-days" id="objectiveDays"></div>
+      <section class="objective-empty" id="objectiveEmpty"><span>◎</span><h2>Elige una tienda para comenzar</h2><p>Los objetivos de los tres días se llenarán automáticamente.</p></section>
+      <div id="objectiveWorkspace" hidden>
+        <div class="objective-section-title"><div><small>RESULTADO DE CAMPAÑA</small><h2>Avance acumulado</h2></div><p>15 al 17 de agosto</p></div>
+        <div class="objective-summary" id="objectiveSummary" aria-live="polite"></div>
+        <nav class="day-jump" id="objectiveDayJump" aria-label="Ir al día de venta"></nav>
+        <div class="objective-days" id="objectiveDays"></div>
+      </div>
       <div class="objective-actions">
-        <button class="primary-button" id="printObjectives" type="button">Vista lista para PDF</button>
+        <a id="downloadObjectivePdf" class="objective-download" href="#" download hidden>Descargar objetivos PDF</a>
+        <button class="primary-button" id="printObjectives" type="button" disabled>Exportar avance a PDF</button>
+        <a class="objective-download secondary" href="assets/documents/terminos-y-condiciones-unicorn.pdf" download>Ver términos y condiciones</a>
       </div>
+      <p class="objective-note">El avance es real ÷ objetivo. La validación oficial de resultados corresponde a Operaciones y Finanzas.</p>
     </section>
   </main>
 

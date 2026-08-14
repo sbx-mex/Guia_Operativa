@@ -23,12 +23,15 @@ El workflow instala siempre `requirements.txt`; esto incluye `openpyxl`, requeri
 ## Objetivos y avance
 
 - Abre **Objetivos** desde el menú principal.
-- Captura CeCo, tienda y la meta diaria de Unicorn/Cake Pop antes de iniciar.
-- Actualiza el campo **Real vendido** al cierre o durante cada día; el avance acumulado se recalcula solo.
-- **Vista lista para PDF** abre una hoja horizontal lista para guardar con el nombre `Tienda_Unicorn_Frapp_Cake_Pop.pdf`.
-- **Descargar JSON** conserva la captura y permite compartir/cargar nuevas metas sin cambiar código.
+- Selecciona la tienda por CC o nombre. Los objetivos diarios de ADT y los objetivos diarios de Unicorn/Cake Pop se cargan desde `data/objectives.csv`.
+- Actualiza únicamente **Real del día**; el alcance diario y acumulado se recalcula en el dispositivo y queda guardado por tienda.
+- **Descargar objetivos PDF** entrega de inmediato el documento precalculado de la tienda.
+- **Exportar avance a PDF** abre la hoja horizontal con objetivos, reales y alcance para los tres indicadores.
+- **Ver términos y condiciones** descarga una versión optimizada para web del documento oficial.
 - El exportador técnico acepta un JSON compatible mediante `python scripts/export_objectives.py captura.json`. El PDF se guarda automáticamente como `Tienda_Unicorn_Frapp_Cake_Pop.pdf`; también puedes indicar una ruta de salida como segundo argumento.
 - **Compartir en Workvivo** usa el menú nativo del dispositivo; si no está disponible, copia un resumen listo para pegar.
+
+Para regenerar el catálogo después de editar el CSV usa `python scripts/build_objectives.py`. Los PDFs ligeros se generan durante `python scripts/prepare_site.py`, por lo que no se almacenan 873 duplicados en el repositorio.
 
 La evaluación Unicorn permite registrar a quién se evaluó, fecha/hora automática y una foto opcional de práctica. La foto permanece en la sesión del dispositivo y no se envía a servidores.
 
