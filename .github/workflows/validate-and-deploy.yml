@@ -36,6 +36,8 @@ jobs:
           python scripts/build_content.py
           python scripts/build_content.py --check
           python scripts/audit_project.py
+          python scripts/export_objectives.py data/objectives.json /tmp/objetivos-auditoria.pdf
+          test -s /tmp/objetivos-auditoria.pdf
           python -m pytest -q
 
       - name: Preparar sitio limpio
