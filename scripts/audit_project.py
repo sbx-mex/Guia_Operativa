@@ -57,12 +57,24 @@ def main() -> None:
     else:
         try:
             objectives = json.loads(objectives_path.read_text(encoding="utf-8"))
-            if objectives.get("schemaVersion") != 2:
+            if objectives.get("schemaVersion") != 3:
                 failures.append("Versión inválida del motor de objetivos")
             if not objectives.get("products") or not objectives.get("days"):
                 failures.append("Motor de objetivos sin productos o días")
             if not objectives.get("stores"):
                 failures.append("Motor de objetivos sin tiendas")
+            cecos = [item.get("ceco", "") for item in objectives.get("stores", [])]
+            if cecos != sorted(cecos, key=lambda value: int(value)):
+                failures.append("Las tiendas no están ordenadas por CeCo")
+            shard_dir = ROOT / "data" / "objectives-data"
+            shard_stores = []
+            for path in sorted(shard_dir.glob("*.json")):
+                shard = json.loads(path.read_text(encoding="utf-8"))
+                if shard.get("schemaVersion") != 3:
+                    failures.append(f"Paquete de objetivos inválido: {path.name}")
+                shard_stores.extend(shard.get("stores", []))
+            if len(shard_stores) != len(objectives.get("stores", [])):
+                failures.append("Los paquetes por CeCo no coinciden con el índice")
             for product in objectives.get("products", []):
                 if product.get("image") and not (ROOT / product["image"]).is_file():
                     failures.append(f"Imagen de objetivo ausente: {product.get('image')}")

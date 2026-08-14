@@ -20,6 +20,7 @@ def main() -> None:
     (SITE / "data").mkdir()
     for name in ("content.js", "content.json", "objectives.js", "objectives.json"):
         shutil.copy2(ROOT / "data" / name, SITE / "data" / name)
+    shutil.copytree(ROOT / "data" / "objectives-data", SITE / "data" / "objectives-data")
     generated_pdf_root = SITE / "assets" / "documents" / "objectives"
     generated_pdf_root.mkdir(parents=True, exist_ok=True)
     generated = generate_pdfs(build_template(), generated_pdf_root)

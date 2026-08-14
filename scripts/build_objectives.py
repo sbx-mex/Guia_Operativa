@@ -3,6 +3,8 @@ from __future__ import annotations
 import argparse
 import csv
 import json
+import shutil
+from collections import defaultdict
 from pathlib import Path
 
 from export_objectives import create_pdf
@@ -11,6 +13,7 @@ ROOT = Path(__file__).resolve().parents[1]
 SOURCE = ROOT / "data" / "objectives.csv"
 JSON_OUTPUT = ROOT / "data" / "objectives.json"
 JS_OUTPUT = ROOT / "data" / "objectives.js"
+SHARD_DIR = ROOT / "data" / "objectives-data"
 
 DAYS = (
     ("2026-08-15", "Sábado 15 de agosto"),
@@ -70,12 +73,12 @@ def load_stores(source: Path = SOURCE) -> list[dict]:
                 for index, (day_id, _) in enumerate(DAYS)
             }
             stores.append({"ceco": ceco, "name": name, "goals": goals, "objectivePdf": pdf_relative_path(ceco)})
-    return sorted(stores, key=lambda store: (store["name"].casefold(), store["ceco"]))
+    return sorted(stores, key=lambda store: int(store["ceco"]))
 
 
 def build_template(source: Path = SOURCE) -> dict:
     return {
-        "schemaVersion": 2,
+        "schemaVersion": 3,
         "campaign": {
             "id": "unicorn-2026",
             "name": "Dash de ventas · Unicorn",
@@ -93,9 +96,42 @@ def build_template(source: Path = SOURCE) -> dict:
     }
 
 
-def serialize(template: dict) -> tuple[str, str]:
-    compact = json.dumps(template, ensure_ascii=False, separators=(",", ":"))
-    return compact + "\n", f"window.OBJECTIVES_TEMPLATE = {compact};\n"
+def public_template(template: dict) -> dict:
+    public = {key: value for key, value in template.items() if key != "stores"}
+    public["stores"] = [{"ceco": store["ceco"], "name": store["name"]} for store in template["stores"]]
+    public["storeDataPath"] = "data/objectives-data/{prefix}.json"
+    return public
+
+
+def serialize(template: dict) -> tuple[str, str, dict[str, str]]:
+    compact = json.dumps(public_template(template), ensure_ascii=False, separators=(",", ":"))
+    groups: dict[str, list[dict]] = defaultdict(list)
+    for store in template["stores"]:
+        groups[store["ceco"][:3]].append(store)
+    shards = {
+        f"{prefix}.json": json.dumps({"schemaVersion": 3, "stores": stores}, ensure_ascii=False, separators=(",", ":")) + "\n"
+        for prefix, stores in sorted(groups.items())
+    }
+    return compact + "\n", f"window.OBJECTIVES_TEMPLATE = {compact};\n", shards
+
+
+def write_outputs(json_text: str, js_text: str, shards: dict[str, str]) -> None:
+    JSON_OUTPUT.write_text(json_text, encoding="utf-8")
+    JS_OUTPUT.write_text(js_text, encoding="utf-8")
+    if SHARD_DIR.exists():
+        shutil.rmtree(SHARD_DIR)
+    SHARD_DIR.mkdir(parents=True)
+    for name, content in shards.items():
+        (SHARD_DIR / name).write_text(content, encoding="utf-8")
+
+
+def outputs_match(json_text: str, js_text: str, shards: dict[str, str]) -> bool:
+    if not JSON_OUTPUT.is_file() or not JS_OUTPUT.is_file() or not SHARD_DIR.is_dir():
+        return False
+    if JSON_OUTPUT.read_text(encoding="utf-8") != json_text or JS_OUTPUT.read_text(encoding="utf-8") != js_text:
+        return False
+    existing = {path.name for path in SHARD_DIR.glob("*.json")}
+    return existing == set(shards) and all((SHARD_DIR / name).read_text(encoding="utf-8") == content for name, content in shards.items())
 
 
 def store_document(template: dict, store: dict) -> dict:
@@ -127,14 +163,13 @@ def main() -> None:
     parser.add_argument("--limit", type=int, help="Limita PDFs; útil para validación local")
     args = parser.parse_args()
     template = build_template()
-    json_text, js_text = serialize(template)
+    json_text, js_text, shards = serialize(template)
     if args.check:
-        if JSON_OUTPUT.read_text(encoding="utf-8") != json_text or JS_OUTPUT.read_text(encoding="utf-8") != js_text:
-            raise SystemExit("data/objectives.json o data/objectives.js no están actualizados")
+        if not outputs_match(json_text, js_text, shards):
+            raise SystemExit("El índice o los paquetes de objetivos no están actualizados")
     else:
-        JSON_OUTPUT.write_text(json_text, encoding="utf-8")
-        JS_OUTPUT.write_text(js_text, encoding="utf-8")
-        print(f"Objetivos generados: {len(template['stores'])} tiendas")
+        write_outputs(json_text, js_text, shards)
+        print(f"Objetivos generados: {len(template['stores'])} tiendas en {len(shards)} paquetes por CeCo")
     if args.pdf_root:
         count = generate_pdfs(template, args.pdf_root, args.limit)
         print(f"PDFs de objetivos generados: {count}")

@@ -123,32 +123,37 @@ def test_pwa_is_ios_ready_offline_and_contextual():
 
 def test_clean_site_builder_excludes_legacy_data():
     subprocess.run([sys.executable, "scripts/prepare_site.py"], cwd=ROOT, check=True)
-    assert {path.name for path in (ROOT / "_site" / "data").iterdir()} == {"content.js", "content.json", "objectives.js", "objectives.json"}
+    assert {path.name for path in (ROOT / "_site" / "data").iterdir()} == {"content.js", "content.json", "objectives.js", "objectives.json", "objectives-data"}
     assert (ROOT / "_site" / "offline.html").is_file()
 
 
 def test_objectives_engine_and_practice_evidence_are_integrated():
     template = json.loads((ROOT / "data" / "objectives.json").read_text(encoding="utf-8"))
-    assert template["schemaVersion"] == 2
+    assert template["schemaVersion"] == 3
     assert {item["id"] for item in template["products"]} == {"adt", "unicorn", "cake-pop"}
     assert len(template["days"]) == 3
     assert len(template["stores"]) == 873
     assert all((ROOT / item["image"]).is_file() for item in template["products"] if item.get("image"))
-    angel = next(store for store in template["stores"] if store["ceco"] == "38101")
+    assert [store["ceco"] for store in template["stores"]] == sorted((store["ceco"] for store in template["stores"]), key=int)
+    assert (ROOT / "data" / "objectives.js").stat().st_size < 100_000
+    angel_data = json.loads((ROOT / "data" / "objectives-data" / "381.json").read_text(encoding="utf-8"))
+    angel = next(store for store in angel_data["stores"] if store["ceco"] == "38101")
     assert angel["name"] == "Angel"
     assert [angel["goals"][day]["adt"] for day in ("2026-08-15", "2026-08-16", "2026-08-17")] == [384, 401, 404]
     assert all(angel["goals"][day]["unicorn"] == 28 for day in angel["goals"])
     assert all(angel["goals"][day]["cake-pop"] == 13 for day in angel["goals"])
     html = (ROOT / "index.html").read_text(encoding="utf-8")
-    assert 'id="objectivesView"' in html and 'id="objectiveStore"' in html
-    assert '<select id="objectiveStore"' in html and 'id="downloadObjectivePdf"' in html
+    assert 'id="objectivesView"' in html and 'id="objectiveStoreSearch"' in html
+    assert 'id="objectiveStoreResults"' in html and 'id="downloadObjectivePdf"' in html
     assert "terminos-y-condiciones-unicorn.pdf" in html
+    assert "campaign-terms-callout" in html and 'id="shareObjectives"' in html
     app = (ROOT / "app.js").read_text(encoding="utf-8")
     assert 'id="evaluationPhoto"' in app and 'capture="environment"' in app
     assert "renderEvaluationStart" in app and "Tomar foto de práctica" in app
     engine = (ROOT / "objectives.js").read_text(encoding="utf-8")
     assert "window.OBJECTIVES_TEMPLATE" in (ROOT / "data" / "objectives.js").read_text(encoding="utf-8")
     assert "window.print()" in engine and "reportFileName" in engine and "captures" in engine
+    assert "loadShard" in engine and "navigator.share" in engine and "findStores" in engine
 
 
 def test_python_objectives_exporter_is_safe_and_available():
@@ -156,7 +161,7 @@ def test_python_objectives_exporter_is_safe_and_available():
     assert "def validate" in script and "def create_pdf" in script
     assert "schemaVersion" in script and "ZoneInfo" in script and "dynamic_output" in script
     builder = (ROOT / "scripts" / "build_objectives.py").read_text(encoding="utf-8")
-    assert "load_stores" in builder and "generate_pdfs" in builder
+    assert "load_stores" in builder and "generate_pdfs" in builder and "objectives-data" in builder
 
 
 def test_python_objectives_exporter_generates_one_page_pdf(tmp_path):
@@ -179,7 +184,7 @@ def test_python_objectives_exporter_generates_one_page_pdf(tmp_path):
     assert float(page.mediabox.width) > float(page.mediabox.height)
     assert 610 < float(page.mediabox.width) < 800
     extracted = reader.pages[0].extract_text()
-    assert all(value in extracted for value in ("Luna Park", "38101", "ADT", "Unicorn Frappuccino", "Cake Pop Unicornio", "80%"))
+    assert all(value in extracted for value in ("Luna Park", "38101", "ADT", "Unicorn Frappuccino", "Cake Pop Unicornio", "80%", "Creado", "ANTICIPA", "EN AVANCE", "Verde: logrado"))
     assert dynamic_output(data, tmp_path).name == "Luna_Park_Unicorn_Frapp_Cake_Pop.pdf"
 
 

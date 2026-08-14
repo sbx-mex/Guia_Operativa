@@ -43,7 +43,7 @@
           <span class="campaign-pill">PRIORIDAD · 13–17 AGO</span>
           <h2 id="campaignSpotlightTitle">Semana Unicorn</h2>
           <p>Domina Salsa Azul Drizzle y Unicorn Frappuccino. Únicamente Grande.</p>
-          <div><button class="primary-button" id="campaignPrimary" type="button">Practicar Unicorn</button><button id="campaignSecondary" type="button">Preparar Salsa Azul</button><button id="campaignEvaluateHome" type="button">Evaluar preparación</button></div>
+          <div><button class="primary-button" id="campaignPrimary" type="button">Practicar Unicorn</button><button id="campaignSecondary" type="button">Preparar Salsa Azul</button><button id="campaignEvaluateHome" type="button">Evaluar preparación</button><a class="campaign-terms-link" href="https://sbx-mx.github.io/Manual_Recetario/assets/documents/terminos-y-condiciones-unicorn.pdf" target="_blank" rel="noopener">Ver términos y condiciones</a></div>
         </div>
       </section>
       <div class="mode-grid">
@@ -59,7 +59,7 @@
         </button>
         <button class="mode-card objective-mode" data-view="objectives" type="button">
           <span class="mode-icon">◎</span>
-          <span><b>Impulso Unicorn</b><small>Objetivos y avance · 15, 16 y 17 de agosto</small></span>
+          <span class="objective-mode-copy"><em>AYUDA DE TURNO</em><b>Impulso Unicorn</b><small>Anticipa objetivos, mide el cierre y comparte resultados</small><span><i>1 Objetivos</i><i>2 Reales</i><i>3 PDF</i></span></span>
           <span class="arrow">→</span>
         </button>
       </div>
@@ -110,10 +110,14 @@
         <h1>Objetivos y avance <span>Unicorn</span></h1>
         <p>Selecciona tu tienda, registra los resultados reales de ADT, Unicorn Frappuccino y Cake Pop, y consulta el alcance diario y acumulado.</p>
       </div>
-      <div class="objective-steps" aria-label="Flujo"><span><b>1</b>Selecciona tu tienda</span><span><b>2</b>Captura sólo los reales</span><span><b>3</b>Consulta y exporta</span></div>
+      <div class="objective-shift-flow" aria-label="Guía del turno"><article><span>ANTES DEL TURNO</span><b>Anticipa objetivos</b><small>Selecciona tu CeCo y alinea las tres metas con el equipo.</small></article><article><span>AL FINALIZAR</span><b>Mide tu real</b><small>Captura ADT, Unicorn y Cake Pop del día.</small></article><article><span>CIERRE</span><b>Exporta y comparte</b><small>Genera el PDF o usa el menú de compartir del celular.</small></article></div>
       <div class="objective-toolbar">
-        <label><span>Tienda</span><select id="objectiveStore" required><option value="">Selecciona CC o nombre de tienda</option></select></label>
-        <div class="objective-store-meta" id="objectiveStoreMeta" aria-live="polite"><small>CC</small><b>—</b></div>
+        <div class="objective-store-search">
+          <label for="objectiveStoreSearch"><span>Buscar tienda</span><small>Escribe el CeCo o nombre</small></label>
+          <div class="objective-store-searchbox"><span aria-hidden="true">⌕</span><input id="objectiveStoreSearch" type="search" inputmode="search" autocomplete="off" placeholder="Ej. 38483 o Forum Buenavista" role="combobox" aria-autocomplete="list" aria-controls="objectiveStoreResults" aria-expanded="false"><button id="clearObjectiveStore" type="button" hidden>Limpiar</button></div>
+          <div class="objective-store-results" id="objectiveStoreResults" role="listbox" aria-label="Tiendas ordenadas por CeCo" hidden></div>
+        </div>
+        <div class="objective-store-meta" id="objectiveStoreMeta" aria-live="polite"><small>CeCo seleccionado</small><b>—</b><span>Sin tienda</span></div>
       </div>
       <section class="objective-empty" id="objectiveEmpty"><span>◎</span><h2>Elige una tienda para comenzar</h2><p>Los objetivos de los tres días se llenarán automáticamente.</p></section>
       <div id="objectiveWorkspace" hidden>
@@ -124,8 +128,9 @@
       </div>
       <div class="objective-actions">
         <a id="downloadObjectivePdf" class="objective-download" href="#" download hidden>Descargar objetivos PDF</a>
-        <button class="primary-button" id="printObjectives" type="button" disabled>Exportar avance a PDF</button>
-        <a class="objective-download secondary" href="assets/documents/terminos-y-condiciones-unicorn.pdf" download>Ver términos y condiciones</a>
+        <button class="primary-button" id="printObjectives" type="button" disabled>Exportar avance PDF</button>
+        <button id="shareObjectives" type="button" disabled>Compartir cierre</button>
+        <a class="objective-download secondary" href="https://sbx-mx.github.io/Manual_Recetario/assets/documents/terminos-y-condiciones-unicorn.pdf" target="_blank" rel="noopener">Ver términos y condiciones</a>
       </div>
       <p class="objective-note">El avance es real ÷ objetivo. La validación oficial de resultados corresponde a Operaciones y Finanzas.</p>
     </section>
@@ -159,6 +164,7 @@
       <p id="campaignSubtitle">Practica Unicorn y Salsa Azul antes del servicio.</p>
       <div class="campaign-facts"><span><b>Grande</b>Único tamaño</span><span><b>24 h</b>Salsa Azul</span><span><b>1 bebida</b>Por licuadora</span></div>
       <div class="campaign-actions"><button class="primary-button" id="campaignDialogPrimary" type="button">Practicar Unicorn</button><button id="campaignDialogSecondary" type="button">Preparar Salsa Azul</button><button id="campaignEvaluate" type="button">Evaluar preparación</button></div>
+      <a class="campaign-terms-callout" href="https://sbx-mx.github.io/Manual_Recetario/assets/documents/terminos-y-condiciones-unicorn.pdf" target="_blank" rel="noopener"><span>DOCUMENTO IMPORTANTE</span><b>Ver términos y condiciones</b><small>Consulta elegibilidad, premios y criterios del concurso.</small><i>→</i></a>
       <div class="campaign-resources" id="campaignResources" aria-label="Materiales adicionales"></div>
       <div class="campaign-resource-context" id="campaignResourceContext" aria-live="polite"></div>
     </div>
