@@ -130,11 +130,15 @@ def test_clean_site_builder_excludes_legacy_data():
 
 def test_objectives_engine_and_practice_evidence_are_integrated():
     template = json.loads((ROOT / "data" / "objectives.json").read_text(encoding="utf-8"))
-    assert template["schemaVersion"] == 3
+    assert template["schemaVersion"] == 4
     assert {item["id"] for item in template["products"]} == {"adt", "unicorn", "cake-pop"}
+    assert [item["id"] for item in template["cuts"]] == ["am", "inter", "pm"]
     assert len(template["days"]) == 3
     assert len(template["stores"]) == 873
     assert all((ROOT / item["image"]).is_file() for item in template["products"] if item.get("image"))
+    assert {item["id"]: Path(item["image"]).name for item in template["products"]} == {
+        "adt": "adt-transacciones.png", "unicorn": "unicorn-frappuccino-objetivos.webp", "cake-pop": "cake-pop-unicornio.png",
+    }
     assert [store["ceco"] for store in template["stores"]] == sorted((store["ceco"] for store in template["stores"]), key=int)
     assert (ROOT / "data" / "objectives.js").stat().st_size < 100_000
     angel_data = json.loads((ROOT / "data" / "objectives-data" / "381.json").read_text(encoding="utf-8"))
@@ -159,12 +163,14 @@ def test_objectives_engine_and_practice_evidence_are_integrated():
     assert "window.print()" in engine and "reportFileName" in engine and "captures" in engine
     assert "loadShard" in engine and "navigator.share" in engine and "findStores" in engine
     assert ".slice(0, 6)" in engine and "normalize(query).length < 2" in engine
+    assert "saveCut" in engine and "shift-row" in engine and "Un renglón por turno" in engine
 
 
 def test_python_objectives_exporter_is_safe_and_available():
     script = (ROOT / "scripts" / "export_objectives.py").read_text(encoding="utf-8")
     assert "def validate" in script and "def create_pdf" in script
     assert "schemaVersion" in script and "ZoneInfo" in script and "dynamic_output" in script
+    assert "optimized_thumbnail" in script and "projection_rows" in script and "actuals" in script
     builder = (ROOT / "scripts" / "build_objectives.py").read_text(encoding="utf-8")
     assert "load_stores" in builder and "generate_pdfs" in builder and "objectives-data" in builder
     video_optimizer = (ROOT / "scripts" / "optimize_campaign_video.py").read_text(encoding="utf-8")
@@ -190,19 +196,20 @@ def test_python_objectives_exporter_generates_one_page_pdf(tmp_path):
     data.pop("stores", None)
     data["store"] = {"ceco": "38101", "name": "Luna Park"}
     data["values"] = {
-        "2026-08-15": {"adt": {"goal": 384, "actual": 390}, "unicorn": {"goal": 30, "actual": 24}, "cake-pop": {"goal": 20, "actual": 18}},
-        "2026-08-16": {"adt": {"goal": 401, "actual": 0}, "unicorn": {"goal": 35, "actual": 0}, "cake-pop": {"goal": 22, "actual": 0}},
-        "2026-08-17": {"adt": {"goal": 404, "actual": 0}, "unicorn": {"goal": 28, "actual": 0}, "cake-pop": {"goal": 18, "actual": 0}},
+        "2026-08-15": {"adt": {"goal": 384, "actuals": {"am": 120, "inter": 140, "pm": 130}}, "unicorn": {"goal": 30, "actuals": {"am": 8, "inter": 9, "pm": 7}}, "cake-pop": {"goal": 20, "actuals": {"am": 5, "inter": 6, "pm": 7}}},
+        "2026-08-16": {"adt": {"goal": 401, "actuals": {}}, "unicorn": {"goal": 35, "actuals": {}}, "cake-pop": {"goal": 22, "actuals": {}}},
+        "2026-08-17": {"adt": {"goal": 404, "actuals": {}}, "unicorn": {"goal": 28, "actuals": {}}, "cake-pop": {"goal": 18, "actuals": {}}},
     }
     output = tmp_path / "objetivos.pdf"
     create_pdf(data, output)
+    assert output.stat().st_size < 50_000
     reader = PdfReader(output)
     assert len(reader.pages) == 1
     page = reader.pages[0]
     assert float(page.mediabox.width) > float(page.mediabox.height)
     assert 610 < float(page.mediabox.width) < 800
     extracted = reader.pages[0].extract_text()
-    assert all(value in extracted for value in ("Luna Park", "38101", "ADT", "Unicorn Frappuccino", "Cake Pop Unicornio", "80%", "Creado", "ANTICIPA", "EN AVANCE", "Verde: logrado"))
+    assert all(value in extracted for value in ("Luna Park", "38101", "ADT", "Unicorn Frappuccino", "Cake Pop Unicornio", "80%", "Creado", "PROYECCIÓN POR TURNO", "Apertura", "Intermedio", "Cierre", "LLENADO OPCIONAL"))
     assert dynamic_output(data, tmp_path).name == "Luna_Park_Unicorn_Frapp_Cake_Pop.pdf"
 
 

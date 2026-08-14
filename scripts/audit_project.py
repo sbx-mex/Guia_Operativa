@@ -66,10 +66,12 @@ def main() -> None:
     else:
         try:
             objectives = json.loads(objectives_path.read_text(encoding="utf-8"))
-            if objectives.get("schemaVersion") != 3:
+            if objectives.get("schemaVersion") != 4:
                 failures.append("Versión inválida del motor de objetivos")
             if not objectives.get("products") or not objectives.get("days"):
                 failures.append("Motor de objetivos sin productos o días")
+            if [cut.get("id") for cut in objectives.get("cuts", [])] != ["am", "inter", "pm"]:
+                failures.append("Motor de objetivos sin los tres turnos operativos")
             if not objectives.get("stores"):
                 failures.append("Motor de objetivos sin tiendas")
             cecos = [item.get("ceco", "") for item in objectives.get("stores", [])]

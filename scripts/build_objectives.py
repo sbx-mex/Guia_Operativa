@@ -21,9 +21,14 @@ DAYS = (
     ("2026-08-17", "Lunes 17 de agosto"),
 )
 PRODUCTS = (
-    {"id": "adt", "name": "ADT", "note": "Órdenes del día", "unit": "ADT", "icon": "ADT", "accent": "#006241"},
-    {"id": "unicorn", "name": "Unicorn Frappuccino", "note": "Objetivo diario · Tamaño Grande", "unit": "USD", "image": "assets/products/temporada/unicorn-frappuccino.webp", "accent": "#e64f9b"},
+    {"id": "adt", "name": "ADT", "note": "Órdenes del día", "unit": "ADT", "image": "assets/products/temporada/adt-transacciones.png", "accent": "#006241"},
+    {"id": "unicorn", "name": "Unicorn Frappuccino", "note": "Objetivo diario · Tamaño Grande", "unit": "USD", "image": "assets/products/temporada/unicorn-frappuccino-objetivos.webp", "accent": "#e64f9b"},
     {"id": "cake-pop", "name": "Cake Pop Unicornio", "note": "Objetivo diario", "unit": "USD", "image": "assets/products/temporada/cake-pop-unicornio.png", "accent": "#8e5aac"},
+)
+CUTS = (
+    {"id": "am", "label": "Apertura", "time": "Apertura - 12:00"},
+    {"id": "inter", "label": "Intermedio", "time": "12:00 - 17:00"},
+    {"id": "pm", "label": "Cierre", "time": "17:00 - cierre"},
 )
 
 
@@ -78,7 +83,7 @@ def load_stores(source: Path = SOURCE) -> list[dict]:
 
 def build_template(source: Path = SOURCE) -> dict:
     return {
-        "schemaVersion": 3,
+        "schemaVersion": 4,
         "campaign": {
             "id": "unicorn-2026",
             "name": "Dash de ventas · Unicorn",
@@ -89,6 +94,7 @@ def build_template(source: Path = SOURCE) -> dict:
             "end": DAYS[-1][0],
         },
         "products": list(PRODUCTS),
+        "cuts": list(CUTS),
         "days": [{"id": day_id, "label": label} for day_id, label in DAYS],
         "stores": load_stores(source),
         "store": {"ceco": "", "name": ""},
@@ -139,7 +145,11 @@ def store_document(template: dict, store: dict) -> dict:
     document["store"] = {"ceco": store["ceco"], "name": store["name"]}
     document["values"] = {
         day["id"]: {
-            product["id"]: {"goal": store["goals"][day["id"]][product["id"]], "actual": 0}
+            product["id"]: {
+                "goal": store["goals"][day["id"]][product["id"]],
+                "actuals": {cut["id"]: 0 for cut in template["cuts"]},
+                "actual": 0,
+            }
             for product in template["products"]
         }
         for day in template["days"]
@@ -152,7 +162,7 @@ def generate_pdfs(template: dict, destination: Path, limit: int | None = None) -
     for store in stores:
         relative = Path(store["objectivePdf"]).relative_to("assets/documents/objectives")
         output = destination / relative
-        create_pdf(store_document(template, store), output, title="Objetivos diarios")
+        create_pdf(store_document(template, store), output, title="Objetivos y proyección")
     return len(stores)
 
 
