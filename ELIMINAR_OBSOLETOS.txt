@@ -1,5 +1,6 @@
 ELIMINAR ESTOS ARCHIVOS DEL REPOSITORIO
 
+assets/campaigns/unicorn-concurso.webp
 assets/references/frias/frias-06.tmp.webp
 data/catalog.json
 data/catalog_audit.json

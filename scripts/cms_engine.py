@@ -152,7 +152,7 @@ def load_cms(path: Path = CMS_PATH) -> dict[str, Any]:
             "subtitle": str(row.get("SUBTITULO") or "").strip(), "start": str(row["FECHA_INICIO"]).strip(),
             "end": str(row["FECHA_FIN"]).strip(), "timezone": str(row["ZONA_HORARIA"]).strip(),
             "primary": primary, "secondary": secondary,
-            "resources": [_safe_media(row[key]) for key in ("IMAGEN_CHECKLIST", "IMAGEN_PRACTICAS", "IMAGEN_CONCURSO")],
+            "resources": [_safe_media(row[key]) for key in ("IMAGEN_CHECKLIST", "IMAGEN_PRACTICAS", "IMAGEN_CONCURSO") if row.get(key)],
         })
 
     return {"meta": {"version": "4.0.0", "catalogItems": len(catalog), "trainingModules": len(contents),

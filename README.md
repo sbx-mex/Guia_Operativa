@@ -27,7 +27,7 @@ El workflow instala siempre `requirements.txt`; esto incluye `openpyxl`, requeri
 - Actualiza el campo **Real vendido** al cierre o durante cada día; el avance acumulado se recalcula solo.
 - **Descargar PDF** abre una hoja A4 horizontal lista para guardar como PDF desde el navegador.
 - **Descargar JSON** conserva la captura y permite compartir/cargar nuevas metas sin cambiar código.
-- Para automatización por Python: `python scripts/export_objectives.py data/objectives.json output/pdf/objetivos.pdf`.
+- Exporta los datos desde la pantalla de Objetivos y ejecuta `python scripts/export_objectives.py Tienda_Fecha.json`. El PDF se guarda automáticamente como `Tienda_Fecha.pdf`; también puedes indicar una ruta de salida como segundo argumento.
 - **Compartir en Workvivo** usa el menú nativo del dispositivo; si no está disponible, copia un resumen listo para pegar.
 
 La evaluación Unicorn permite registrar a quién se evaluó, fecha/hora automática y una foto opcional de práctica. La foto permanece en la sesión del dispositivo y no se envía a servidores.

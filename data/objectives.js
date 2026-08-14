@@ -4,7 +4,7 @@ window.OBJECTIVES_TEMPLATE = {
   store: {ceco: "", name: ""},
   products: [
     {id: "unicorn", name: "Unicorn Frappuccino", note: "Tamaño Grande únicamente", image: "assets/products/temporada/unicorn-frappuccino.webp", accent: "#e64f9b"},
-    {id: "cake-pop", name: "Cake Pop Unicornio", note: "Venta sugerida", image: "assets/campaigns/unicorn-concurso.webp", accent: "#8e5aac", focus: "67% 23%"}
+    {id: "cake-pop", name: "Cake Pop Unicornio", note: "Venta sugerida", image: "assets/products/temporada/cake-pop-unicornio.png", accent: "#8e5aac", focus: "50% 50%"}
   ],
   days: [
     {id: "2026-08-15", label: "Sábado 15 de agosto"},

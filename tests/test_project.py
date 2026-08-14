@@ -134,19 +134,19 @@ def test_objectives_engine_and_practice_evidence_are_integrated():
     assert all((ROOT / item["image"]).is_file() for item in template["products"])
     html = (ROOT / "index.html").read_text(encoding="utf-8")
     assert 'id="objectivesView"' in html and 'id="objectiveStore"' in html
-    assert 'id="objectiveCeco"' not in html and 'id="downloadObjectivesJson"' not in html
+    assert 'id="objectiveCeco"' not in html and 'id="downloadObjectivesJson"' in html
     app = (ROOT / "app.js").read_text(encoding="utf-8")
     assert 'id="evaluationPhoto"' in app and 'capture="environment"' in app
     assert "renderEvaluationStart" in app and "Tomar foto de práctica" in app
     engine = (ROOT / "objectives.js").read_text(encoding="utf-8")
     assert "window.OBJECTIVES_TEMPLATE" in (ROOT / "data" / "objectives.js").read_text(encoding="utf-8")
-    assert "window.print()" in engine and "Descargar JSON" not in html
+    assert "window.print()" in engine and "downloadJson" in engine
 
 
 def test_python_objectives_exporter_is_safe_and_available():
     script = (ROOT / "scripts" / "export_objectives.py").read_text(encoding="utf-8")
     assert "def validate" in script and "def create_pdf" in script
-    assert "schemaVersion" in script and "ZoneInfo" in script
+    assert "schemaVersion" in script and "ZoneInfo" in script and "dynamic_output" in script
 
 
 def test_python_objectives_exporter_generates_one_page_pdf(tmp_path):

@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
+import unicodedata
 from datetime import datetime
 from pathlib import Path
 from zoneinfo import ZoneInfo
@@ -11,7 +13,7 @@ from reportlab.lib.enums import TA_CENTER
 from reportlab.lib.pagesizes import letter, landscape
 from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
 from reportlab.lib.units import mm
-from reportlab.platypus import KeepTogether, PageBreak, Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
+from reportlab.platypus import KeepTogether, Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
 
 ROOT = Path(__file__).resolve().parents[1]
 GREEN = colors.HexColor("#006241")
@@ -48,6 +50,18 @@ def validate(data: dict) -> dict:
 
 def pct(actual: int, goal: int) -> int:
     return round(actual / goal * 100) if goal else 0
+
+
+def safe_filename(value: str) -> str:
+    plain = unicodedata.normalize("NFKD", value).encode("ascii", "ignore").decode()
+    return re.sub(r"[^A-Za-z0-9]+", "_", plain).strip("_") or "Tienda"
+
+
+def dynamic_output(data: dict, directory: Path) -> Path:
+    timezone = data.get("campaign", {}).get("timezone", "America/Mexico_City")
+    date = datetime.now(ZoneInfo(timezone)).strftime("%Y-%m-%d")
+    store = safe_filename(str(data.get("store", {}).get("name") or "Tienda"))
+    return directory / f"{store}_{date}.pdf"
 
 
 def create_pdf(data: dict, output: Path) -> None:
@@ -95,17 +109,29 @@ def create_pdf(data: dict, output: Path) -> None:
         spans.append(("SPAN", (start, 0), (start + 2, 0)))
     table.setStyle(TableStyle([("BACKGROUND",(0,0),(-1,1),GREEN),("TEXTCOLOR",(0,0),(-1,1),colors.white),("GRID",(0,0),(-1,-1),.45,colors.HexColor("#aebdb7")),("VALIGN",(0,0),(-1,-1),"MIDDLE"),("ALIGN",(1,0),(-1,-1),"CENTER"),("FONTSIZE",(0,0),(-1,-1),7),("TOPPADDING",(0,0),(-1,-1),3 * mm),("BOTTOMPADDING",(0,0),(-1,-1),3 * mm),("ROWBACKGROUNDS",(0,2),(-1,-1),[colors.white,colors.HexColor("#f7f3ea")]),*spans]))
     story += [KeepTogether(table), Spacer(1, 4 * mm), Paragraph("Anticipar · practicar · medir · lograr", styles["Meta"])]
-    doc.build(story)
+    def footer(canvas, document):
+        canvas.saveState()
+        canvas.setStrokeColor(colors.HexColor("#d5e1dc"))
+        canvas.line(document.leftMargin, 6 * mm, landscape(letter)[0] - document.rightMargin, 6 * mm)
+        canvas.setFillColor(DEEP)
+        canvas.setFont("Helvetica", 7.5)
+        canvas.drawString(document.leftMargin, 3 * mm, "Diseñado: Jorge Alcantar Aguiar & Enrique César Flores")
+        canvas.drawRightString(landscape(letter)[0] - document.rightMargin, 3 * mm, "JUNTÉMONOS MÁS | PREPARÉMONOS MÁS")
+        canvas.restoreState()
+
+    doc.build(story, onFirstPage=footer, onLaterPages=footer)
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Exporta un tablero de objetivos JSON a PDF.")
     parser.add_argument("input", type=Path)
-    parser.add_argument("output", type=Path)
+    parser.add_argument("output", type=Path, nargs="?", help="Opcional; por defecto usa Tienda_Fecha.pdf")
     args = parser.parse_args()
-    args.output.parent.mkdir(parents=True, exist_ok=True)
-    create_pdf(json.loads(args.input.read_text(encoding="utf-8")), args.output)
-    print(f"PDF generado: {args.output}")
+    data = json.loads(args.input.read_text(encoding="utf-8"))
+    output = args.output or dynamic_output(data, args.input.parent)
+    output.parent.mkdir(parents=True, exist_ok=True)
+    create_pdf(data, output)
+    print(f"PDF generado: {output}")
 
 
 if __name__ == "__main__":

@@ -25,7 +25,7 @@
     <nav aria-label="Navegación principal">
       <button class="nav-button" data-view="training" type="button">Capacitarme</button>
       <button class="nav-button" data-view="search" type="button">Buscar receta</button>
-      <button class="nav-button" data-view="objectives" type="button">Objetivos</button>
+      <button class="nav-button nav-priority" data-view="objectives" type="button">Avance 15–17</button>
       <button class="install-button" id="installApp" type="button">Instalar app</button>
     </nav>
   </header>
@@ -59,7 +59,7 @@
         </button>
         <button class="mode-card objective-mode" data-view="objectives" type="button">
           <span class="mode-icon">◎</span>
-          <span><b>Objetivos y avance</b><small>Anticipa metas, registra reales y comparte</small></span>
+          <span><b>Objetivos y avance</b><small>Enfócate en el 15, 16 y 17 de agosto</small></span>
           <span class="arrow">→</span>
         </button>
       </div>
@@ -107,19 +107,21 @@
       <div class="section-head objective-head">
         <button class="back-link" data-view="home" type="button">← Inicio</button>
         <span class="eyebrow">VOZ DE OPERACIONES · 14 DE AGOSTO</span>
-        <h1>Meta Unicorn</h1>
-        <p>Anticipa la meta y registra sólo lo vendido. El avance se calcula automáticamente.</p>
+        <h1>Juntémonos más <span>·</span> preparémonos más</h1>
+        <p>Elige un día, captura las metas de Unicorn Frappuccino y Cake Pop, y actualiza lo vendido.</p>
       </div>
-      <div class="objective-steps" aria-label="Flujo"><span><b>1</b>Tienda</span><span><b>2</b>Metas y reales</span><span><b>3</b>PDF ejecutivo</span></div>
+      <div class="objective-steps" aria-label="Flujo"><span><b>1</b>Identifica tu tienda</span><span><b>2</b>Enfoca el día</span><span><b>3</b>Comparte el avance</span></div>
       <div class="objective-toolbar">
         <label><span>Nombre de tienda</span><input id="objectiveStore" maxlength="80" placeholder="Ej. Luna Park" autocomplete="organization" required></label>
       </div>
       <div class="objective-summary" id="objectiveSummary" aria-live="polite"></div>
+      <nav class="day-jump" id="objectiveDayJump" aria-label="Ir al día de venta"></nav>
       <div class="objective-days" id="objectiveDays"></div>
       <div class="objective-actions">
-        <button class="primary-button" id="printObjectives" type="button">Descargar PDF ejecutivo</button>
+        <button id="downloadObjectivesJson" type="button">Descargar datos JSON</button>
+        <button class="primary-button" id="printObjectives" type="button">Vista lista para PDF</button>
       </div>
-      <p class="objective-note">Carta horizontal · fecha y hora automáticas · información guardada en este dispositivo.</p>
+      <p class="objective-note">El JSON conserva tu captura y el exportador Python crea <b>Tienda_Fecha.pdf</b>.</p>
     </section>
   </main>
 
