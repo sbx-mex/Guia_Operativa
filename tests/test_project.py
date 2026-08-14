@@ -116,7 +116,8 @@ def test_pwa_is_ios_ready_offline_and_contextual():
     worker = (ROOT / "sw.js").read_text(encoding="utf-8")
     assert "self.skipWaiting()" in worker and "self.clients.claim()" in worker
     assert "offline.html" in worker
-    assert "unicorn-impacto.mp4" in worker and "unicorn-impacto-poster.webp" in worker
+    assert "unicorn-impacto-fallback.webp" in worker and "unicorn-impacto-poster.webp" in worker
+    assert 'event.request.headers.has("range")' in worker
     app = (ROOT / "app.js").read_text(encoding="utf-8")
     assert "campaignResourceCopy" in app and "unicornQuiz" in app
     assert "beforeinstallprompt" in app and "Agregar a inicio" in app
@@ -154,10 +155,12 @@ def test_objectives_engine_and_practice_evidence_are_integrated():
     assert "terminos-y-condiciones-unicorn.pdf" in html
     assert "campaign-terms-callout" in html and 'id="shareObjectives"' in html
     assert 'id="campaignVideo"' in html and "autoplay muted loop playsinline" in html
+    assert 'id="campaignAnimationFallback"' in html and 'id="campaignObjectives"' in html
     app = (ROOT / "app.js").read_text(encoding="utf-8")
     assert 'id="evaluationPhoto"' in app and 'capture="environment"' in app
     assert "renderEvaluationStart" in app and "Tomar foto de práctica" in app
     assert "setupPdfViewer" in app and "window.PdfViewer" in app and "toggleCampaignVideo" in app
+    assert "securePdfUrl" in app and "showFallback" in app and "playAnimation" in app
     engine = (ROOT / "objectives.js").read_text(encoding="utf-8")
     assert "window.OBJECTIVES_TEMPLATE" in (ROOT / "data" / "objectives.js").read_text(encoding="utf-8")
     assert "window.print()" in engine and "reportFileName" in engine and "captures" in engine
@@ -180,12 +183,24 @@ def test_python_objectives_exporter_is_safe_and_available():
 def test_campaign_video_is_lightweight_and_has_poster():
     from PIL import Image
 
-    video = ROOT / "assets" / "campaigns" / "unicorn-impacto.mp4"
+    video = ROOT / "assets" / "campaigns" / "unicorn-impacto-v2.mp4"
+    fallback = ROOT / "assets" / "campaigns" / "unicorn-impacto-fallback.webp"
     poster = ROOT / "assets" / "campaigns" / "unicorn-impacto-poster.webp"
     assert video.is_file() and video.stat().st_size < 150_000
+    assert fallback.is_file() and fallback.stat().st_size < 250_000
     assert poster.is_file() and poster.stat().st_size < 20_000
     with Image.open(poster) as image:
         assert image.size == (360, 640)
+    with Image.open(fallback) as image:
+        assert image.is_animated and image.n_frames > 20
+
+
+def test_cleanup_workflow_is_manual_and_validation_is_read_only():
+    cleanup = (ROOT / ".github" / "workflows" / "cleanup-obsolete.yml").read_text(encoding="utf-8")
+    deploy = (ROOT / ".github" / "workflows" / "validate-and-deploy.yml").read_text(encoding="utf-8")
+    assert "workflow_dispatch" in cleanup and "inputs.confirmacion == 'ELIMINAR'" in cleanup
+    assert "--verify-diff" in cleanup and "git push origin HEAD:main" in cleanup
+    assert "cleanup_obsolete.py --apply" not in deploy
 
 
 def test_python_objectives_exporter_generates_one_page_pdf(tmp_path):

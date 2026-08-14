@@ -57,9 +57,30 @@
     $("campaignSubtitle").textContent = campaign.subtitle;
     $("campaignHero").src = primary.productImage;
     const campaignVideo = $("campaignVideo");
+    const campaignFallback = $("campaignAnimationFallback");
     const campaignHero = $("campaignHero");
     campaignVideo.hidden = false;
+    campaignFallback.hidden = true;
     campaignHero.hidden = true;
+    const showFallback = () => {
+      campaignVideo.pause();
+      campaignVideo.hidden = true;
+      campaignHero.hidden = true;
+      campaignFallback.hidden = false;
+      $("toggleCampaignVideo").textContent = "Reintentar video";
+    };
+    const playAnimation = async () => {
+      campaignHero.hidden = true;
+      campaignFallback.hidden = true;
+      campaignVideo.hidden = false;
+      campaignVideo.muted = true;
+      campaignVideo.defaultMuted = true;
+      try {
+        await campaignVideo.play();
+      } catch {
+        showFallback();
+      }
+    };
     const practice = (id, dialog = false) => {
       if (dialog) {
         campaignVideo.pause();
@@ -77,6 +98,7 @@
       if (showResource) {
         campaignVideo.pause();
         campaignVideo.hidden = true;
+        campaignFallback.hidden = true;
         campaignHero.hidden = false;
         campaignHero.src = campaign.resources[index];
         campaignHero.alt = context.title;
@@ -87,31 +109,41 @@
     document.querySelectorAll("[data-campaign-resource]").forEach(button => button.addEventListener("click", () => selectResource(Number(button.dataset.campaignResource))));
     selectResource(0, false);
     $("toggleCampaignVideo").onclick = () => {
-      if (campaignVideo.hidden) {
-        campaignHero.hidden = true; campaignVideo.hidden = false; campaignVideo.play();
-      } else if (campaignVideo.paused) campaignVideo.play(); else campaignVideo.pause();
-      $("toggleCampaignVideo").textContent = campaignVideo.paused ? "Reproducir animación" : "Pausar animación";
+      if (campaignVideo.hidden || campaignVideo.paused) playAnimation();
+      else campaignVideo.pause();
     };
     campaignVideo.addEventListener("play", () => $("toggleCampaignVideo").textContent = "Pausar animación");
-    campaignVideo.addEventListener("pause", () => $("toggleCampaignVideo").textContent = "Reproducir animación");
+    campaignVideo.addEventListener("pause", () => { if (campaignFallback.hidden) $("toggleCampaignVideo").textContent = "Reproducir animación"; });
+    campaignVideo.addEventListener("error", showFallback);
+    $("campaignObjectives").onclick = () => { campaignVideo.pause(); $("campaignDialog").close(); showView("objectives"); };
     $("campaignEvaluate").onclick = () => { campaignVideo.pause(); $("campaignDialog").close(); openEvaluation(); };
     $("campaignEvaluateHome").onclick = openEvaluation;
     $("closeCampaign").onclick = () => { sessionStorage.setItem(`campaign-${campaign.id}`, "closed"); campaignVideo.pause(); $("campaignDialog").close(); };
     if (!sessionStorage.getItem(`campaign-${campaign.id}`)) {
       $("campaignDialog").showModal();
-      if (!matchMedia("(prefers-reduced-motion: reduce)").matches) campaignVideo.play().catch(() => {}); else campaignVideo.pause();
+      if (!matchMedia("(prefers-reduced-motion: reduce)").matches) playAnimation(); else campaignVideo.pause();
     }
   }
 
   function setupPdfViewer() {
     const dialog = $("pdfDialog");
     const frame = $("pdfFrame");
+    const securePdfUrl = raw => {
+      const parsed = new URL(raw, location.href);
+      if (!/^https?:$/.test(parsed.protocol) || parsed.origin !== location.origin || !parsed.pathname.toLowerCase().endsWith(".pdf")) throw new Error("Ruta PDF no permitida");
+      return parsed.href;
+    };
+    const secureFileName = value => String(value || "documento.pdf").replace(/[^a-z0-9._-]+/gi, "_").replace(/^\.+/, "") || "documento.pdf";
     const open = (url, title = "Vista previa PDF", downloadName = "documento.pdf") => {
-      frame.src = url;
+      let safeUrl;
+      try { safeUrl = securePdfUrl(url); }
+      catch { announce("No fue posible abrir el PDF: ruta no permitida."); return; }
+      frame.referrerPolicy = "no-referrer";
+      frame.src = safeUrl;
       $("pdfDialogTitle").textContent = title;
-      $("openPdfExternal").href = url;
-      $("downloadPdfTarget").href = url;
-      $("downloadPdfTarget").download = downloadName;
+      $("openPdfExternal").href = safeUrl;
+      $("downloadPdfTarget").href = safeUrl;
+      $("downloadPdfTarget").download = secureFileName(downloadName);
       if (!dialog.open) dialog.showModal();
     };
     window.PdfViewer = {open};

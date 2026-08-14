@@ -14,6 +14,7 @@ OBSOLETE = (
     "scripts/process_media.py",
     "outputs/CMS_Recetarios_Manuales_Frappuccino.xlsx",
     "assets/references/frias/frias-06.tmp.webp",
+    "assets/campaigns/unicorn-impacto.mp4",
 )
 
 

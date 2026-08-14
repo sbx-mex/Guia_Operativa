@@ -8,7 +8,8 @@ from PIL import Image
 from cms_engine import ROOT, load_cms
 
 FORBIDDEN = {"data/recipes.js", "data/catalog.json", "data/catalog_audit.json", "scripts/build_recipes.py", "scripts/catalog_import.py",
-             "scripts/process_media.py", "outputs/CMS_Recetarios_Manuales_Frappuccino.xlsx", "assets/references/frias/frias-06.tmp.webp"}
+             "scripts/process_media.py", "outputs/CMS_Recetarios_Manuales_Frappuccino.xlsx", "assets/references/frias/frias-06.tmp.webp",
+             "assets/campaigns/unicorn-impacto.mp4"}
 
 
 def main() -> None:
@@ -47,10 +48,16 @@ def main() -> None:
     for directory in (ROOT / "assets").rglob("*"):
         if directory.is_dir() and len([entry for entry in directory.iterdir() if entry.is_file()]) >= 100:
             failures.append(f"Carpeta con 100+ archivos: {directory.relative_to(ROOT)}")
-    campaign_video = ROOT / "assets" / "campaigns" / "unicorn-impacto.mp4"
+    campaign_video = ROOT / "assets" / "campaigns" / "unicorn-impacto-v2.mp4"
+    campaign_fallback = ROOT / "assets" / "campaigns" / "unicorn-impacto-fallback.webp"
     campaign_poster = ROOT / "assets" / "campaigns" / "unicorn-impacto-poster.webp"
     if not campaign_video.is_file() or campaign_video.stat().st_size >= 150_000:
         failures.append("Video Unicorn ausente o sin optimizar")
+    try:
+        with Image.open(campaign_fallback) as image:
+            image.verify()
+    except Exception as exc:
+        failures.append(f"Animación alternativa Unicorn inválida: {exc}")
     try:
         with Image.open(campaign_poster) as image:
             image.verify()

@@ -165,13 +165,13 @@
 
   <dialog id="campaignDialog" class="campaign-dialog">
     <button class="dialog-close" id="closeCampaign" type="button" aria-label="Cerrar">×</button>
-    <div class="campaign-dialog-hero"><video id="campaignVideo" autoplay muted loop playsinline preload="metadata" poster="assets/campaigns/unicorn-impacto-poster.webp" aria-label="Animación de campaña Unicorn"><source src="assets/campaigns/unicorn-impacto.mp4" type="video/mp4"></video><img id="campaignHero" alt="Unicorn Frappuccino" hidden><button id="toggleCampaignVideo" type="button">Pausar animación</button></div>
+    <div class="campaign-dialog-hero"><video id="campaignVideo" autoplay muted loop playsinline webkit-playsinline preload="auto" poster="assets/campaigns/unicorn-impacto-poster.webp" aria-label="Animación de campaña Unicorn"><source src="assets/campaigns/unicorn-impacto-v2.mp4" type="video/mp4"></video><img id="campaignAnimationFallback" src="assets/campaigns/unicorn-impacto-fallback.webp" alt="Animación de campaña Unicorn" hidden><img id="campaignHero" alt="Unicorn Frappuccino" hidden><button id="toggleCampaignVideo" type="button">Pausar animación</button></div>
     <div class="campaign-dialog-copy">
       <span class="campaign-pill">VENTANA OPERATIVA · 13–17 AGO</span>
       <h2 id="campaignTitle">Semana Unicorn</h2>
       <p id="campaignSubtitle">Practica Unicorn y Salsa Azul antes del servicio.</p>
       <div class="campaign-facts"><span><b>Grande</b>Único tamaño</span><span><b>24 h</b>Salsa Azul</span><span><b>1 bebida</b>Por licuadora</span></div>
-      <div class="campaign-actions"><button class="primary-button" id="campaignDialogPrimary" type="button">Practicar Unicorn</button><button id="campaignDialogSecondary" type="button">Preparar Salsa Azul</button><button id="campaignEvaluate" type="button">Evaluar preparación</button></div>
+      <div class="campaign-actions"><button class="primary-button" id="campaignDialogPrimary" type="button">Practicar Unicorn</button><button id="campaignDialogSecondary" type="button">Preparar Salsa Azul</button><button id="campaignObjectives" class="campaign-objectives-button" type="button">Conoce tus objetivos</button><button id="campaignEvaluate" type="button">Evaluar preparación</button></div>
       <a class="campaign-terms-callout pdf-preview-link" href="https://sbx-mx.github.io/Manual_Recetario/assets/documents/terminos-y-condiciones-unicorn.pdf" data-pdf-title="Términos y condiciones"><span>DOCUMENTO IMPORTANTE</span><b>Ver términos y condiciones</b><small>Se abre aquí; cierra con Escape o descarga el PDF.</small><i>→</i></a>
       <div class="campaign-resources" id="campaignResources" aria-label="Materiales adicionales"></div>
       <div class="campaign-resource-context" id="campaignResourceContext" aria-live="polite"></div>
