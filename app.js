@@ -56,8 +56,15 @@
     $("campaignTitle").textContent = campaign.title;
     $("campaignSubtitle").textContent = campaign.subtitle;
     $("campaignHero").src = primary.productImage;
+    const campaignVideo = $("campaignVideo");
+    const campaignHero = $("campaignHero");
+    campaignVideo.hidden = false;
+    campaignHero.hidden = true;
     const practice = (id, dialog = false) => {
-      if (dialog) $("campaignDialog").close();
+      if (dialog) {
+        campaignVideo.pause();
+        $("campaignDialog").close();
+      }
       launchTraining(id);
     };
     $("campaignPrimary").onclick = () => practice(primary.id);
@@ -65,19 +72,55 @@
     $("campaignDialogPrimary").onclick = () => practice(primary.id, true);
     $("campaignDialogSecondary").onclick = () => practice(secondary.id, true);
     $("campaignResources").innerHTML = campaign.resources.map((resource, index) => {const copy=campaignResourceCopy[index]||{title:`Material ${index+1}`,description:"Consulta el material de apoyo."};return `<button class="${copy.priority?"campaign-resource-priority":""}" type="button" data-campaign-resource="${index}"><img src="${resource}" alt=""><span>${copy.title}</span><small>${copy.description}</small></button>`;}).join("");
-    const selectResource = index => {
+    const selectResource = (index, showResource = true) => {
       const context = campaignResourceCopy[index] || {title:`Material ${index+1}`,description:"Consulta el material de apoyo."};
-      $("campaignHero").src = campaign.resources[index];
-      $("campaignHero").alt = context.title;
+      if (showResource) {
+        campaignVideo.pause();
+        campaignVideo.hidden = true;
+        campaignHero.hidden = false;
+        campaignHero.src = campaign.resources[index];
+        campaignHero.alt = context.title;
+      }
       $("campaignResourceContext").innerHTML = `<b>${context.title}</b><span>${context.description}</span>`;
       document.querySelectorAll("[data-campaign-resource]").forEach(button => button.classList.toggle("active", Number(button.dataset.campaignResource) === index));
     };
     document.querySelectorAll("[data-campaign-resource]").forEach(button => button.addEventListener("click", () => selectResource(Number(button.dataset.campaignResource))));
-    selectResource(0);
-    $("campaignEvaluate").onclick = () => { $("campaignDialog").close(); openEvaluation(); };
+    selectResource(0, false);
+    $("toggleCampaignVideo").onclick = () => {
+      if (campaignVideo.hidden) {
+        campaignHero.hidden = true; campaignVideo.hidden = false; campaignVideo.play();
+      } else if (campaignVideo.paused) campaignVideo.play(); else campaignVideo.pause();
+      $("toggleCampaignVideo").textContent = campaignVideo.paused ? "Reproducir animación" : "Pausar animación";
+    };
+    campaignVideo.addEventListener("play", () => $("toggleCampaignVideo").textContent = "Pausar animación");
+    campaignVideo.addEventListener("pause", () => $("toggleCampaignVideo").textContent = "Reproducir animación");
+    $("campaignEvaluate").onclick = () => { campaignVideo.pause(); $("campaignDialog").close(); openEvaluation(); };
     $("campaignEvaluateHome").onclick = openEvaluation;
-    $("closeCampaign").onclick = () => { sessionStorage.setItem(`campaign-${campaign.id}`, "closed"); $("campaignDialog").close(); };
-    if (!sessionStorage.getItem(`campaign-${campaign.id}`)) $("campaignDialog").showModal();
+    $("closeCampaign").onclick = () => { sessionStorage.setItem(`campaign-${campaign.id}`, "closed"); campaignVideo.pause(); $("campaignDialog").close(); };
+    if (!sessionStorage.getItem(`campaign-${campaign.id}`)) {
+      $("campaignDialog").showModal();
+      if (!matchMedia("(prefers-reduced-motion: reduce)").matches) campaignVideo.play().catch(() => {}); else campaignVideo.pause();
+    }
+  }
+
+  function setupPdfViewer() {
+    const dialog = $("pdfDialog");
+    const frame = $("pdfFrame");
+    const open = (url, title = "Vista previa PDF", downloadName = "documento.pdf") => {
+      frame.src = url;
+      $("pdfDialogTitle").textContent = title;
+      $("openPdfExternal").href = url;
+      $("downloadPdfTarget").href = url;
+      $("downloadPdfTarget").download = downloadName;
+      if (!dialog.open) dialog.showModal();
+    };
+    window.PdfViewer = {open};
+    document.querySelectorAll(".pdf-preview-link").forEach(link => link.addEventListener("click", event => {
+      event.preventDefault();
+      open(link.href, link.dataset.pdfTitle || link.textContent.trim(), link.href.split("/").pop() || "documento.pdf");
+    }));
+    $("closePdfDialog").onclick = () => dialog.close();
+    dialog.addEventListener("close", () => { frame.src = "about:blank"; });
   }
 
   function normalize(value) {
@@ -357,6 +400,7 @@
   $("moduleCount").textContent = cms.meta.trainingModules;
   updateResume();
   setupPwaInstall();
+  setupPdfViewer();
   configureCampaign();
   const initialView = location.hash === "#capacitar" ? "training" : location.hash === "#recetario" ? "search" : location.hash === "#objetivos" ? "objectives" : "home";
   showView(initialView, {history: false});

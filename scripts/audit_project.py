@@ -47,6 +47,15 @@ def main() -> None:
     for directory in (ROOT / "assets").rglob("*"):
         if directory.is_dir() and len([entry for entry in directory.iterdir() if entry.is_file()]) >= 100:
             failures.append(f"Carpeta con 100+ archivos: {directory.relative_to(ROOT)}")
+    campaign_video = ROOT / "assets" / "campaigns" / "unicorn-impacto.mp4"
+    campaign_poster = ROOT / "assets" / "campaigns" / "unicorn-impacto-poster.webp"
+    if not campaign_video.is_file() or campaign_video.stat().st_size >= 150_000:
+        failures.append("Video Unicorn ausente o sin optimizar")
+    try:
+        with Image.open(campaign_poster) as image:
+            image.verify()
+    except Exception as exc:
+        failures.append(f"Póster del video Unicorn inválido: {exc}")
     html = (ROOT / "index.html").read_text(encoding="utf-8")
     for relative in re.findall(r'(?:src|href)="([^"#]+)"', html):
         if not relative.startswith(("http://", "https://")) and not (ROOT / relative).exists():

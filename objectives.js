@@ -108,12 +108,12 @@
   }
   function findStores(query) {
     const needle = normalize(query.replace("·", " "));
-    if (!needle) return template.stores.slice(0, 10);
+    if (!needle) return [];
     return template.stores.map(item => {
       const name = normalize(item.name);
       const score = item.ceco === needle ? -1 : item.ceco.startsWith(needle) ? 0 : name.startsWith(needle) ? 1 : name.includes(needle) ? 2 : 9;
       return {item, score};
-    }).filter(result => result.score < 9).sort((a, b) => a.score - b.score || Number(a.item.ceco) - Number(b.item.ceco)).slice(0, 10).map(result => result.item);
+    }).filter(result => result.score < 9).sort((a, b) => a.score - b.score || Number(a.item.ceco) - Number(b.item.ceco)).slice(0, 6).map(result => result.item);
   }
   function updateActiveResult() {
     $("objectiveStoreResults").querySelectorAll("button").forEach((button, index) => {
@@ -124,6 +124,12 @@
     });
   }
   function renderSearchResults(query = "") {
+    if (normalize(query).length < 2) {
+      resultItems = [];
+      activeResult = -1;
+      hideSearchResults();
+      return;
+    }
     resultItems = findStores(query);
     activeResult = resultItems.length ? 0 : -1;
     const results = $("objectiveStoreResults");
@@ -147,7 +153,7 @@
     save();
     $("objectiveStoreSearch").value = "";
     $("objectiveStoreSearch").focus();
-    renderSearchResults();
+    hideSearchResults();
     render();
   }
   function summary(print = false) {
@@ -166,6 +172,13 @@
     }).length;
     return `${completed} de ${template.products.length} objetivos logrados`;
   }
+  function dayReachCompact(dayId) {
+    const completed = template.products.filter(product => {
+      const value = entry(dayId, product.id);
+      return value.goal > 0 && value.actual >= value.goal;
+    }).length;
+    return `${completed}/${template.products.length} logrados`;
+  }
   function days() {
     return template.days.map((day, index) => `<section class="objective-day" id="objective-${day.id}"><header><span>${index + 1}</span><div><small>${index === 0 ? "ANTICIPA Y MIDE" : "MIDE Y COMPARTE"}</small><h2>${esc(day.label)}</h2></div><div class="objective-day-actions"><strong>${dayReach(day.id)}</strong><button type="button" data-share-day="${day.id}">Compartir día</button></div></header><div class="day-products">${template.products.map(product => {
       const value = entry(day.id, product.id);
@@ -175,16 +188,16 @@
     }).join("")}</div></section>`).join("");
   }
   function jump() {
-    return template.days.map((day, index) => `<button type="button" data-target="objective-${day.id}"><span>${index + 1}</span><b>${esc(day.label.split(" de ")[0])}</b><small>${esc(dayReach(day.id))}</small></button>`).join("");
+    return template.days.map((day, index) => `<button type="button" data-target="objective-${day.id}"><span>${index + 1}</span><b>${esc(day.label.split(" de ")[0])}</b><small>${esc(dayReachCompact(day.id))}</small></button>`).join("");
   }
   function renderLoading() {
     $("objectiveEmpty").hidden = false;
     $("objectiveEmpty").innerHTML = `<span class="objective-loader">◎</span><h2>Cargando objetivos</h2><p>Buscando el paquete del CeCo ${esc(selectedCeco)}…</p>`;
     $("objectiveWorkspace").hidden = true;
   }
-  function renderEmpty(message = "Busca por CeCo o nombre. Los objetivos se cargarán automáticamente.") {
+  function renderEmpty(message = "Escribe al menos 2 caracteres del CeCo o nombre. Verás máximo 6 resultados, sin listas largas.") {
     $("objectiveEmpty").hidden = false;
-    $("objectiveEmpty").innerHTML = `<span>◎</span><h2>Elige una tienda para comenzar</h2><p>${esc(message)}</p>`;
+    $("objectiveEmpty").innerHTML = `<span>1</span><h2>Coloca tu CeCo arriba</h2><p>${esc(message)}</p><div class="objective-empty-path"><b>CeCo</b><i>→</i><b>Conoce tus objetivos</b><i>→</i><b>Mide tu alcance</b></div>`;
     $("objectiveWorkspace").hidden = true;
   }
   function render() {
@@ -199,6 +212,7 @@
     $("printObjectives").disabled = !ready;
     $("shareObjectives").disabled = !ready;
     $("downloadObjectivePdf").hidden = !ready;
+    $("previewObjectivePdf").hidden = !ready;
     $("clearObjectiveStore").hidden = !ready;
     $("objectiveStoreMeta").innerHTML = ready ? `<small>CeCo seleccionado</small><b>${store.ceco}</b><span>${esc(store.name)}</span>` : "<small>CeCo seleccionado</small><b>—</b><span>Sin tienda</span>";
     if (!ready) { renderEmpty(); return; }
@@ -264,7 +278,7 @@
     if (wired) return;
     wired = true;
     const search = $("objectiveStoreSearch");
-    search.addEventListener("focus", () => {if (store) search.select(); renderSearchResults(store ? "" : search.value);});
+    search.addEventListener("focus", () => {if (store) search.select(); if (normalize(search.value).length >= 2 && !store) renderSearchResults(search.value);});
     search.addEventListener("input", event => renderSearchResults(event.target.value));
     search.addEventListener("blur", () => setTimeout(hideSearchResults, 120));
     search.addEventListener("keydown", event => {
@@ -278,6 +292,11 @@
       } else if (event.key === "Escape") hideSearchResults();
     });
     $("clearObjectiveStore").onclick = clearStore;
+    $("previewObjectivePdf").onclick = () => {
+      if (!store) return;
+      const filename = `${store.ceco}_${safeName(store.name)}_Objetivos_Unicorn.pdf`;
+      window.PdfViewer?.open(store.objectivePdf, `Objetivos | ${store.ceco} ${store.name}`, filename);
+    };
     $("printObjectives").onclick = printReport;
     $("shareObjectives").onclick = () => shareResults();
     if (selectedCeco && indexStore(selectedCeco)) selectStore(selectedCeco); else render();

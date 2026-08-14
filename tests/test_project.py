@@ -116,6 +116,7 @@ def test_pwa_is_ios_ready_offline_and_contextual():
     worker = (ROOT / "sw.js").read_text(encoding="utf-8")
     assert "self.skipWaiting()" in worker and "self.clients.claim()" in worker
     assert "offline.html" in worker
+    assert "unicorn-impacto.mp4" in worker and "unicorn-impacto-poster.webp" in worker
     app = (ROOT / "app.js").read_text(encoding="utf-8")
     assert "campaignResourceCopy" in app and "unicornQuiz" in app
     assert "beforeinstallprompt" in app and "Agregar a inicio" in app
@@ -145,15 +146,19 @@ def test_objectives_engine_and_practice_evidence_are_integrated():
     html = (ROOT / "index.html").read_text(encoding="utf-8")
     assert 'id="objectivesView"' in html and 'id="objectiveStoreSearch"' in html
     assert 'id="objectiveStoreResults"' in html and 'id="downloadObjectivePdf"' in html
+    assert 'id="previewObjectivePdf"' in html and 'id="pdfDialog"' in html
     assert "terminos-y-condiciones-unicorn.pdf" in html
     assert "campaign-terms-callout" in html and 'id="shareObjectives"' in html
+    assert 'id="campaignVideo"' in html and "autoplay muted loop playsinline" in html
     app = (ROOT / "app.js").read_text(encoding="utf-8")
     assert 'id="evaluationPhoto"' in app and 'capture="environment"' in app
     assert "renderEvaluationStart" in app and "Tomar foto de práctica" in app
+    assert "setupPdfViewer" in app and "window.PdfViewer" in app and "toggleCampaignVideo" in app
     engine = (ROOT / "objectives.js").read_text(encoding="utf-8")
     assert "window.OBJECTIVES_TEMPLATE" in (ROOT / "data" / "objectives.js").read_text(encoding="utf-8")
     assert "window.print()" in engine and "reportFileName" in engine and "captures" in engine
     assert "loadShard" in engine and "navigator.share" in engine and "findStores" in engine
+    assert ".slice(0, 6)" in engine and "normalize(query).length < 2" in engine
 
 
 def test_python_objectives_exporter_is_safe_and_available():
@@ -162,6 +167,19 @@ def test_python_objectives_exporter_is_safe_and_available():
     assert "schemaVersion" in script and "ZoneInfo" in script and "dynamic_output" in script
     builder = (ROOT / "scripts" / "build_objectives.py").read_text(encoding="utf-8")
     assert "load_stores" in builder and "generate_pdfs" in builder and "objectives-data" in builder
+    video_optimizer = (ROOT / "scripts" / "optimize_campaign_video.py").read_text(encoding="utf-8")
+    assert "fps=24" in video_optimizer and "+faststart" in video_optimizer and "libx264" in video_optimizer
+
+
+def test_campaign_video_is_lightweight_and_has_poster():
+    from PIL import Image
+
+    video = ROOT / "assets" / "campaigns" / "unicorn-impacto.mp4"
+    poster = ROOT / "assets" / "campaigns" / "unicorn-impacto-poster.webp"
+    assert video.is_file() and video.stat().st_size < 150_000
+    assert poster.is_file() and poster.stat().st_size < 20_000
+    with Image.open(poster) as image:
+        assert image.size == (360, 640)
 
 
 def test_python_objectives_exporter_generates_one_page_pdf(tmp_path):

@@ -43,7 +43,7 @@
           <span class="campaign-pill">PRIORIDAD · 13–17 AGO</span>
           <h2 id="campaignSpotlightTitle">Semana Unicorn</h2>
           <p>Domina Salsa Azul Drizzle y Unicorn Frappuccino. Únicamente Grande.</p>
-          <div><button class="primary-button" id="campaignPrimary" type="button">Practicar Unicorn</button><button id="campaignSecondary" type="button">Preparar Salsa Azul</button><button id="campaignEvaluateHome" type="button">Evaluar preparación</button><a class="campaign-terms-link" href="https://sbx-mx.github.io/Manual_Recetario/assets/documents/terminos-y-condiciones-unicorn.pdf" target="_blank" rel="noopener">Ver términos y condiciones</a></div>
+          <div><button class="primary-button" id="campaignPrimary" type="button">Practicar Unicorn</button><button id="campaignSecondary" type="button">Preparar Salsa Azul</button><button id="campaignEvaluateHome" type="button">Evaluar preparación</button><a class="campaign-terms-link pdf-preview-link" href="https://sbx-mx.github.io/Manual_Recetario/assets/documents/terminos-y-condiciones-unicorn.pdf" data-pdf-title="Términos y condiciones">Ver términos y condiciones</a></div>
         </div>
       </section>
       <div class="mode-grid">
@@ -113,13 +113,14 @@
       <div class="objective-shift-flow" aria-label="Guía del turno"><article><span>ANTES DEL TURNO</span><b>Anticipa objetivos</b><small>Selecciona tu CeCo y alinea las tres metas con el equipo.</small></article><article><span>AL FINALIZAR</span><b>Mide tu real</b><small>Captura ADT, Unicorn y Cake Pop del día.</small></article><article><span>CIERRE</span><b>Exporta y comparte</b><small>Genera el PDF o usa el menú de compartir del celular.</small></article></div>
       <div class="objective-toolbar">
         <div class="objective-store-search">
-          <label for="objectiveStoreSearch"><span>Buscar tienda</span><small>Escribe el CeCo o nombre</small></label>
-          <div class="objective-store-searchbox"><span aria-hidden="true">⌕</span><input id="objectiveStoreSearch" type="search" inputmode="search" autocomplete="off" placeholder="Ej. 38483 o Forum Buenavista" role="combobox" aria-autocomplete="list" aria-controls="objectiveStoreResults" aria-expanded="false"><button id="clearObjectiveStore" type="button" hidden>Limpiar</button></div>
+          <label for="objectiveStoreSearch"><span>1. Coloca tu CeCo</span><small>También puedes escribir el nombre</small></label>
+          <div class="objective-store-searchbox"><span aria-hidden="true">⌕</span><input id="objectiveStoreSearch" type="search" inputmode="numeric" autocomplete="off" placeholder="Escribe 5 dígitos, ej. 38483" role="combobox" aria-autocomplete="list" aria-controls="objectiveStoreResults" aria-expanded="false"><button id="clearObjectiveStore" type="button" hidden>Cambiar</button></div>
+          <p class="objective-store-hint">Los resultados aparecen al escribir 2 caracteres. Sin listas largas ni desplazamiento interno.</p>
           <div class="objective-store-results" id="objectiveStoreResults" role="listbox" aria-label="Tiendas ordenadas por CeCo" hidden></div>
         </div>
         <div class="objective-store-meta" id="objectiveStoreMeta" aria-live="polite"><small>CeCo seleccionado</small><b>—</b><span>Sin tienda</span></div>
       </div>
-      <section class="objective-empty" id="objectiveEmpty"><span>◎</span><h2>Elige una tienda para comenzar</h2><p>Los objetivos de los tres días se llenarán automáticamente.</p></section>
+      <section class="objective-empty" id="objectiveEmpty"><span>1</span><h2>Coloca tu CeCo arriba</h2><p>Encuentra tu tienda y conoce tus objetivos diarios en segundos.</p></section>
       <div id="objectiveWorkspace" hidden>
         <div class="objective-section-title"><div><small>RESULTADO DE CAMPAÑA</small><h2>Avance acumulado</h2></div><p>15 al 17 de agosto</p></div>
         <div class="objective-summary" id="objectiveSummary" aria-live="polite"></div>
@@ -127,16 +128,23 @@
         <div class="objective-days" id="objectiveDays"></div>
       </div>
       <div class="objective-actions">
-        <a id="downloadObjectivePdf" class="objective-download" href="#" download hidden>Descargar objetivos PDF</a>
+        <button class="primary-button" id="previewObjectivePdf" type="button" hidden>Conoce tus objetivos</button>
+        <a id="downloadObjectivePdf" class="objective-download" href="#" download hidden>Descargar objetivos</a>
         <button class="primary-button" id="printObjectives" type="button" disabled>Exportar avance PDF</button>
         <button id="shareObjectives" type="button" disabled>Compartir cierre</button>
-        <a class="objective-download secondary" href="https://sbx-mx.github.io/Manual_Recetario/assets/documents/terminos-y-condiciones-unicorn.pdf" target="_blank" rel="noopener">Ver términos y condiciones</a>
+        <a class="objective-download secondary pdf-preview-link" href="https://sbx-mx.github.io/Manual_Recetario/assets/documents/terminos-y-condiciones-unicorn.pdf" data-pdf-title="Términos y condiciones">Ver términos y condiciones</a>
       </div>
       <p class="objective-note">El avance es real ÷ objetivo. La validación oficial de resultados corresponde a Operaciones y Finanzas.</p>
     </section>
   </main>
 
   <section id="objectivePrintReport" class="objective-print-report" aria-hidden="true"></section>
+
+  <dialog id="pdfDialog" class="pdf-dialog">
+    <header><div><span>DOCUMENTO</span><h2 id="pdfDialogTitle">Vista previa PDF</h2></div><button id="closePdfDialog" type="button" aria-label="Cerrar PDF">×</button></header>
+    <div class="pdf-frame-wrap"><iframe id="pdfFrame" title="Vista previa del documento PDF"></iframe><div class="pdf-frame-fallback"><b>¿No ves el documento?</b><span>Ábrelo en otra pestaña o descárgalo.</span></div></div>
+    <footer><small>Presiona Esc o el botón × para cerrar</small><div><a id="openPdfExternal" href="#" target="_blank" rel="noopener">Abrir aparte</a><a id="downloadPdfTarget" class="primary-button" href="#" download>Descargar PDF</a></div></footer>
+  </dialog>
 
   <footer>
     <span>Diseñado: Jorge Alcantar Aguiar &amp; Enrique César Flores</span>
@@ -157,14 +165,14 @@
 
   <dialog id="campaignDialog" class="campaign-dialog">
     <button class="dialog-close" id="closeCampaign" type="button" aria-label="Cerrar">×</button>
-    <div class="campaign-dialog-hero"><img id="campaignHero" alt="Unicorn Frappuccino"></div>
+    <div class="campaign-dialog-hero"><video id="campaignVideo" autoplay muted loop playsinline preload="metadata" poster="assets/campaigns/unicorn-impacto-poster.webp" aria-label="Animación de campaña Unicorn"><source src="assets/campaigns/unicorn-impacto.mp4" type="video/mp4"></video><img id="campaignHero" alt="Unicorn Frappuccino" hidden><button id="toggleCampaignVideo" type="button">Pausar animación</button></div>
     <div class="campaign-dialog-copy">
       <span class="campaign-pill">VENTANA OPERATIVA · 13–17 AGO</span>
       <h2 id="campaignTitle">Semana Unicorn</h2>
       <p id="campaignSubtitle">Practica Unicorn y Salsa Azul antes del servicio.</p>
       <div class="campaign-facts"><span><b>Grande</b>Único tamaño</span><span><b>24 h</b>Salsa Azul</span><span><b>1 bebida</b>Por licuadora</span></div>
       <div class="campaign-actions"><button class="primary-button" id="campaignDialogPrimary" type="button">Practicar Unicorn</button><button id="campaignDialogSecondary" type="button">Preparar Salsa Azul</button><button id="campaignEvaluate" type="button">Evaluar preparación</button></div>
-      <a class="campaign-terms-callout" href="https://sbx-mx.github.io/Manual_Recetario/assets/documents/terminos-y-condiciones-unicorn.pdf" target="_blank" rel="noopener"><span>DOCUMENTO IMPORTANTE</span><b>Ver términos y condiciones</b><small>Consulta elegibilidad, premios y criterios del concurso.</small><i>→</i></a>
+      <a class="campaign-terms-callout pdf-preview-link" href="https://sbx-mx.github.io/Manual_Recetario/assets/documents/terminos-y-condiciones-unicorn.pdf" data-pdf-title="Términos y condiciones"><span>DOCUMENTO IMPORTANTE</span><b>Ver términos y condiciones</b><small>Se abre aquí; cierra con Escape o descarga el PDF.</small><i>→</i></a>
       <div class="campaign-resources" id="campaignResources" aria-label="Materiales adicionales"></div>
       <div class="campaign-resource-context" id="campaignResourceContext" aria-live="polite"></div>
     </div>
