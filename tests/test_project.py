@@ -116,7 +116,7 @@ def test_pwa_is_ios_ready_offline_and_contextual():
     worker = (ROOT / "sw.js").read_text(encoding="utf-8")
     assert "self.skipWaiting()" in worker and "self.clients.claim()" in worker
     assert "offline.html" in worker
-    assert "unicorn-impacto-fallback.webp" in worker and "unicorn-impacto-poster.webp" in worker
+    assert "unicorn-impacto-fallback.gif" in worker and "unicorn-impacto-poster.webp" in worker
     assert 'event.request.headers.has("range")' in worker
     app = (ROOT / "app.js").read_text(encoding="utf-8")
     assert "campaignResourceCopy" in app and "unicornQuiz" in app
@@ -160,7 +160,7 @@ def test_objectives_engine_and_practice_evidence_are_integrated():
     assert 'id="evaluationPhoto"' in app and 'capture="environment"' in app
     assert "renderEvaluationStart" in app and "Tomar foto de práctica" in app
     assert "setupPdfViewer" in app and "window.PdfViewer" in app and "toggleCampaignVideo" in app
-    assert "securePdfUrl" in app and "showFallback" in app and "playAnimation" in app
+    assert "securePdfUrl" in app and "showFallback" in app and "playAnimation" in app and "Promise.race" in app
     engine = (ROOT / "objectives.js").read_text(encoding="utf-8")
     assert "window.OBJECTIVES_TEMPLATE" in (ROOT / "data" / "objectives.js").read_text(encoding="utf-8")
     assert "window.print()" in engine and "reportFileName" in engine and "captures" in engine
@@ -183,11 +183,11 @@ def test_python_objectives_exporter_is_safe_and_available():
 def test_campaign_video_is_lightweight_and_has_poster():
     from PIL import Image
 
-    video = ROOT / "assets" / "campaigns" / "unicorn-impacto-v2.mp4"
-    fallback = ROOT / "assets" / "campaigns" / "unicorn-impacto-fallback.webp"
+    video = ROOT / "assets" / "campaigns" / "unicorn-impacto-v3.mp4"
+    fallback = ROOT / "assets" / "campaigns" / "unicorn-impacto-fallback.gif"
     poster = ROOT / "assets" / "campaigns" / "unicorn-impacto-poster.webp"
     assert video.is_file() and video.stat().st_size < 150_000
-    assert fallback.is_file() and fallback.stat().st_size < 250_000
+    assert fallback.is_file() and fallback.stat().st_size < 600_000
     assert poster.is_file() and poster.stat().st_size < 20_000
     with Image.open(poster) as image:
         assert image.size == (360, 640)

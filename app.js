@@ -59,8 +59,8 @@
     const campaignVideo = $("campaignVideo");
     const campaignFallback = $("campaignAnimationFallback");
     const campaignHero = $("campaignHero");
-    campaignVideo.hidden = false;
-    campaignFallback.hidden = true;
+    campaignVideo.hidden = true;
+    campaignFallback.hidden = false;
     campaignHero.hidden = true;
     const showFallback = () => {
       campaignVideo.pause();
@@ -71,12 +71,19 @@
     };
     const playAnimation = async () => {
       campaignHero.hidden = true;
-      campaignFallback.hidden = true;
-      campaignVideo.hidden = false;
+      campaignFallback.hidden = false;
+      campaignVideo.hidden = true;
       campaignVideo.muted = true;
       campaignVideo.defaultMuted = true;
       try {
-        await campaignVideo.play();
+        const started = campaignVideo.play();
+        await Promise.race([
+          started,
+          new Promise((_, reject) => setTimeout(() => reject(new Error("Tiempo de carga agotado")), 2500))
+        ]);
+        if (campaignVideo.paused || campaignVideo.readyState < 2) throw new Error("Video no disponible");
+        campaignFallback.hidden = true;
+        campaignVideo.hidden = false;
       } catch {
         showFallback();
       }
@@ -112,7 +119,11 @@
       if (campaignVideo.hidden || campaignVideo.paused) playAnimation();
       else campaignVideo.pause();
     };
-    campaignVideo.addEventListener("play", () => $("toggleCampaignVideo").textContent = "Pausar animación");
+    campaignVideo.addEventListener("playing", () => {
+      campaignFallback.hidden = true;
+      campaignVideo.hidden = false;
+      $("toggleCampaignVideo").textContent = "Pausar animación";
+    });
     campaignVideo.addEventListener("pause", () => { if (campaignFallback.hidden) $("toggleCampaignVideo").textContent = "Reproducir animación"; });
     campaignVideo.addEventListener("error", showFallback);
     $("campaignObjectives").onclick = () => { campaignVideo.pause(); $("campaignDialog").close(); showView("objectives"); };
