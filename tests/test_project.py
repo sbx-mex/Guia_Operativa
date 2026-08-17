@@ -76,6 +76,24 @@ def test_catalog_has_names_unique_ids_and_operational_categories():
     assert all(item["name"].strip() for item in catalog)
     assert len({item["id"] for item in catalog}) == len(catalog)
     assert {"Bebidas", "Procesos", "Alimentos"}.issubset({item["category"] for item in catalog})
+    assert {
+        "pumpkin-spice-latte", "pumpkin-spice-latte-helado", "pumpkin-spice-frappuccino",
+        "cold-brew-pumpkin-cold-foam", "chai-latte-helado-pumpkin-cold-foam", "cold-foam-pumpkin",
+        "baguette-clasica", "baguette-espanola", "bagel-jamon-queso", "croissant-jamon-queso",
+    }.issubset({item["id"] for item in catalog})
+
+
+def test_new_visual_recipes_are_lightweight_and_split_safely():
+    data = load()
+    visual = [item for item in data["catalog"] if "Pumpkin" in item["subcategory"] or item["subcategory"] == "Ensamble"]
+    assert len(visual) == 10
+    for item in visual:
+        product = ROOT / item["productImage"]
+        reference = ROOT / item["referenceImage"]
+        assert product.stat().st_size < 250_000
+        assert reference.stat().st_size < 500_000
+        with Image.open(product) as image:
+            assert image.size == (720, 720)
 
 
 def test_html_references_and_accessibility_landmarks_exist():

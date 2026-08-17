@@ -17,10 +17,18 @@ def main() -> None:
     data = load_cms()
     failures: list[str] = []
     warnings: list[str] = []
+    required_visual_recipes = {
+        "pumpkin-spice-latte", "pumpkin-spice-latte-helado", "pumpkin-spice-frappuccino",
+        "cold-brew-pumpkin-cold-foam", "chai-latte-helado-pumpkin-cold-foam", "cold-foam-pumpkin",
+        "baguette-clasica", "baguette-espanola", "bagel-jamon-queso", "croissant-jamon-queso",
+    }
     if any(not item["name"].strip() for item in data["catalog"]):
         failures.append("El catálogo contiene nombres vacíos")
     if len({item["id"] for item in data["catalog"]}) != len(data["catalog"]):
         failures.append("El catálogo contiene IDs duplicados")
+    missing_visual_recipes = required_visual_recipes - {item["id"] for item in data["catalog"]}
+    if missing_visual_recipes:
+        failures.append(f"Faltan recetas visuales: {sorted(missing_visual_recipes)}")
     if not {"Bebidas", "Procesos", "Alimentos"}.issubset({item["category"] for item in data["catalog"]}):
         failures.append("Falta una categoría operativa obligatoria")
     media = {(item[key], item["id"]) for item in data["catalog"] for key in ("productImage", "referenceImage")}
@@ -105,7 +113,7 @@ def main() -> None:
     controls = {"cms_source": data["meta"]["source"], "modules": len(data["contents"]), "steps": len(data["steps"]),
                 "catalog_items": len(data["catalog"]), "media_checked": len(media), "failures": len(failures),
                 "routes": len({route for item in data["contents"] for route in item["routes"].values()}),
-                "warnings": len(warnings), "status": "OK" if not failures else "ERROR"}
+                "visual_recipes": len(required_visual_recipes), "warnings": len(warnings), "status": "OK" if not failures else "ERROR"}
     print(json.dumps(controls, ensure_ascii=False))
     for warning in warnings:
         print(f"::warning::{warning}")

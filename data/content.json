@@ -1,7 +1,7 @@
 {
   "meta": {
     "version": "4.0.0",
-    "catalogItems": 90,
+    "catalogItems": 100,
     "trainingModules": 90,
     "source": "outputs/CMS_Guia_Operativa_v2.xlsx",
     "campaigns": [
@@ -841,6 +841,96 @@
       "productImage": "assets/products/temporada/vainilla-lavanda-latte.webp",
       "referenceImage": "assets/references/temporada/vainilla-lavanda-latte.webp",
       "search": "Vainilla Lavanda Latte Bebidas Temporada · lavanda Bebidas Temporada · W33"
+    },
+    {
+      "id": "pumpkin-spice-latte",
+      "name": "Pumpkin Spice Latte",
+      "category": "Bebidas",
+      "subcategory": "Temporada · Pumpkin",
+      "productImage": "assets/products/temporada/pumpkin-spice-latte.webp",
+      "referenceImage": "assets/references/temporada/pumpkin-spice-latte.webp",
+      "search": "Pumpkin Spice Latte Bebidas Temporada · Pumpkin Recetas Pumpkin · Semana 34"
+    },
+    {
+      "id": "pumpkin-spice-latte-helado",
+      "name": "Pumpkin Spice Latte Helado",
+      "category": "Bebidas",
+      "subcategory": "Temporada · Pumpkin",
+      "productImage": "assets/products/temporada/pumpkin-spice-latte-helado.webp",
+      "referenceImage": "assets/references/temporada/pumpkin-spice-latte-helado.webp",
+      "search": "Pumpkin Spice Latte Helado Bebidas Temporada · Pumpkin Recetas Pumpkin · Semana 34"
+    },
+    {
+      "id": "pumpkin-spice-frappuccino",
+      "name": "Pumpkin Spice Frappuccino",
+      "category": "Bebidas",
+      "subcategory": "Temporada · Pumpkin",
+      "productImage": "assets/products/temporada/pumpkin-spice-frappuccino.webp",
+      "referenceImage": "assets/references/temporada/pumpkin-spice-frappuccino.webp",
+      "search": "Pumpkin Spice Frappuccino Bebidas Temporada · Pumpkin Recetas Pumpkin · Semana 34"
+    },
+    {
+      "id": "cold-brew-pumpkin-cold-foam",
+      "name": "Cold Brew Pumpkin Cold Foam",
+      "category": "Bebidas",
+      "subcategory": "Temporada · Pumpkin",
+      "productImage": "assets/products/temporada/cold-brew-pumpkin-cold-foam.webp",
+      "referenceImage": "assets/references/temporada/cold-brew-pumpkin-cold-foam.webp",
+      "search": "Cold Brew Pumpkin Cold Foam Bebidas Temporada · Pumpkin Recetas Pumpkin · Semana 34"
+    },
+    {
+      "id": "chai-latte-helado-pumpkin-cold-foam",
+      "name": "Chai Latte Helado Pumpkin Cold Foam",
+      "category": "Bebidas",
+      "subcategory": "Temporada · Pumpkin",
+      "productImage": "assets/products/temporada/chai-latte-helado-pumpkin-cold-foam.webp",
+      "referenceImage": "assets/references/temporada/chai-latte-helado-pumpkin-cold-foam.webp",
+      "search": "Chai Latte Helado Pumpkin Cold Foam Bebidas Temporada · Pumpkin Recetas Pumpkin · Semana 34"
+    },
+    {
+      "id": "cold-foam-pumpkin",
+      "name": "Cold Foam de Pumpkin",
+      "category": "Procesos",
+      "subcategory": "Temporada · Pumpkin",
+      "productImage": "assets/products/temporada/cold-foam-pumpkin.webp",
+      "referenceImage": "assets/references/temporada/cold-foam-pumpkin.webp",
+      "search": "Cold Foam de Pumpkin Procesos Temporada · Pumpkin Recetas Pumpkin · Semana 34"
+    },
+    {
+      "id": "baguette-clasica",
+      "name": "Baguette Clásica",
+      "category": "Alimentos",
+      "subcategory": "Ensamble",
+      "productImage": "assets/products/alimentos/baguette-clasica.webp",
+      "referenceImage": "assets/references/alimentos/baguette-clasica.webp",
+      "search": "Baguette Clásica Alimentos Ensamble Guías de ensamble de alimentos"
+    },
+    {
+      "id": "baguette-espanola",
+      "name": "Baguette Española",
+      "category": "Alimentos",
+      "subcategory": "Ensamble",
+      "productImage": "assets/products/alimentos/baguette-espanola.webp",
+      "referenceImage": "assets/references/alimentos/baguette-espanola.webp",
+      "search": "Baguette Española Alimentos Ensamble Guías de ensamble de alimentos"
+    },
+    {
+      "id": "bagel-jamon-queso",
+      "name": "Bagel de Jamón y Queso",
+      "category": "Alimentos",
+      "subcategory": "Ensamble",
+      "productImage": "assets/products/alimentos/bagel-jamon-queso.webp",
+      "referenceImage": "assets/references/alimentos/bagel-jamon-queso.webp",
+      "search": "Bagel de Jamón y Queso Alimentos Ensamble Guías de ensamble de alimentos"
+    },
+    {
+      "id": "croissant-jamon-queso",
+      "name": "Croissant de Jamón y Queso",
+      "category": "Alimentos",
+      "subcategory": "Ensamble",
+      "productImage": "assets/products/alimentos/croissant-jamon-queso.webp",
+      "referenceImage": "assets/references/alimentos/croissant-jamon-queso.webp",
+      "search": "Croissant de Jamón y Queso Alimentos Ensamble Guías de ensamble de alimentos"
     }
   ],
   "contents": [
