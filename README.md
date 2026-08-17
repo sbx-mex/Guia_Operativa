@@ -1,60 +1,202 @@
-# Guía Operativa · Capacitación
+<!doctype html>
+<html lang="es-MX">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#006241">
+  <meta name="description" content="Capacitación operativa guiada para bebidas, procesos y alimentos.">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Guía Operativa">
+  <meta name="mobile-web-app-capable" content="yes">
+  <title>Guía Operativa · Capacitación</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="assets/icon-192.png">
+  <link rel="apple-touch-icon" href="assets/icon-192.png">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Saltar al contenido</a>
+  <header class="app-header">
+    <button class="brand" id="homeButton" type="button" aria-label="Ir al inicio">
+      <img src="assets/icon-192.png" alt="">
+      <span><b>Guía Operativa</b><small>Capacitación paso a paso</small></span>
+    </button>
+    <nav aria-label="Navegación principal">
+      <button class="nav-button" data-view="training" type="button">Capacitarme</button>
+      <button class="nav-button" data-view="search" type="button">Buscar receta</button>
+      <button class="nav-button nav-priority" data-view="objectives" type="button">Avance 15–17</button>
+      <button class="install-button" id="installApp" type="button">Instalar app</button>
+    </nav>
+  </header>
 
-Aplicación estática para capacitación paso a paso y consulta rápida de recetas. El único motor editable es `outputs/CMS_Guia_Operativa_v2.xlsx`.
+  <main id="main">
+    <section class="view home-view active" id="homeView">
+      <div class="home-copy">
+        <span class="eyebrow">APRENDE · PRACTICA · CONFIRMA</span>
+        <h1>¿Qué necesitas hacer?</h1>
+        <p>Elige una ruta. La guía mostrará sólo lo necesario para avanzar.</p>
+      </div>
+      <section class="campaign-spotlight" id="campaignSpotlight" hidden aria-labelledby="campaignSpotlightTitle">
+        <div class="campaign-art"><img id="campaignSpotlightImage" alt=""></div>
+        <div class="campaign-copy">
+          <span class="campaign-pill">PRIORIDAD · 13–17 AGO</span>
+          <h2 id="campaignSpotlightTitle">Semana Unicorn</h2>
+          <p>Domina Salsa Azul Drizzle y Unicorn Frappuccino. Únicamente Grande.</p>
+          <div><button class="primary-button" id="campaignPrimary" type="button">Practicar Unicorn</button><button id="campaignSecondary" type="button">Preparar Salsa Azul</button><button id="campaignEvaluateHome" type="button">Evaluar preparación</button><a class="campaign-terms-link pdf-preview-link" href="https://sbx-mx.github.io/Manual_Recetario/assets/documents/terminos-y-condiciones-unicorn.pdf" data-pdf-title="Términos y condiciones">Ver términos y condiciones</a></div>
+        </div>
+      </section>
+      <div class="mode-grid">
+        <button class="mode-card training-mode" data-view="training" type="button">
+          <span class="mode-icon">▶</span>
+          <span><b>Capacitarme</b><small>Preparación guiada, un paso a la vez</small></span>
+          <span class="arrow">→</span>
+        </button>
+        <button class="mode-card" data-view="search" type="button">
+          <span class="mode-icon">⌕</span>
+          <span><b>Buscar una receta</b><small>Consulta rápida por nombre o categoría</small></span>
+          <span class="arrow">→</span>
+        </button>
+        <button class="mode-card objective-mode" data-view="objectives" type="button">
+          <span class="mode-icon">◎</span>
+          <span class="objective-mode-copy"><em>AYUDA DE TURNO</em><b>Impulso Unicorn</b><small>Anticipa objetivos, mide el cierre y comparte resultados</small><span><i>1 Objetivos</i><i>2 Reales</i><i>3 PDF</i></span></span>
+          <span class="arrow">→</span>
+        </button>
+      </div>
+      <button class="resume-card" id="resumeTraining" type="button" hidden>
+        <span>Continuar donde me quedé</span><b id="resumeLabel"></b><i>→</i>
+      </button>
+      <div class="home-proof">
+        <div><strong id="catalogCount">0</strong><span>referencias</span></div>
+        <div><strong id="moduleCount">0</strong><span>rutas guiadas</span></div>
+        <div><strong>3</strong><span>áreas operativas</span></div>
+      </div>
+    </section>
 
-## Prioridad Unicorn · 13–17 de agosto
+    <section class="view" id="trainingView">
+      <div class="section-head">
+        <button class="back-link" data-view="home" type="button">← Inicio</button>
+        <span class="eyebrow">ENTRENAMIENTO GUIADO</span>
+        <h1 id="trainingHeading">Elige un área</h1>
+        <p id="trainingIntro">Comienza por el tipo de preparación.</p>
+      </div>
+      <div class="selection-trail" id="selectionTrail" aria-live="polite"></div>
+      <div id="trainingStage"></div>
+    </section>
 
-- **Unicorn Frappuccino:** práctica guiada únicamente en tamaño Grande.
-- **Salsa Azul Drizzle:** preparación separada, mezcla sin grumos y vida útil de 24 horas.
-- Los dosificadores de mocha blanco muestran **6 pumps CBS** y **8 pumps CBS** sin ambigüedad.
-- La ventana emergente se activa del **13 al 17 de agosto** en horario `America/Mexico_City`.
-- La campaña integra contexto para Checklist, Buenas prácticas y Concurso, más una evaluación de cinco reactivos.
-- Las recetas Lavanda W33 quedan disponibles como temporada adicional, sin desplazar la prioridad Unicorn.
+    <section class="view" id="searchView">
+      <div class="section-head search-head">
+        <button class="back-link" data-view="home" type="button">← Inicio</button>
+        <span class="eyebrow">RECETARIO</span>
+        <h1>Encuentra una receta</h1>
+        <p>Busca por nombre, bebida o categoría. Las recetas nuevas aparecen primero.</p>
+      </div>
+      <div class="search-bar">
+        <span aria-hidden="true">⌕</span>
+        <input id="recipeSearch" type="search" placeholder="Ej. pumpkin, baguette, cold brew…" autocomplete="off" aria-label="Buscar receta">
+        <button id="clearSearch" type="button" hidden>Limpiar</button>
+      </div>
+      <div class="filter-row" id="filterRow" aria-label="Filtros de categoría"></div>
+      <div class="filter-row subfilters" id="subfilterRow" aria-label="Filtros de subcategoría" hidden></div>
+      <div class="results-meta"><b id="resultCount">0 recetas</b><span>Producto visible · ficha oficial bajo demanda</span></div>
+      <div class="recipe-grid" id="recipeGrid"></div>
+      <button class="more-button" id="showMore" type="button">Mostrar más</button>
+    </section>
 
-## Flujo seguro
+    <section class="view objectives-view" id="objectivesView">
+      <div class="section-head objective-head">
+        <button class="back-link" data-view="home" type="button">← Inicio</button>
+        <span class="eyebrow">IMPULSO UNICORN · 15, 16 Y 17 DE AGOSTO</span>
+        <h1>Objetivos y avance <span>Unicorn</span></h1>
+        <p>Selecciona tu tienda, conserva la meta diaria y, si lo necesitas, proyecta un real por turno. La app suma y mide el alcance automáticamente.</p>
+      </div>
+      <div class="objective-shift-flow" aria-label="Guía del turno"><article><span>ANTES DEL TURNO</span><b>Conoce la meta diaria</b><small>Selecciona tu CeCo y alinea las tres metas con el equipo.</small></article><article><span>PROYECCIÓN OPCIONAL</span><b>Un renglón por turno</b><small>Captura sólo el real de ADT, Frappuccino y Cake Pop.</small></article><article><span>CUANDO LO NECESITES</span><b>Exporta y comparte</b><small>El PDF funciona lleno o vacío y conserva las metas del día.</small></article></div>
+      <div class="objective-toolbar">
+        <div class="objective-store-search">
+          <label for="objectiveStoreSearch"><span>1. Coloca tu CeCo</span><small>También puedes escribir el nombre</small></label>
+          <div class="objective-store-searchbox"><span aria-hidden="true">⌕</span><input id="objectiveStoreSearch" type="search" inputmode="numeric" autocomplete="off" placeholder="Escribe 5 dígitos, ej. 38483" role="combobox" aria-autocomplete="list" aria-controls="objectiveStoreResults" aria-expanded="false"><button id="clearObjectiveStore" type="button" hidden>Cambiar</button></div>
+          <p class="objective-store-hint">Los resultados aparecen al escribir 2 caracteres. Sin listas largas ni desplazamiento interno.</p>
+          <div class="objective-store-results" id="objectiveStoreResults" role="listbox" aria-label="Tiendas ordenadas por CeCo" hidden></div>
+        </div>
+        <div class="objective-store-meta" id="objectiveStoreMeta" aria-live="polite"><small>CeCo seleccionado</small><b>—</b><span>Sin tienda</span></div>
+      </div>
+      <section class="objective-empty" id="objectiveEmpty"><span>1</span><h2>Coloca tu CeCo arriba</h2><p>Encuentra tu tienda y conoce tus objetivos diarios en segundos.</p></section>
+      <div id="objectiveWorkspace" hidden>
+        <div class="objective-section-title"><div><small>RESULTADO DE CAMPAÑA</small><h2>Avance acumulado</h2></div><p>15 al 17 de agosto</p></div>
+        <div class="objective-summary" id="objectiveSummary" aria-live="polite"></div>
+        <nav class="day-jump" id="objectiveDayJump" aria-label="Ir al día de venta"></nav>
+        <div class="objective-days" id="objectiveDays"></div>
+      </div>
+      <div class="objective-actions">
+        <button class="primary-button" id="previewObjectivePdf" type="button" hidden>Conoce tus objetivos</button>
+        <a id="downloadObjectivePdf" class="objective-download" href="#" download hidden>Descargar objetivos</a>
+        <button class="primary-button" id="printObjectives" type="button" disabled>Exportar avance PDF</button>
+        <button id="shareObjectives" type="button" disabled>Compartir cierre</button>
+        <a class="objective-download secondary pdf-preview-link" href="https://sbx-mx.github.io/Manual_Recetario/assets/documents/terminos-y-condiciones-unicorn.pdf" data-pdf-title="Términos y condiciones">Ver términos y condiciones</a>
+      </div>
+      <p class="objective-note">El avance es real ÷ objetivo. La validación oficial de resultados corresponde a Operaciones y Finanzas.</p>
+    </section>
+  </main>
 
-1. Edita el CMS sin cambiar nombres de pestañas ni encabezados.
-2. Ejecuta `python scripts/build_content.py`.
-3. Valida con `python scripts/audit_project.py` y `python -m pytest -q`.
-4. Sube el proyecto. GitHub Actions regenera, audita, prueba y publica únicamente el sitio limpio.
+  <section id="objectivePrintReport" class="objective-print-report" aria-hidden="true"></section>
 
-El workflow instala siempre `requirements.txt`; esto incluye `openpyxl`, requerido para leer el CMS Excel.
+  <dialog id="pdfDialog" class="pdf-dialog">
+    <header><div><span>DOCUMENTO</span><h2 id="pdfDialogTitle">Vista previa PDF</h2></div><button id="closePdfDialog" type="button" aria-label="Cerrar PDF">×</button></header>
+    <div class="pdf-frame-wrap"><iframe id="pdfFrame" title="Vista previa del documento PDF"></iframe><div class="pdf-frame-fallback"><b>¿No ves el documento?</b><span>Ábrelo en otra pestaña o descárgalo.</span></div></div>
+    <footer><small>Presiona Esc o el botón × para cerrar</small><div><a id="openPdfExternal" href="#" target="_blank" rel="noopener">Abrir aparte</a><a id="downloadPdfTarget" class="primary-button" href="#" download>Descargar PDF</a></div></footer>
+  </dialog>
 
-## Objetivos y avance
+  <footer>
+    <span>Diseñado: Jorge Alcantar Aguiar &amp; Enrique César Flores</span>
+    <a href="https://wa.me/message/ENKDSAHYHIGAN1" target="_blank" rel="noopener">Comentarios y/o Sugerencias</a>
+  </footer>
 
-- Abre **Objetivos** desde el menú principal.
-- Selecciona la tienda por CC o nombre. Los objetivos diarios de ADT y los objetivos diarios de Unicorn/Cake Pop se cargan desde `data/objectives.csv`.
-- Actualiza únicamente **Real del día**; el alcance diario y acumulado se recalcula en el dispositivo y queda guardado por tienda.
-- **Descargar objetivos PDF** entrega de inmediato el documento precalculado de la tienda.
-- **Exportar avance a PDF** abre la hoja horizontal con objetivos, reales y alcance para los tres indicadores.
-- **Ver términos y condiciones** descarga una versión optimizada para web del documento oficial.
-- El exportador técnico acepta un JSON compatible mediante `python scripts/export_objectives.py captura.json`. El PDF se guarda automáticamente como `Tienda_Unicorn_Frapp_Cake_Pop.pdf`; también puedes indicar una ruta de salida como segundo argumento.
-- **Compartir en Workvivo** usa el menú nativo del dispositivo; si no está disponible, copia un resumen listo para pegar.
+  <dialog id="referenceDialog" class="reference-dialog">
+    <button class="dialog-close" id="closeDialog" type="button" aria-label="Cerrar">×</button>
+    <div class="dialog-product"><img id="dialogProduct" alt=""></div>
+    <div class="dialog-copy">
+      <span class="eyebrow" id="dialogCategory"></span>
+      <h2 id="dialogTitle"></h2>
+      <p>Referencia rápida</p>
+      <img class="reference-sheet" id="dialogReference" alt="Ficha original de la receta">
+      <button class="primary-button" id="dialogTrain" type="button">Iniciar capacitación</button>
+    </div>
+  </dialog>
 
-Para regenerar el catálogo después de editar el CSV usa `python scripts/build_objectives.py`. Los PDFs ligeros se generan durante `python scripts/prepare_site.py`, por lo que no se almacenan 873 duplicados en el repositorio.
+  <dialog id="campaignDialog" class="campaign-dialog">
+    <button class="dialog-close" id="closeCampaign" type="button" aria-label="Cerrar">×</button>
+    <div class="campaign-dialog-hero"><video id="campaignVideo" autoplay muted loop playsinline webkit-playsinline preload="metadata" poster="assets/campaigns/unicorn-impacto-poster.webp" aria-label="Animación de campaña Unicorn" hidden><source src="assets/campaigns/unicorn-impacto-v3.mp4" type="video/mp4"></video><img id="campaignAnimationFallback" src="assets/campaigns/unicorn-impacto-fallback.gif" alt="Animación de campaña Unicorn"><img id="campaignHero" alt="Unicorn Frappuccino" hidden><button id="toggleCampaignVideo" type="button">Cargar video</button></div>
+    <div class="campaign-dialog-copy">
+      <span class="campaign-pill">VENTANA OPERATIVA · 13–17 AGO</span>
+      <h2 id="campaignTitle">Semana Unicorn</h2>
+      <p id="campaignSubtitle">Practica Unicorn y Salsa Azul antes del servicio.</p>
+      <div class="campaign-facts"><span><b>Grande</b>Único tamaño</span><span><b>24 h</b>Salsa Azul</span><span><b>1 bebida</b>Por licuadora</span></div>
+      <div class="campaign-actions"><button class="primary-button" id="campaignDialogPrimary" type="button">Practicar Unicorn</button><button id="campaignDialogSecondary" type="button">Preparar Salsa Azul</button><button id="campaignObjectives" class="campaign-objectives-button" type="button">Conoce tus objetivos</button><button id="campaignEvaluate" type="button">Evaluar preparación</button></div>
+      <a class="campaign-terms-callout pdf-preview-link" href="https://sbx-mx.github.io/Manual_Recetario/assets/documents/terminos-y-condiciones-unicorn.pdf" data-pdf-title="Términos y condiciones"><span>DOCUMENTO IMPORTANTE</span><b>Ver términos y condiciones</b><small>Se abre aquí; cierra con Escape o descarga el PDF.</small><i>→</i></a>
+      <div class="campaign-resources" id="campaignResources" aria-label="Materiales adicionales"></div>
+      <div class="campaign-resource-context" id="campaignResourceContext" aria-live="polite"></div>
+    </div>
+  </dialog>
 
-La evaluación Unicorn permite registrar a quién se evaluó, fecha/hora automática y una foto opcional de práctica. La foto permanece en la sesión del dispositivo y no se envía a servidores.
+  <dialog id="evaluationDialog" class="evaluation-dialog">
+    <button class="dialog-close" id="closeEvaluation" type="button" aria-label="Cerrar">×</button>
+    <div class="evaluation-head"><span class="campaign-pill">VALIDACIÓN UNICORN</span><b id="evaluationProgress">Comenzar</b></div>
+    <div id="evaluationStage"></div>
+  </dialog>
 
-Si actualizas un repositorio que todavía conserva archivos heredados, ejecuta **Actions → Limpiar archivos obsoletos → Run workflow** y confirma `ELIMINAR`. Sólo se pueden borrar las rutas explícitas de `scripts/cleanup_obsolete.py`.
+  <dialog id="installDialog" class="install-dialog">
+    <button class="dialog-close" id="closeInstall" type="button" aria-label="Cerrar">×</button>
+    <span class="eyebrow">ACCESO RÁPIDO</span>
+    <h2>Instala la Guía Operativa</h2>
+    <div id="installGuide"></div>
+    <button class="primary-button" id="confirmInstall" type="button">Instalar ahora</button>
+  </dialog>
 
-## Diez correcciones integradas
+  <div class="sr-only" id="statusRegion" role="status" aria-live="polite"></div>
 
-1. Restauración de las tres fichas de proceso faltantes, incluida Cold Brew Toddy.
-2. CMS Excel convertido en fuente única del catálogo, módulos, rutas y pasos.
-3. Escritura atómica de `content.json` y `content.js`.
-4. Validación estricta de pestañas, encabezados, IDs, opciones y rutas.
-5. Auditoría de imágenes reales, archivos vacíos, límite de 25 MB y carpetas menores a 100 archivos.
-6. Eliminación de motores Python/JSON duplicados, CMS heredado y medio temporal de cero bytes.
-7. Workflow con dependencias fijadas, caché pip y etapas separadas de generación, auditoría y pruebas.
-8. Publicación mínima mediante `prepare_site.py`, sin CMS, scripts, pruebas ni fuentes privadas.
-9. Navegación con URL, botón Atrás, reanudación y salto automático del selector Grande cuando es la única opción.
-10. PWA para iOS/Android con guía de instalación, atajos, áreas seguras, caché offline y evaluación Unicorn.
-
-## Contenido validado
-
-- 90 referencias visuales.
-- 13 módulos interactivos y 92 pasos.
-- Bebidas, procesos y alimentos.
-- Cajeta Cream omite Roast; Cold Brew conserva parámetros de tanda completa y media.
-
-Ningún archivo del proyecto supera 25 MB.
+  <script src="data/content.js"></script>
+  <script src="data/objectives.js"></script>
+  <script src="objectives.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

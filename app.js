@@ -1,451 +1,257 @@
-(() => {
-  const cms = window.TRAINING_CMS;
-  const $ = id => document.getElementById(id);
-  const state = {
-    view: "home", category: "", content: null, selections: {}, selectorIndex: 0,
-    route: "", step: 0, filter: "Todos", subfilter: "Todas", query: "", visible: 6, timer: null,
-    deferredInstall: null, evaluationIndex: 0, evaluationScore: 0, evaluatedPartner: "", evaluationPhoto: "",
-  };
-  const iconMap = {
-    coffee: "☕", milk: "🥛", pour: "↘", ice: "❄", bottle: "▤", blend: "◎",
-    check: "✓", sauce: "◒", grind: "◉", filter: "▽", water: "◌", tie: "⌁",
-    timer: "◷", store: "▣", freeze: "❄", tray: "▱", layout: "▦", oven: "♨",
-    heat: "⌁", serve: "✓",
-  };
-  const categoryCopy = {
-    Bebidas: ["Bebidas", "Elige una bebida para practicar su secuencia."],
-    Procesos: ["Procesos", "Practica preparación, almacenamiento y controles críticos."],
-    Alimentos: ["Alimentos", "Sigue ensamble y horneo sin perder parámetros."],
-  };
-  const campaignResourceCopy = [
-    {title: "Checklist operativo", description: "Valida personal, insumos, layout y seguimiento antes de abrir."},
-    {title: "Buenas prácticas", description: "Confirma Grande, vida útil de 24 h, smallwares y una bebida por licuadora."},
-    {title: "¡Participa en el concurso!", description: "Informativo importante: revisa la dinámica, reúne a tu equipo y confirma cómo participar.", priority: true},
-  ];
-  const unicornQuiz = [
-    {question: "¿En qué tamaño se prepara Unicorn Frappuccino?", options: ["Alto", "Grande", "Venti"], answer: "Grande", note: "Unicorn se ofrece únicamente en tamaño Grande."},
-    {question: "¿Cuál es la vida útil de Salsa Azul Drizzle?", options: ["12 horas", "24 horas", "48 horas"], answer: "24 horas", note: "Etiqueta la Salsa Azul con vida útil de 24 horas."},
-    {question: "¿Qué dosificador se usa para el mocha blanco de Salsa Azul?", options: ["Pump espresso", "Pump CBS", "Cuchara"], answer: "Pump CBS", note: "Los 6 y 8 pumps indicados son pumps CBS."},
-    {question: "¿Cuántas bebidas Unicorn se preparan a la vez en la licuadora?", options: ["1 bebida", "2 bebidas", "3 bebidas"], answer: "1 bebida", note: "Prepara una sola bebida por ciclo de licuadora."},
-    {question: "¿Qué debes dominar antes del servicio?", options: ["Sólo el concurso", "Salsa Azul y Unicorn", "Sólo etiquetado"], answer: "Salsa Azul y Unicorn", note: "Practica primero Salsa Azul y después la bebida completa."},
-  ];
+from __future__ import annotations
 
-  function localDate(timezone) {
-    return new Intl.DateTimeFormat("en-CA", {timeZone: timezone, year: "numeric", month: "2-digit", day: "2-digit"}).format(new Date());
-  }
-  function activeCampaign() {
-    return (cms.meta.campaigns || []).find(item => {
-      const today = localDate(item.timezone || "America/Mexico_City");
-      return today >= item.start && today <= item.end;
-    });
-  }
-  function launchTraining(id) {
-    showView("training");
-    selectContent(id);
-  }
-  function configureCampaign() {
-    const campaign = activeCampaign();
-    if (!campaign) return;
-    const primary = cms.contents.find(item => item.id === campaign.primary);
-    const secondary = cms.contents.find(item => item.id === campaign.secondary);
-    if (!primary || !secondary) return;
-    $("campaignSpotlight").hidden = false;
-    $("campaignSpotlightImage").src = primary.productImage;
-    $("campaignSpotlightImage").alt = primary.name;
-    $("campaignSpotlightTitle").textContent = campaign.title;
-    $("campaignTitle").textContent = campaign.title;
-    $("campaignSubtitle").textContent = campaign.subtitle;
-    $("campaignHero").src = primary.productImage;
-    const campaignVideo = $("campaignVideo");
-    const campaignFallback = $("campaignAnimationFallback");
-    const campaignHero = $("campaignHero");
-    campaignVideo.hidden = true;
-    campaignFallback.hidden = false;
-    campaignHero.hidden = true;
-    const showFallback = () => {
-      campaignVideo.pause();
-      campaignVideo.hidden = true;
-      campaignHero.hidden = true;
-      campaignFallback.hidden = false;
-      $("toggleCampaignVideo").textContent = "Reintentar video";
-    };
-    const playAnimation = async () => {
-      campaignHero.hidden = true;
-      campaignFallback.hidden = false;
-      campaignVideo.hidden = true;
-      campaignVideo.muted = true;
-      campaignVideo.defaultMuted = true;
-      try {
-        const started = campaignVideo.play();
-        await Promise.race([
-          started,
-          new Promise((_, reject) => setTimeout(() => reject(new Error("Tiempo de carga agotado")), 2500))
-        ]);
-        if (campaignVideo.paused || campaignVideo.readyState < 2) throw new Error("Video no disponible");
-        campaignFallback.hidden = true;
-        campaignVideo.hidden = false;
-      } catch {
-        showFallback();
-      }
-    };
-    const practice = (id, dialog = false) => {
-      if (dialog) {
-        campaignVideo.pause();
-        $("campaignDialog").close();
-      }
-      launchTraining(id);
-    };
-    $("campaignPrimary").onclick = () => practice(primary.id);
-    $("campaignSecondary").onclick = () => practice(secondary.id);
-    $("campaignDialogPrimary").onclick = () => practice(primary.id, true);
-    $("campaignDialogSecondary").onclick = () => practice(secondary.id, true);
-    $("campaignResources").innerHTML = campaign.resources.map((resource, index) => {const copy=campaignResourceCopy[index]||{title:`Material ${index+1}`,description:"Consulta el material de apoyo."};return `<button class="${copy.priority?"campaign-resource-priority":""}" type="button" data-campaign-resource="${index}"><img src="${resource}" alt=""><span>${copy.title}</span><small>${copy.description}</small></button>`;}).join("");
-    const selectResource = (index, showResource = true) => {
-      const context = campaignResourceCopy[index] || {title:`Material ${index+1}`,description:"Consulta el material de apoyo."};
-      if (showResource) {
-        campaignVideo.pause();
-        campaignVideo.hidden = true;
-        campaignFallback.hidden = true;
-        campaignHero.hidden = false;
-        campaignHero.src = campaign.resources[index];
-        campaignHero.alt = context.title;
-      }
-      $("campaignResourceContext").innerHTML = `<b>${context.title}</b><span>${context.description}</span>`;
-      document.querySelectorAll("[data-campaign-resource]").forEach(button => button.classList.toggle("active", Number(button.dataset.campaignResource) === index));
-    };
-    document.querySelectorAll("[data-campaign-resource]").forEach(button => button.addEventListener("click", () => selectResource(Number(button.dataset.campaignResource))));
-    selectResource(0, false);
-    $("toggleCampaignVideo").onclick = () => {
-      if (campaignVideo.hidden || campaignVideo.paused) playAnimation();
-      else campaignVideo.pause();
-    };
-    campaignVideo.addEventListener("playing", () => {
-      campaignFallback.hidden = true;
-      campaignVideo.hidden = false;
-      $("toggleCampaignVideo").textContent = "Pausar animación";
-    });
-    campaignVideo.addEventListener("pause", () => { if (campaignFallback.hidden) $("toggleCampaignVideo").textContent = "Reproducir animación"; });
-    campaignVideo.addEventListener("error", showFallback);
-    $("campaignObjectives").onclick = () => { campaignVideo.pause(); $("campaignDialog").close(); showView("objectives"); };
-    $("campaignEvaluate").onclick = () => { campaignVideo.pause(); $("campaignDialog").close(); openEvaluation(); };
-    $("campaignEvaluateHome").onclick = openEvaluation;
-    $("closeCampaign").onclick = () => { sessionStorage.setItem(`campaign-${campaign.id}`, "closed"); campaignVideo.pause(); $("campaignDialog").close(); };
-    if (!sessionStorage.getItem(`campaign-${campaign.id}`)) {
-      $("campaignDialog").showModal();
-      if (!matchMedia("(prefers-reduced-motion: reduce)").matches) playAnimation(); else campaignVideo.pause();
+import json
+import re
+import subprocess
+import sys
+from pathlib import Path
+
+from openpyxl import load_workbook
+from PIL import Image
+
+ROOT = Path(__file__).resolve().parents[1]
+
+
+def load():
+    return json.loads((ROOT / "data" / "content.json").read_text(encoding="utf-8"))
+
+
+def test_generated_engine_is_synced_with_cms():
+    subprocess.run([sys.executable, "scripts/build_content.py", "--check"], cwd=ROOT, check=True)
+    assert load()["meta"]["source"] == "outputs/CMS_Guia_Operativa_v2.xlsx"
+
+
+def test_cms_has_required_tabs_and_headers():
+    book = load_workbook(ROOT / "outputs" / "CMS_Guia_Operativa_v2.xlsx", read_only=True, data_only=True)
+    expected = {"Instrucciones", "Contenidos", "Selectores", "Opciones", "Rutas", "Pasos", "Equipo", "Normas", "Medios", "Auditoria", "Campanas"}
+    assert expected.issubset(book.sheetnames)
+    assert [cell.value for cell in book["Medios"][4]][:6] == ["ID_MEDIO", "NOMBRE", "CATEGORIA", "SUBCATEGORIA", "IMAGEN_PRODUCTO", "FICHA_REFERENCIA"]
+    book.close()
+
+
+def test_every_catalog_media_exists_and_is_valid():
+    for item in load()["catalog"]:
+        for key in ("productImage", "referenceImage"):
+            path = ROOT / item[key]
+            assert path.exists(), path
+            with Image.open(path) as image:
+                image.verify()
+
+
+def test_process_reference_media_is_packaged():
+    for name in ("cold-brew-toddy.webp", "croissant-mantequilla.webp", "pan-queso.webp"):
+        assert (ROOT / "assets" / "references" / "procesos" / name).is_file()
+
+
+def test_routes_have_sequential_steps():
+    data = load()
+    routes = {route for content in data["contents"] for route in content["routes"].values()}
+    assert routes == {step["route"] for step in data["steps"]}
+    for route in routes:
+        orders = sorted(step["order"] for step in data["steps"] if step["route"] == route)
+        assert orders == list(range(1, len(orders) + 1)), route
+
+
+def test_cream_omits_roast_and_toddy_parameters_are_real():
+    data = load()
+    cream = [step["title"].lower() for step in data["steps"] if step["route"] == "frap-cajeta-cream"]
+    assert cream[0] == "vierte la leche" and not any("roast" in title for title in cream)
+    complete = " ".join(step["values"] for step in data["steps"] if step["route"] == "toddy-completa")
+    half = " ".join(step["values"] for step in data["steps"] if step["route"] == "toddy-media")
+    assert all(value in complete for value in ("5 lb", "7 L", "20 horas", "5 días"))
+    assert all(value in half for value in ("3 lb", "4.5 L", "20 horas", "5 días"))
+
+
+def test_no_obsolete_empty_or_oversized_files():
+    legacy = {"assets/references/frias/frias-06.tmp.webp"}
+    files = [path for path in ROOT.rglob("*") if path.is_file() and not {".git", ".venv", ".venv-ci", "_site"}.intersection(path.parts)
+             and str(path.relative_to(ROOT)).replace("\\", "/") not in legacy]
+    assert all((path.name == ".nojekyll" or path.stat().st_size > 0) and path.stat().st_size < 25 * 1024 * 1024 for path in files)
+    for directory in [path for path in (ROOT / "assets").rglob("*") if path.is_dir()]:
+        assert len([path for path in directory.iterdir() if path.is_file()]) < 100
+
+
+def test_catalog_has_names_unique_ids_and_operational_categories():
+    catalog = load()["catalog"]
+    assert all(item["name"].strip() for item in catalog)
+    assert len({item["id"] for item in catalog}) == len(catalog)
+    assert {"Bebidas", "Procesos", "Alimentos"}.issubset({item["category"] for item in catalog})
+    assert {
+        "pumpkin-spice-latte", "pumpkin-spice-latte-helado", "pumpkin-spice-frappuccino",
+        "cold-brew-pumpkin-cold-foam", "chai-latte-helado-pumpkin-cold-foam", "cold-foam-pumpkin",
+        "baguette-clasica", "baguette-espanola", "bagel-jamon-queso", "croissant-jamon-queso",
+    }.issubset({item["id"] for item in catalog})
+
+
+def test_new_visual_recipes_are_lightweight_and_split_safely():
+    data = load()
+    visual = [item for item in data["catalog"] if "Pumpkin" in item["subcategory"] or item["subcategory"] == "Ensamble"]
+    assert len(visual) == 10
+    for item in visual:
+        product = ROOT / item["productImage"]
+        reference = ROOT / item["referenceImage"]
+        assert product.stat().st_size < 250_000
+        assert reference.stat().st_size < 500_000
+        with Image.open(product) as image:
+            assert image.size == (720, 720)
+
+
+def test_html_references_and_accessibility_landmarks_exist():
+    html = (ROOT / "index.html").read_text(encoding="utf-8")
+    for match in re.findall(r'(?:src|href)="([^"#]+)"', html):
+        if not match.startswith(("http://", "https://")):
+            assert (ROOT / match).exists(), match
+    assert 'class="skip-link"' in html and 'aria-live="polite"' in html
+    assert 'apple-mobile-web-app-capable' in html
+    assert 'id="installApp"' in html and 'id="evaluationDialog"' in html
+
+
+def test_unicorn_campaign_and_grande_only_routes_are_safe():
+    data = load()
+    contents = {item["id"]: item for item in data["contents"]}
+    for content_id in ("unicorn-frappuccino", "salsa-azul-drizzle"):
+        assert contents[content_id]["selectors"] == [{"id": "size", "label": "Tamaño", "options": ["GRANDE"]}]
+        assert set(contents[content_id]["routes"]) == {"size=GRANDE"}
+    unicorn_steps = [step for step in data["steps"] if step["route"] == "unicorn-frappuccino"]
+    assert len(unicorn_steps) == 9
+    assert any("1 espiral" in step["values"] for step in unicorn_steps)
+    campaign = data["meta"]["campaigns"][0]
+    assert campaign["start"] == "2026-08-13" and campaign["end"] == "2026-08-17"
+    assert campaign["timezone"] == "America/Mexico_City"
+    for media in campaign["resources"]:
+        assert (ROOT / media).is_file()
+    assert campaign["resources"][-1] == "assets/campaigns/unicorn-concurso.webp"
+    salsa = [step for step in data["steps"] if step["route"] == "salsa-azul-drizzle"]
+    assert salsa[0]["values"] == "GRANDE=6 pumps CBS"
+    assert salsa[3]["values"] == "GRANDE=8 pumps CBS"
+
+
+def test_pwa_is_ios_ready_offline_and_contextual():
+    manifest = json.loads((ROOT / "manifest.webmanifest").read_text(encoding="utf-8"))
+    assert manifest["id"] == "./" and manifest["scope"] == "./"
+    assert manifest["orientation"] == "portrait-primary"
+    assert {item["url"] for item in manifest["shortcuts"]} == {"./#capacitar", "./#recetario", "./#objetivos"}
+    worker = (ROOT / "sw.js").read_text(encoding="utf-8")
+    assert "self.skipWaiting()" in worker and "self.clients.claim()" in worker
+    assert "offline.html" in worker
+    assert "unicorn-impacto-fallback.gif" in worker and "unicorn-impacto-poster.webp" in worker
+    assert 'event.request.headers.has("range")' in worker
+    app = (ROOT / "app.js").read_text(encoding="utf-8")
+    assert "campaignResourceCopy" in app and "unicornQuiz" in app
+    assert "beforeinstallprompt" in app and "Agregar a inicio" in app
+
+
+def test_clean_site_builder_excludes_legacy_data():
+    subprocess.run([sys.executable, "scripts/prepare_site.py"], cwd=ROOT, check=True)
+    assert {path.name for path in (ROOT / "_site" / "data").iterdir()} == {"content.js", "content.json", "objectives.js", "objectives.json", "objectives-data"}
+    assert (ROOT / "_site" / "offline.html").is_file()
+
+
+def test_objectives_engine_and_practice_evidence_are_integrated():
+    template = json.loads((ROOT / "data" / "objectives.json").read_text(encoding="utf-8"))
+    assert template["schemaVersion"] == 4
+    assert {item["id"] for item in template["products"]} == {"adt", "unicorn", "cake-pop"}
+    assert [item["id"] for item in template["cuts"]] == ["am", "inter", "pm"]
+    assert len(template["days"]) == 3
+    assert len(template["stores"]) == 873
+    assert all((ROOT / item["image"]).is_file() for item in template["products"] if item.get("image"))
+    assert {item["id"]: Path(item["image"]).name for item in template["products"]} == {
+        "adt": "adt-transacciones.png", "unicorn": "unicorn-frappuccino-objetivos.webp", "cake-pop": "cake-pop-unicornio.png",
     }
-  }
+    assert [store["ceco"] for store in template["stores"]] == sorted((store["ceco"] for store in template["stores"]), key=int)
+    assert (ROOT / "data" / "objectives.js").stat().st_size < 100_000
+    angel_data = json.loads((ROOT / "data" / "objectives-data" / "381.json").read_text(encoding="utf-8"))
+    angel = next(store for store in angel_data["stores"] if store["ceco"] == "38101")
+    assert angel["name"] == "Angel"
+    assert [angel["goals"][day]["adt"] for day in ("2026-08-15", "2026-08-16", "2026-08-17")] == [384, 401, 404]
+    assert all(angel["goals"][day]["unicorn"] == 28 for day in angel["goals"])
+    assert all(angel["goals"][day]["cake-pop"] == 13 for day in angel["goals"])
+    html = (ROOT / "index.html").read_text(encoding="utf-8")
+    assert 'id="objectivesView"' in html and 'id="objectiveStoreSearch"' in html
+    assert 'id="objectiveStoreResults"' in html and 'id="downloadObjectivePdf"' in html
+    assert 'id="previewObjectivePdf"' in html and 'id="pdfDialog"' in html
+    assert "terminos-y-condiciones-unicorn.pdf" in html
+    assert "campaign-terms-callout" in html and 'id="shareObjectives"' in html
+    assert 'id="campaignVideo"' in html and "autoplay muted loop playsinline" in html
+    assert 'id="campaignAnimationFallback"' in html and 'id="campaignObjectives"' in html
+    app = (ROOT / "app.js").read_text(encoding="utf-8")
+    assert 'id="evaluationPhoto"' in app and 'capture="environment"' in app
+    assert "renderEvaluationStart" in app and "Tomar foto de práctica" in app
+    assert "setupPdfViewer" in app and "window.PdfViewer" in app and "toggleCampaignVideo" in app
+    assert "securePdfUrl" in app and "showFallback" in app and "playAnimation" in app and "Promise.race" in app
+    engine = (ROOT / "objectives.js").read_text(encoding="utf-8")
+    assert "window.OBJECTIVES_TEMPLATE" in (ROOT / "data" / "objectives.js").read_text(encoding="utf-8")
+    assert "window.print()" in engine and "reportFileName" in engine and "captures" in engine
+    assert "loadShard" in engine and "navigator.share" in engine and "findStores" in engine
+    assert ".slice(0, 6)" in engine and "normalize(query).length < 2" in engine
+    assert "saveCut" in engine and "shift-row" in engine and "Un renglón por turno" in engine
 
-  function setupPdfViewer() {
-    const dialog = $("pdfDialog");
-    const frame = $("pdfFrame");
-    const securePdfUrl = raw => {
-      const parsed = new URL(raw, location.href);
-      if (!/^https?:$/.test(parsed.protocol) || parsed.origin !== location.origin || !parsed.pathname.toLowerCase().endsWith(".pdf")) throw new Error("Ruta PDF no permitida");
-      return parsed.href;
-    };
-    const secureFileName = value => String(value || "documento.pdf").replace(/[^a-z0-9._-]+/gi, "_").replace(/^\.+/, "") || "documento.pdf";
-    const open = (url, title = "Vista previa PDF", downloadName = "documento.pdf") => {
-      let safeUrl;
-      try { safeUrl = securePdfUrl(url); }
-      catch { announce("No fue posible abrir el PDF: ruta no permitida."); return; }
-      frame.referrerPolicy = "no-referrer";
-      frame.src = safeUrl;
-      $("pdfDialogTitle").textContent = title;
-      $("openPdfExternal").href = safeUrl;
-      $("downloadPdfTarget").href = safeUrl;
-      $("downloadPdfTarget").download = secureFileName(downloadName);
-      if (!dialog.open) dialog.showModal();
-    };
-    window.PdfViewer = {open};
-    document.querySelectorAll(".pdf-preview-link").forEach(link => link.addEventListener("click", event => {
-      event.preventDefault();
-      open(link.href, link.dataset.pdfTitle || link.textContent.trim(), link.href.split("/").pop() || "documento.pdf");
-    }));
-    $("closePdfDialog").onclick = () => dialog.close();
-    dialog.addEventListener("close", () => { frame.src = "about:blank"; });
-  }
 
-  function normalize(value) {
-    return String(value || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
-  }
-  function announce(message) { $("statusRegion").textContent = message; }
-  function saveProgress() {
-    if (!state.content || !state.route) return;
-    sessionStorage.setItem("guia-progress", JSON.stringify({contentId: state.content.id, selections: state.selections, route: state.route, step: state.step}));
-    updateResume();
-  }
-  function updateResume() {
-    const saved = JSON.parse(sessionStorage.getItem("guia-progress") || "null");
-    const content = saved && cms.contents.find(item => item.id === saved.contentId);
-    $("resumeTraining").hidden = !content;
-    if (content) $("resumeLabel").textContent = `${content.name} · paso ${Number(saved.step || 0) + 1}`;
-  }
-  function showView(view, options = {}) {
-    state.view = view;
-    document.querySelectorAll(".view").forEach(node => node.classList.toggle("active", node.id === `${view}View`));
-    document.querySelectorAll(".nav-button").forEach(node => node.classList.toggle("active", node.dataset.view === view));
-    if (view === "training" && options.reset !== false) resetTraining();
-    if (view === "search") renderSearch();
-    if (view === "objectives") window.Objectives?.render();
-    const hash = view === "training" ? "#capacitar" : view === "search" ? "#recetario" : view === "objectives" ? "#objetivos" : "#inicio";
-    if (options.history !== false && location.hash !== hash) history.pushState({view}, "", hash);
-    announce(view === "home" ? "Inicio" : view === "training" ? "Capacitación" : view === "search" ? "Buscador de recetas" : "Objetivos y avance");
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }
-  function trail() {
-    const parts = [];
-    if (state.category) parts.push(state.category);
-    if (state.content) parts.push(state.content.name);
-    Object.entries(state.selections).forEach(([key, value]) => {
-      const selector = state.content?.selectors.find(item => item.id === key);
-      parts.push(`${selector?.label}: ${cms.labels[value] || value}`);
-    });
-    $("selectionTrail").innerHTML = parts.map((part, index) => `<span>${index + 1}</span><b>${part}</b>`).join("");
-  }
-  function setTrainingHeader(title, intro) {
-    $("trainingHeading").textContent = title;
-    $("trainingIntro").textContent = intro;
-    trail();
-  }
-  function resetTraining() {
-    state.category = ""; state.content = null; state.selections = {}; state.selectorIndex = 0; state.route = ""; state.step = 0;
-    setTrainingHeader("Elige un área", "Comienza por el tipo de preparación.");
-    $("trainingStage").innerHTML = `<div class="area-grid">
-      ${Object.keys(categoryCopy).map(category => `<button class="area-card" data-category="${category}" type="button"><span>${category === "Bebidas" ? "◒" : category === "Procesos" ? "⟳" : "♨"}</span><b>${category}</b><small>${categoryCopy[category][1]}</small><i>Continuar →</i></button>`).join("")}
-    </div>`;
-    document.querySelectorAll("[data-category]").forEach(button => button.addEventListener("click", () => selectCategory(button.dataset.category)));
-  }
-  function selectCategory(category) {
-    state.category = category;
-    const [title, intro] = categoryCopy[category];
-    setTrainingHeader(title, intro);
-    const contents = cms.contents.filter(item => item.category === category).sort((a, b) => {
-      const priority = value => value.subcategory.includes("prioridad") ? 0 : value.subcategory.includes("temporada") ? 1 : 2;
-      return priority(a) - priority(b) || a.name.localeCompare(b.name, "es");
-    });
-    $("trainingStage").innerHTML = `<button class="back-link inline" id="changeArea" type="button">← Cambiar área</button>
-      <div class="training-card-grid">${contents.map(item => `<button class="training-card" data-content="${item.id}" type="button"><img src="${item.productImage}" alt="${item.name}"><span><small>${item.subcategory}</small><b>${item.name}</b><em>${item.description}</em><i>Practicar →</i></span></button>`).join("")}</div>`;
-    $("changeArea").addEventListener("click", resetTraining);
-    document.querySelectorAll("[data-content]").forEach(button => button.addEventListener("click", () => selectContent(button.dataset.content)));
-  }
-  function selectContent(id) {
-    state.content = cms.contents.find(item => item.id === id);
-    state.selections = {}; state.selectorIndex = 0;
-    if (!state.content.selectors.length) { state.route = state.content.routes.default; startRoute(); return; }
-    if (state.content.selectors.length === 1 && state.content.selectors[0].options.length === 1) {
-      const selector = state.content.selectors[0];
-      state.selections[selector.id] = selector.options[0];
-      resolveRoute();
-      return;
+def test_python_objectives_exporter_is_safe_and_available():
+    script = (ROOT / "scripts" / "export_objectives.py").read_text(encoding="utf-8")
+    assert "def validate" in script and "def create_pdf" in script
+    assert "schemaVersion" in script and "ZoneInfo" in script and "dynamic_output" in script
+    assert "optimized_thumbnail" in script and "projection_rows" in script and "actuals" in script
+    builder = (ROOT / "scripts" / "build_objectives.py").read_text(encoding="utf-8")
+    assert "load_stores" in builder and "generate_pdfs" in builder and "objectives-data" in builder
+    video_optimizer = (ROOT / "scripts" / "optimize_campaign_video.py").read_text(encoding="utf-8")
+    assert "fps=24" in video_optimizer and "+faststart" in video_optimizer and "libx264" in video_optimizer
+
+
+def test_campaign_video_is_lightweight_and_has_poster():
+    from PIL import Image
+
+    video = ROOT / "assets" / "campaigns" / "unicorn-impacto-v3.mp4"
+    fallback = ROOT / "assets" / "campaigns" / "unicorn-impacto-fallback.gif"
+    poster = ROOT / "assets" / "campaigns" / "unicorn-impacto-poster.webp"
+    assert video.is_file() and video.stat().st_size < 150_000
+    assert fallback.is_file() and fallback.stat().st_size < 600_000
+    assert poster.is_file() and poster.stat().st_size < 20_000
+    with Image.open(poster) as image:
+        assert image.size == (360, 640)
+    with Image.open(fallback) as image:
+        assert image.is_animated and image.n_frames > 20
+
+
+def test_cleanup_workflow_is_manual_and_validation_is_read_only():
+    cleanup = (ROOT / ".github" / "workflows" / "cleanup-obsolete.yml").read_text(encoding="utf-8")
+    deploy = (ROOT / ".github" / "workflows" / "validate-and-deploy.yml").read_text(encoding="utf-8")
+    assert "workflow_dispatch" in cleanup and "inputs.confirmacion == 'ELIMINAR'" in cleanup
+    assert "--verify-diff" in cleanup and "git push origin HEAD:main" in cleanup
+    assert "cleanup_obsolete.py --apply" not in deploy
+
+
+def test_python_objectives_exporter_generates_one_page_pdf(tmp_path):
+    from scripts.export_objectives import create_pdf, dynamic_output
+    from pypdf import PdfReader
+
+    data = json.loads((ROOT / "data" / "objectives.json").read_text(encoding="utf-8"))
+    data.pop("stores", None)
+    data["store"] = {"ceco": "38101", "name": "Luna Park"}
+    data["values"] = {
+        "2026-08-15": {"adt": {"goal": 384, "actuals": {"am": 120, "inter": 140, "pm": 130}}, "unicorn": {"goal": 30, "actuals": {"am": 8, "inter": 9, "pm": 7}}, "cake-pop": {"goal": 20, "actuals": {"am": 5, "inter": 6, "pm": 7}}},
+        "2026-08-16": {"adt": {"goal": 401, "actuals": {}}, "unicorn": {"goal": 35, "actuals": {}}, "cake-pop": {"goal": 22, "actuals": {}}},
+        "2026-08-17": {"adt": {"goal": 404, "actuals": {}}, "unicorn": {"goal": 28, "actuals": {}}, "cake-pop": {"goal": 18, "actuals": {}}},
     }
-    renderSelector();
-  }
-  function renderSelector() {
-    const selector = state.content.selectors[state.selectorIndex];
-    setTrainingHeader(`Elige ${selector.label.toLowerCase()}`, `Configura ${state.content.name} antes de comenzar.`);
-    $("trainingStage").innerHTML = `<div class="config-layout"><div class="config-product"><img src="${state.content.productImage}" alt="${state.content.name}"><small>${state.content.subcategory}</small><h2>${state.content.name}</h2></div><div class="option-panel"><span class="step-kicker">${state.selectorIndex + 1} de ${state.content.selectors.length}</span><h2>${selector.label}</h2><div class="option-grid">${selector.options.map(option => `<button data-option="${option}" type="button"><b>${cms.labels[option] || option}</b><span>→</span></button>`).join("")}</div></div></div>`;
-    document.querySelectorAll("[data-option]").forEach(button => button.addEventListener("click", () => {
-      state.selections[selector.id] = button.dataset.option;
-      state.selectorIndex += 1;
-      if (state.selectorIndex < state.content.selectors.length) renderSelector(); else resolveRoute();
-    }));
-  }
-  function resolveRoute() {
-    const key = state.content.selectors.map(selector => `${selector.id}=${state.selections[selector.id]}`).join("|");
-    state.route = state.content.routes[key];
-    if (!state.route) throw new Error(`Ruta no encontrada: ${key}`);
-    startRoute();
-  }
-  function routeSteps() { return cms.steps.filter(step => step.route === state.route).sort((a, b) => a.order - b.order); }
-  function valueFor(step) {
-    const entries = Object.fromEntries(String(step.values || "").split("|").filter(Boolean).map(pair => pair.split("=")));
-    const primary = state.selections.size || state.selections.batch;
-    return entries[primary] || entries.TODOS || "";
-  }
-  function startRoute() {
-    state.step = 0; saveProgress();
-    setTrainingHeader(state.content.name, "Avanza a tu ritmo. La guía conserva el contexto de cada paso.");
-    renderRunner();
-  }
-  function renderRunner() {
-    const steps = routeSteps();
-    const step = steps[state.step];
-    const progress = Math.round(((state.step + 1) / steps.length) * 100);
-    const milestones = steps.map((item, index) => `<span class="${index < state.step ? "done" : index === state.step ? "active" : ""}"><i>${index < state.step ? "✓" : index + 1}</i><b>${item.stage}</b></span>`).join("");
-    $("trainingStage").innerHTML = `<div class="runner">
-      <aside class="runner-visual"><img src="${state.content.productImage}" alt="${state.content.name}"><small>Resultado esperado</small><h2>${state.content.name}</h2><button id="openRules" type="button">Equipo y normas</button></aside>
-      <section class="runner-main">
-        <div class="progress-line"><span style="width:${progress}%"></span></div>
-        <div class="milestones">${milestones}</div>
-        <article class="step-card">
-          <div class="step-top"><span class="step-icon">${iconMap[step.icon] || "•"}</span><span class="step-kicker">Paso ${state.step + 1} de ${steps.length}</span></div>
-          <h2>${step.title}</h2><p>${step.detail}</p>
-          ${valueFor(step) ? `<div class="measure"><span>${Object.values(state.selections).map(value => cms.labels[value] || value).join(" · ") || "Indicador"}</span><strong>${valueFor(step)}</strong></div>` : ""}
-          ${step.timer ? `<button class="timer-button" id="timerButton" data-seconds="${step.timer}" type="button">◷ Iniciar temporizador</button>` : ""}
-        </article>
-        <div class="runner-actions"><button id="prevStep" type="button" ${state.step === 0 ? "disabled" : ""}>← Anterior</button><button class="primary-button" id="nextStep" type="button">${state.step === steps.length - 1 ? "Completar" : "Siguiente →"}</button></div>
-      </section>
-    </div>`;
-    $("prevStep").addEventListener("click", () => { if (state.step > 0) { state.step--; saveProgress(); renderRunner(); } });
-    $("nextStep").addEventListener("click", () => { if (state.step < steps.length - 1) { state.step++; saveProgress(); renderRunner(); } else renderDone(); });
-    $("openRules").addEventListener("click", renderRules);
-    if ($("timerButton")) $("timerButton").addEventListener("click", startTimer);
-  }
-  function renderRules() {
-    const markup = `<div class="rules-panel"><button class="back-link" id="backToStep" type="button">← Volver al paso</button><div><span class="eyebrow">ANTES DE COMENZAR</span><h2>Equipo</h2><ul>${state.content.equipment.map(item => `<li>${item}</li>`).join("")}</ul><h2>Normas</h2><ul>${state.content.rules.map(item => `<li>${item}</li>`).join("")}</ul></div><img src="${state.content.referenceImage}" alt="Ficha de referencia"></div>`;
-    $("trainingStage").innerHTML = markup;
-    $("backToStep").addEventListener("click", renderRunner);
-  }
-  function startTimer(event) {
-    let remaining = Number(event.currentTarget.dataset.seconds);
-    clearInterval(state.timer);
-    const button = event.currentTarget;
-    const tick = () => {
-      const hours = Math.floor(remaining / 3600), minutes = Math.floor((remaining % 3600) / 60), seconds = remaining % 60;
-      button.textContent = `◷ ${hours ? `${hours}:` : ""}${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
-      if (remaining <= 0) { clearInterval(state.timer); button.textContent = "✓ Tiempo completado"; return; }
-      remaining--;
-    };
-    tick(); state.timer = setInterval(tick, 1000);
-  }
-  function renderDone() {
-    sessionStorage.removeItem("guia-progress"); updateResume();
-    const evaluate = state.content.id === "unicorn-frappuccino" || state.content.id === "salsa-azul-drizzle";
-    $("trainingStage").innerHTML = `<div class="done-card"><span>✓</span><small>CAPACITACIÓN COMPLETA</small><h2>${state.content.name}</h2><p>Repasaste ${routeSteps().length} pasos operativos.</p><div><button id="repeatTraining" type="button">Repetir</button>${evaluate ? '<button id="evaluateTraining" type="button">Evaluar preparación</button>' : ""}<button class="primary-button" id="newTraining" type="button">Nueva capacitación</button></div></div>`;
-    $("repeatTraining").addEventListener("click", startRoute);
-    $("newTraining").addEventListener("click", resetTraining);
-    if ($("evaluateTraining")) $("evaluateTraining").addEventListener("click", openEvaluation);
-  }
+    output = tmp_path / "objetivos.pdf"
+    create_pdf(data, output)
+    assert output.stat().st_size < 50_000
+    reader = PdfReader(output)
+    assert len(reader.pages) == 1
+    page = reader.pages[0]
+    assert float(page.mediabox.width) > float(page.mediabox.height)
+    assert 610 < float(page.mediabox.width) < 800
+    extracted = reader.pages[0].extract_text()
+    assert all(value in extracted for value in ("Luna Park", "38101", "ADT", "Unicorn Frappuccino", "Cake Pop Unicornio", "80%", "Creado", "PROYECCIÓN POR TURNO", "Apertura", "Intermedio", "Cierre", "LLENADO OPCIONAL"))
+    assert dynamic_output(data, tmp_path).name == "Luna_Park_Unicorn_Frapp_Cake_Pop.pdf"
 
-  function openEvaluation() {
-    state.evaluationIndex = 0; state.evaluationScore = 0; state.evaluationPhoto = "";
-    state.evaluatedPartner = localStorage.getItem("evaluated-partner") || "";
-    renderEvaluationStart();
-    $("evaluationDialog").showModal();
-  }
-  function renderEvaluationStart() {
-    $("evaluationProgress").textContent = "Comenzar";
-    $("evaluationStage").innerHTML = `<div class="evaluation-start"><span class="eyebrow">PASO 1</span><h2>¿A quién vas a evaluar?</h2><p>Escribe únicamente el nombre del Partner.</p><label><span>Nombre del Partner</span><input id="evaluationPartnerInput" maxlength="80" autocomplete="name" value="${state.evaluatedPartner.replace(/[&<>'"]/g,"")}" placeholder="Ej. Enrique"></label><button class="primary-button" id="startEvaluation" type="button">Comenzar cuestionario</button></div>`;
-    $("startEvaluation").onclick = () => { const name=$("evaluationPartnerInput").value.trim(); if(!name){$("evaluationPartnerInput").focus();return;} state.evaluatedPartner=name;localStorage.setItem("evaluated-partner",name);renderEvaluation(); };
-    $("evaluationPartnerInput").focus();
-  }
-  function renderEvaluation() {
-    const item = unicornQuiz[state.evaluationIndex];
-    if (!item) {
-      const passed = state.evaluationScore >= 4;
-      localStorage.setItem("unicorn-evaluation", JSON.stringify({score: state.evaluationScore, total: unicornQuiz.length, date: localDate("America/Mexico_City")}));
-      $("evaluationProgress").textContent = "Resultado";
-      const partner = state.evaluatedPartner || "Partner";
-      const evaluatedAt = new Intl.DateTimeFormat("es-MX", {dateStyle:"long", timeStyle:"short", timeZone:"America/Mexico_City"}).format(new Date());
-      localStorage.setItem("evaluated-partner", partner);
-      $("evaluationStage").innerHTML = `<div class="evaluation-result"><span>${passed ? "✓" : "↻"}</span><small>${partner.toUpperCase()}</small><h2>${state.evaluationScore} de ${unicornQuiz.length}</h2><p>${passed ? "Cuestionario completo. Ahora registra la práctica." : "Repasa la receta y registra la práctica."}</p><time>${evaluatedAt}</time><div class="practice-capture"><input id="evaluationPhoto" type="file" accept="image/*" capture="environment" hidden><button class="camera-button" id="takePracticePhoto" type="button"><b>◎ Tomar foto de práctica</b><small>Abre la cámara del dispositivo</small></button><img id="evaluationPhotoPreview" alt="Evidencia de práctica" hidden></div><div><button id="retryEvaluation" type="button">Repetir</button><button class="primary-button" id="finishEvaluation" type="button">Finalizar</button></div></div>`;
-      $("retryEvaluation").onclick = () => { state.evaluationIndex = 0; state.evaluationScore = 0; renderEvaluation(); };
-      $("takePracticePhoto").onclick = () => $("evaluationPhoto").click();
-      $("evaluationPhoto").onchange = event => { const file=event.target.files[0];if(!file)return;if(file.size>8*1024*1024){alert("La foto debe pesar menos de 8 MB.");return;}const reader=new FileReader();reader.onload=()=>{state.evaluationPhoto=reader.result;$("evaluationPhotoPreview").src=reader.result;$("evaluationPhotoPreview").hidden=false;$("takePracticePhoto").querySelector("b").textContent="✓ Foto lista";};reader.readAsDataURL(file);};
-      $("finishEvaluation").onclick = () => $("evaluationDialog").close();
-      return;
-    }
-    $("evaluationProgress").textContent = `Pregunta ${state.evaluationIndex + 1} de ${unicornQuiz.length}`;
-    $("evaluationStage").innerHTML = `<div class="evaluation-question"><h2>${item.question}</h2><div class="evaluation-options">${item.options.map(option => `<button type="button" data-evaluation-answer="${option}">${option}<span>→</span></button>`).join("")}</div><p id="evaluationFeedback" aria-live="polite"></p><button class="primary-button" id="nextEvaluation" type="button" hidden>${state.evaluationIndex === unicornQuiz.length - 1 ? "Ver resultado" : "Siguiente"}</button></div>`;
-    document.querySelectorAll("[data-evaluation-answer]").forEach(button => button.onclick = () => {
-      const correct = button.dataset.evaluationAnswer === item.answer;
-      if (correct) state.evaluationScore += 1;
-      document.querySelectorAll("[data-evaluation-answer]").forEach(option => { option.disabled = true; option.classList.toggle("correct", option.dataset.evaluationAnswer === item.answer); option.classList.toggle("wrong", option === button && !correct); });
-      $("evaluationFeedback").textContent = `${correct ? "Correcto. " : "Revisa. "}${item.note}`;
-      $("nextEvaluation").hidden = false;
-      $("nextEvaluation").focus();
-    });
-    $("nextEvaluation").onclick = () => { state.evaluationIndex += 1; renderEvaluation(); };
-  }
 
-  function setupPwaInstall() {
-    const standalone = window.matchMedia("(display-mode: standalone)").matches || navigator.standalone === true;
-    const ios = /iphone|ipad|ipod/i.test(navigator.userAgent);
-    const updateStatus = () => {
-      $("installApp").textContent = standalone ? "App instalada" : "Instalar app";
-      $("installApp").classList.toggle("installed", standalone);
-    };
-    updateStatus();
-    window.addEventListener("beforeinstallprompt", event => { event.preventDefault(); state.deferredInstall = event; });
-    window.addEventListener("appinstalled", () => { state.deferredInstall = null; $("installDialog").close(); $("installApp").textContent = "App instalada"; $("installApp").classList.add("installed"); announce("Aplicación instalada"); });
-    $("installApp").onclick = async () => {
-      if (standalone) { announce("La aplicación ya está instalada"); return; }
-      if (state.deferredInstall) {
-        await state.deferredInstall.prompt();
-        state.deferredInstall = null;
-        return;
-      }
-      $("installGuide").innerHTML = ios ? '<ol><li>Toca <b>Compartir</b> en Safari.</li><li>Elige <b>Agregar a inicio</b>.</li><li>Confirma con <b>Agregar</b>.</li></ol>' : '<p>Abre el menú del navegador y selecciona <b>Instalar aplicación</b> o <b>Agregar a pantalla principal</b>.</p>';
-      $("confirmInstall").textContent = "Entendido";
-      $("confirmInstall").onclick = () => $("installDialog").close();
-      $("installDialog").showModal();
-    };
-  }
-  function renderSearch() {
-    const categories = ["Todos", ...new Set(cms.catalog.map(item => item.category))];
-    $("filterRow").innerHTML = categories.map(category => `<button class="${state.filter === category ? "active" : ""}" data-filter="${category}" type="button">${category}</button>`).join("");
-    document.querySelectorAll("[data-filter]").forEach(button => button.addEventListener("click", () => { state.filter = button.dataset.filter; state.subfilter = "Todas"; state.visible = 6; renderSearch(); }));
-    const subcategories = state.filter === "Todos" ? [] : [...new Set(cms.catalog.filter(item => item.category === state.filter).map(item => item.subcategory))];
-    $("subfilterRow").hidden = subcategories.length < 2;
-    $("subfilterRow").innerHTML = ["Todas", ...subcategories].map(value => `<button class="${state.subfilter === value ? "active" : ""}" data-subfilter="${value}" type="button">${value}</button>`).join("");
-    document.querySelectorAll("[data-subfilter]").forEach(button => button.addEventListener("click", () => { state.subfilter = button.dataset.subfilter; state.visible = 6; renderSearch(); }));
-    const query = normalize(state.query);
-    const filtered = cms.catalog.filter(item => (state.filter === "Todos" || item.category === state.filter) && (state.subfilter === "Todas" || item.subcategory === state.subfilter) && (!query || normalize(`${item.name} ${item.category} ${item.subcategory} ${item.search}`).includes(query)));
-    $("resultCount").textContent = `${filtered.length} ${filtered.length === 1 ? "receta" : "recetas"}`; announce(`${filtered.length} resultados`);
-    $("recipeGrid").innerHTML = filtered.slice(0, state.visible).map(item => `<article class="recipe-card"><div class="product-frame"><img loading="lazy" src="${item.productImage}" alt="${item.name}"></div><div class="recipe-copy"><small>${item.subcategory}</small><h2>${item.name}</h2><div><button class="text-button" data-reference="${item.id}" type="button">Ver receta</button>${cms.contents.some(content => content.name === item.name) ? `<button class="mini-primary" data-train="${cms.contents.find(content => content.name === item.name).id}" type="button">Practicar</button>` : ""}</div></div></article>`).join("") || `<div class="empty-state"><span>⌕</span><h2>Sin coincidencias</h2><p>Prueba con otra palabra o categoría.</p></div>`;
-    $("showMore").hidden = state.visible >= filtered.length;
-    document.querySelectorAll("[data-reference]").forEach(button => button.addEventListener("click", () => openReference(button.dataset.reference)));
-    document.querySelectorAll("[data-train]").forEach(button => button.addEventListener("click", () => launchTraining(button.dataset.train)));
-  }
-  function openReference(id) {
-    const item = cms.catalog.find(entry => entry.id === id);
-    $("dialogProduct").src = item.productImage; $("dialogProduct").alt = item.name;
-    $("dialogReference").src = item.referenceImage; $("dialogTitle").textContent = item.name;
-    $("dialogCategory").textContent = `${item.category} · ${item.subcategory}`;
-    const content = cms.contents.find(entry => entry.name === item.name);
-    $("dialogTrain").hidden = !content;
-    $("dialogTrain").onclick = () => { $("referenceDialog").close(); showView("training"); selectContent(content.id); };
-    $("referenceDialog").showModal();
-  }
+def test_terms_pdf_is_optimized_and_valid():
+    from pypdf import PdfReader
 
-  function resumeTraining() {
-    const saved = JSON.parse(sessionStorage.getItem("guia-progress") || "null");
-    const content = saved && cms.contents.find(item => item.id === saved.contentId);
-    if (!content) return;
-    state.content = content; state.category = content.category; state.selections = saved.selections || {};
-    state.route = saved.route; state.step = Math.min(Number(saved.step || 0), Math.max(0, cms.steps.filter(item => item.route === saved.route).length - 1));
-    showView("training", {reset: false});
-    setTrainingHeader(content.name, "Continuaste tu capacitación guardada en este dispositivo."); renderRunner();
-  }
-
-  document.querySelectorAll("[data-view]").forEach(button => button.addEventListener("click", () => showView(button.dataset.view)));
-  $("homeButton").addEventListener("click", () => showView("home"));
-  $("recipeSearch").addEventListener("input", event => { state.query = event.target.value; state.visible = 6; renderSearch(); });
-  $("clearSearch").addEventListener("click", () => { state.query = ""; $("recipeSearch").value = ""; renderSearch(); $("recipeSearch").focus(); });
-  $("showMore").addEventListener("click", () => { state.visible += 6; renderSearch(); });
-  $("closeDialog").addEventListener("click", () => $("referenceDialog").close());
-  $("closeEvaluation").addEventListener("click", () => $("evaluationDialog").close());
-  $("closeInstall").addEventListener("click", () => $("installDialog").close());
-  $("resumeTraining").addEventListener("click", resumeTraining);
-  document.addEventListener("keydown", event => {
-    if (event.key === "/" && state.view === "search" && document.activeElement !== $("recipeSearch")) { event.preventDefault(); $("recipeSearch").focus(); }
-  });
-  document.addEventListener("error", event => {
-    if (event.target.tagName !== "IMG") return;
-    event.target.hidden = true; event.target.parentElement?.classList.add("image-unavailable");
-  }, true);
-  window.addEventListener("popstate", () => {
-    const view = location.hash === "#capacitar" ? "training" : location.hash === "#recetario" ? "search" : location.hash === "#objetivos" ? "objectives" : "home";
-    showView(view, {history: false, reset: view === "training" && !state.content});
-  });
-  $("catalogCount").textContent = cms.meta.catalogItems;
-  $("moduleCount").textContent = cms.meta.trainingModules;
-  updateResume();
-  setupPwaInstall();
-  setupPdfViewer();
-  configureCampaign();
-  const initialView = location.hash === "#capacitar" ? "training" : location.hash === "#recetario" ? "search" : location.hash === "#objetivos" ? "objectives" : "home";
-  showView(initialView, {history: false});
-  if ("serviceWorker" in navigator && location.protocol.startsWith("http")) navigator.serviceWorker.register("sw.js");
-})();
+    terms = ROOT / "assets" / "documents" / "terminos-y-condiciones-unicorn.pdf"
+    assert terms.is_file() and terms.stat().st_size < 100_000
+    reader = PdfReader(terms)
+    assert len(reader.pages) == 1
+    text = reader.pages[0].extract_text()
+    assert "TÉRMINOS Y CONDICIONES" in text and "15 al 17 de agosto de 2026" in text
