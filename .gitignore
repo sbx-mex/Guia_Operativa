@@ -6,3 +6,20 @@ outputs/visual-check/
 **/__pycache__/
 *.pyc
 _site/
+
+# Entregables temporales y duplicados históricos de la raíz
+/ARCHIVOS_A_REEMPLAZAR.txt
+/ELIMINAR_OBSOLETOS.txt
+/INSTRUCCIONES.txt
+/INSTRUCCIONES_DE_CARGA.txt
+/VALIDACION_PYTHON.txt
+/CMS_Guia_Operativa_v2.xlsx
+/audit_project.py
+/content.js
+/* (*).webp
+/bagel-jamon-queso.webp
+/cold-brew-pumpkin-cold-foam.webp
+/cold-foam-pumpkin.webp
+/pumpkin-spice-frappuccino.webp
+/pumpkin-spice-latte-helado.webp
+/pumpkin-spice-latte.webp
