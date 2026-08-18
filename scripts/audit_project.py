@@ -6,11 +6,9 @@ import re
 from PIL import Image
 
 from cms_engine import ROOT, load_cms
+from cleanup_obsolete import OBSOLETE
 
-FORBIDDEN = {"data/recipes.js", "data/catalog.json", "data/catalog_audit.json", "scripts/build_recipes.py", "scripts/catalog_import.py",
-             "scripts/process_media.py", "outputs/CMS_Recetarios_Manuales_Frappuccino.xlsx", "assets/references/frias/frias-06.tmp.webp",
-             "assets/campaigns/unicorn-impacto.mp4", "assets/campaigns/unicorn-impacto-v2.mp4",
-             "assets/campaigns/unicorn-impacto-fallback.webp"}
+FORBIDDEN = set(OBSOLETE)
 
 
 def main() -> None:
@@ -31,6 +29,9 @@ def main() -> None:
         failures.append(f"Faltan recetas visuales: {sorted(missing_visual_recipes)}")
     if not {"Bebidas", "Procesos", "Alimentos"}.issubset({item["category"] for item in data["catalog"]}):
         failures.append("Falta una categoría operativa obligatoria")
+    app = (ROOT / "app.js").read_text(encoding="utf-8")
+    if not all(token in app for token in ('data-practice=', 'openPractice', 'Ver receta')):
+        failures.append("El recetario no ofrece Practicar y Ver receta de forma consistente")
     media = {(item[key], item["id"]) for item in data["catalog"] for key in ("productImage", "referenceImage")}
     media.update((item[key], item["id"]) for item in data["contents"] for key in ("productImage", "referenceImage"))
     media.update((path, campaign["id"]) for campaign in data["meta"].get("campaigns", []) for path in campaign["resources"])

@@ -410,19 +410,32 @@
     });
     $("clearSearch").hidden = !state.query;
     $("resultCount").textContent = `${filtered.length} ${filtered.length === 1 ? "receta" : "recetas"}`; announce(`${filtered.length} resultados`);
-    $("recipeGrid").innerHTML = filtered.slice(0, state.visible).map(item => { const recent = /pumpkin|ensamble/i.test(item.subcategory); return `<article class="recipe-card${recent ? " recipe-card-new" : ""}"><div class="product-frame"><img loading="lazy" decoding="async" src="${item.productImage}" alt="${item.name}"></div><div class="recipe-copy"><small>${recent ? `<span class="recipe-status">Nueva</span>` : ""}${item.subcategory}</small><h2>${item.name}</h2><div><button class="text-button" data-reference="${item.id}" type="button">Ver ficha</button>${cms.contents.some(content => content.name === item.name) ? `<button class="mini-primary" data-train="${cms.contents.find(content => content.name === item.name).id}" type="button">Practicar</button>` : ""}</div></div></article>`; }).join("") || `<div class="empty-state"><span>⌕</span><h2>Sin coincidencias</h2><p>Prueba con otra palabra o categoría.</p></div>`;
+    $("recipeGrid").innerHTML = filtered.slice(0, state.visible).map(item => { const recent = /pumpkin|ensamble/i.test(item.subcategory); const canPractice = item.category === "Bebidas" || cms.contents.some(content => content.name === item.name); return `<article class="recipe-card${recent ? " recipe-card-new" : ""}"><div class="product-frame"><img loading="lazy" decoding="async" src="${item.productImage}" alt="${item.name}"></div><div class="recipe-copy"><small>${recent ? `<span class="recipe-status">Nueva</span>` : ""}${item.subcategory}</small><h2>${item.name}</h2><div class="recipe-actions">${canPractice ? `<button class="mini-primary" data-practice="${item.id}" type="button">Practicar</button>` : ""}<button class="text-button" data-reference="${item.id}" type="button">Ver receta</button></div></div></article>`; }).join("") || `<div class="empty-state"><span>⌕</span><h2>Sin coincidencias</h2><p>Prueba con otra palabra o categoría.</p></div>`;
     $("showMore").hidden = state.visible >= filtered.length;
     document.querySelectorAll("[data-reference]").forEach(button => button.addEventListener("click", () => openReference(button.dataset.reference)));
-    document.querySelectorAll("[data-train]").forEach(button => button.addEventListener("click", () => launchTraining(button.dataset.train)));
+    document.querySelectorAll("[data-practice]").forEach(button => button.addEventListener("click", () => openPractice(button.dataset.practice)));
   }
-  function openReference(id) {
+  function openPractice(id) {
     const item = cms.catalog.find(entry => entry.id === id);
+    const content = item && cms.contents.find(entry => entry.name === item.name);
+    if (content) return launchTraining(content.id);
+    openReference(id, true);
+  }
+  function openReference(id, practiceMode = false) {
+    const item = cms.catalog.find(entry => entry.id === id);
+    if (!item) return;
     $("dialogProduct").src = item.productImage; $("dialogProduct").alt = item.name;
     $("dialogReference").src = item.referenceImage; $("dialogTitle").textContent = item.name;
     $("dialogCategory").textContent = `${item.category} · ${item.subcategory}`;
     const content = cms.contents.find(entry => entry.name === item.name);
-    $("dialogTrain").hidden = !content;
-    $("dialogTrain").onclick = () => { $("referenceDialog").close(); showView("training"); selectContent(content.id); };
+    $("practiceGuide").hidden = !practiceMode;
+    $("dialogTrain").hidden = !content && !practiceMode;
+    $("dialogTrain").textContent = content ? "Iniciar práctica guiada" : "Ver receta completa";
+    $("dialogTrain").onclick = () => {
+      if (content) { $("referenceDialog").close(); showView("training"); selectContent(content.id); return; }
+      $("dialogReference").scrollIntoView({behavior: "smooth", block: "start"});
+      $("dialogReference").focus({preventScroll: true});
+    };
     $("referenceDialog").showModal();
   }
 

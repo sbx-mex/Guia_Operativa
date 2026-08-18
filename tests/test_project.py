@@ -38,6 +38,19 @@ def test_every_catalog_media_exists_and_is_valid():
                 image.verify()
 
 
+def test_every_beverage_has_recipe_and_practice_entry_points():
+    assert all(item["referenceImage"] for item in load()["catalog"] if item["category"] == "Bebidas")
+    app = (ROOT / "app.js").read_text(encoding="utf-8")
+    assert 'item.category === "Bebidas"' in app
+    assert 'data-practice=' in app and 'openPractice' in app and '>Ver receta<' in app
+
+
+def test_beverage_product_images_are_catalog_ready():
+    subprocess.run([sys.executable, "scripts/crop_product_images.py"], cwd=ROOT, check=True)
+    report = json.loads((ROOT / "reports" / "product-image-audit.json").read_text(encoding="utf-8"))
+    assert report["status"] == "ok" and report["images"] == 92 and not report["failed"]
+
+
 def test_process_reference_media_is_packaged():
     for name in ("cold-brew-toddy.webp", "croissant-mantequilla.webp", "pan-queso.webp"):
         assert (ROOT / "assets" / "references" / "procesos" / name).is_file()
