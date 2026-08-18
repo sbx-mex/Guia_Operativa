@@ -1,10 +1,17 @@
-name: Limpiar archivos obsoletos
+name: Ordenar raíz y borrar rutas anteriores
 
 on:
+  push:
+    branches: [main]
+    paths:
+      - "*"
+      - "scripts/cleanup_obsolete.py"
+      - "scripts/audit_repository_layout.py"
+      - ".github/workflows/cleanup-obsolete.yml"
   workflow_dispatch:
     inputs:
       confirmacion:
-        description: "Escribe ELIMINAR para aplicar la lista cerrada"
+        description: "Escribe LIMPIAR_RAIZ para ejecutarlo manualmente"
         required: true
         type: string
 
@@ -13,7 +20,7 @@ permissions:
 
 jobs:
   cleanup:
-    if: ${{ github.ref == 'refs/heads/main' && inputs.confirmacion == 'ELIMINAR' }}
+    if: ${{ github.ref == 'refs/heads/main' && (github.event_name == 'push' || inputs.confirmacion == 'LIMPIAR_RAIZ') }}
     runs-on: ubuntu-latest
     timeout-minutes: 5
     concurrency:
@@ -52,6 +59,8 @@ jobs:
           python scripts/build_content.py --check
           python scripts/crop_product_images.py --report /tmp/product-image-audit.json
           python scripts/audit_project.py
+          python scripts/audit_repository_layout.py
+          python -m pytest -q
 
       - name: Registrar limpieza
         run: |
@@ -65,4 +74,4 @@ jobs:
           python scripts/cleanup_obsolete.py --verify-diff
           git commit -m "chore: eliminar archivos obsoletos autorizados"
           git push origin HEAD:main
-          echo "Limpieza aplicada y validada en main." >> "$GITHUB_STEP_SUMMARY"
+          echo "Raíz ordenada y validada en main." >> "$GITHUB_STEP_SUMMARY"
