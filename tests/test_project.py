@@ -229,9 +229,18 @@ def test_campaign_video_is_lightweight_and_has_poster():
 def test_cleanup_workflow_is_manual_and_validation_is_read_only():
     cleanup = (ROOT / ".github" / "workflows" / "cleanup-obsolete.yml").read_text(encoding="utf-8")
     deploy = (ROOT / ".github" / "workflows" / "validate-and-deploy.yml").read_text(encoding="utf-8")
-    assert "workflow_dispatch" in cleanup and "inputs.confirmacion == 'ELIMINAR'" in cleanup
+    assert "workflow_dispatch" in cleanup and "inputs.confirmacion == 'LIMPIAR_RAIZ'" in cleanup
+    assert "github.event_name == 'push'" in cleanup and 'paths:' in cleanup
     assert "--verify-diff" in cleanup and "git push origin HEAD:main" in cleanup
+    assert "audit_repository_layout.py" in cleanup and "python -m pytest -q" in cleanup
     assert "cleanup_obsolete.py --apply" not in deploy
+
+
+def test_repository_layout_auditor_has_a_closed_root_allowlist():
+    script = (ROOT / "scripts" / "audit_repository_layout.py").read_text(encoding="utf-8")
+    assert "ALLOWED_FILES" in script and "ALLOWED_DIRECTORIES" in script
+    assert 'outputs" / "CMS_Guia_Operativa_v2.xlsx' in script
+    assert "from cleanup_obsolete import OBSOLETE" in script
 
 
 def test_python_objectives_exporter_generates_one_page_pdf(tmp_path):
