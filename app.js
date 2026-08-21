@@ -1,182 +1,26 @@
 (() => {
-  const cms = window.TRAINING_CMS;
+  "use strict";
+  const cms = window.GUIDE_CMS;
+  if (!cms) throw new Error("No se cargó data/content.js");
   const $ = id => document.getElementById(id);
-  const state = {
-    view: "home", category: "", content: null, selections: {}, selectorIndex: 0,
-    route: "", step: 0, filter: "Todos", subfilter: "Todas", query: "", visible: 9, timer: null, searchTimer: null,
-    deferredInstall: null, evaluationIndex: 0, evaluationScore: 0, evaluatedPartner: "", evaluationPhoto: "",
-  };
-  const iconMap = {
-    coffee: "☕", milk: "🥛", pour: "↘", ice: "❄", bottle: "▤", blend: "◎",
-    check: "✓", sauce: "◒", grind: "◉", filter: "▽", water: "◌", tie: "⌁",
-    timer: "◷", store: "▣", freeze: "❄", tray: "▱", layout: "▦", oven: "♨",
-    heat: "⌁", serve: "✓",
-  };
+  const esc = value => String(value ?? "").replace(/[&<>"']/g, char => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[char]));
+  const normalize = value => String(value || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+  const iconMap = {coffee:"☕",milk:"◒",steam:"≋",pour:"↘",pump:"●",ice:"◇",blend:"↻",finish:"✓",clean:"✦",measure:"▤",shake:"↕",check:"✓",timer:"◷"};
   const categoryCopy = {
-    Bebidas: ["Bebidas", "Elige una bebida para practicar su secuencia."],
-    Procesos: ["Procesos", "Practica preparación, almacenamiento y controles críticos."],
-    Alimentos: ["Alimentos", "Sigue ensamble y horneo sin perder parámetros."],
+    Bebidas: ["Bebidas CORE", "Practica calientes, heladas, Frappuccino, Refreshers y proteína."],
+    Procesos: ["Bases CORE", "Domina VSC, leche y Cold Foam de proteína, y otras bases."],
+    Alimentos: ["Alimentos", "Aprende preensamble, ensamble, conservación y entrega."],
   };
-  const campaignResourceCopy = [
-    {title: "Checklist operativo", description: "Valida personal, insumos, layout y seguimiento antes de abrir."},
-    {title: "Buenas prácticas", description: "Confirma Grande, vida útil de 24 h, smallwares y una bebida por licuadora."},
-    {title: "¡Participa en el concurso!", description: "Informativo importante: revisa la dinámica, reúne a tu equipo y confirma cómo participar.", priority: true},
-  ];
-  const unicornQuiz = [
-    {question: "¿En qué tamaño se prepara Unicorn Frappuccino?", options: ["Alto", "Grande", "Venti"], answer: "Grande", note: "Unicorn se ofrece únicamente en tamaño Grande."},
-    {question: "¿Cuál es la vida útil de Salsa Azul Drizzle?", options: ["12 horas", "24 horas", "48 horas"], answer: "24 horas", note: "Etiqueta la Salsa Azul con vida útil de 24 horas."},
-    {question: "¿Qué dosificador se usa para el mocha blanco de Salsa Azul?", options: ["Pump espresso", "Pump CBS", "Cuchara"], answer: "Pump CBS", note: "Los 6 y 8 pumps indicados son pumps CBS."},
-    {question: "¿Cuántas bebidas Unicorn se preparan a la vez en la licuadora?", options: ["1 bebida", "2 bebidas", "3 bebidas"], answer: "1 bebida", note: "Prepara una sola bebida por ciclo de licuadora."},
-    {question: "¿Qué debes dominar antes del servicio?", options: ["Sólo el concurso", "Salsa Azul y Unicorn", "Sólo etiquetado"], answer: "Salsa Azul y Unicorn", note: "Practica primero Salsa Azul y después la bebida completa."},
-  ];
+  const state = {view:"home",category:"",content:null,selections:{},selectorIndex:0,route:"",step:0,filter:"Todos",subfilter:"Todas",query:"",visible:12,timer:null,deferredInstall:null};
 
-  function localDate(timezone) {
-    return new Intl.DateTimeFormat("en-CA", {timeZone: timezone, year: "numeric", month: "2-digit", day: "2-digit"}).format(new Date());
-  }
-  function activeCampaign() {
-    return (cms.meta.campaigns || []).find(item => {
-      const today = localDate(item.timezone || "America/Mexico_City");
-      return today >= item.start && today <= item.end;
-    });
-  }
-  function launchTraining(id) {
-    showView("training");
-    selectContent(id);
-  }
-  function configureCampaign() {
-    const campaign = activeCampaign();
-    if (!campaign) return;
-    const primary = cms.contents.find(item => item.id === campaign.primary);
-    const secondary = cms.contents.find(item => item.id === campaign.secondary);
-    if (!primary || !secondary) return;
-    $("campaignSpotlight").hidden = false;
-    $("campaignSpotlightImage").src = primary.productImage;
-    $("campaignSpotlightImage").alt = primary.name;
-    $("campaignSpotlightTitle").textContent = campaign.title;
-    $("campaignTitle").textContent = campaign.title;
-    $("campaignSubtitle").textContent = campaign.subtitle;
-    $("campaignHero").src = primary.productImage;
-    const campaignVideo = $("campaignVideo");
-    const campaignFallback = $("campaignAnimationFallback");
-    const campaignHero = $("campaignHero");
-    campaignVideo.hidden = true;
-    campaignFallback.hidden = false;
-    campaignHero.hidden = true;
-    const showFallback = () => {
-      campaignVideo.pause();
-      campaignVideo.hidden = true;
-      campaignHero.hidden = true;
-      campaignFallback.hidden = false;
-      $("toggleCampaignVideo").textContent = "Reintentar video";
-    };
-    const playAnimation = async () => {
-      campaignHero.hidden = true;
-      campaignFallback.hidden = false;
-      campaignVideo.hidden = true;
-      campaignVideo.muted = true;
-      campaignVideo.defaultMuted = true;
-      try {
-        const started = campaignVideo.play();
-        await Promise.race([
-          started,
-          new Promise((_, reject) => setTimeout(() => reject(new Error("Tiempo de carga agotado")), 2500))
-        ]);
-        if (campaignVideo.paused || campaignVideo.readyState < 2) throw new Error("Video no disponible");
-        campaignFallback.hidden = true;
-        campaignVideo.hidden = false;
-      } catch {
-        showFallback();
-      }
-    };
-    const practice = (id, dialog = false) => {
-      if (dialog) {
-        campaignVideo.pause();
-        $("campaignDialog").close();
-      }
-      launchTraining(id);
-    };
-    $("campaignPrimary").onclick = () => practice(primary.id);
-    $("campaignSecondary").onclick = () => practice(secondary.id);
-    $("campaignDialogPrimary").onclick = () => practice(primary.id, true);
-    $("campaignDialogSecondary").onclick = () => practice(secondary.id, true);
-    $("campaignResources").innerHTML = campaign.resources.map((resource, index) => {const copy=campaignResourceCopy[index]||{title:`Material ${index+1}`,description:"Consulta el material de apoyo."};return `<button class="${copy.priority?"campaign-resource-priority":""}" type="button" data-campaign-resource="${index}"><img src="${resource}" alt=""><span>${copy.title}</span><small>${copy.description}</small></button>`;}).join("");
-    const selectResource = (index, showResource = true) => {
-      const context = campaignResourceCopy[index] || {title:`Material ${index+1}`,description:"Consulta el material de apoyo."};
-      if (showResource) {
-        campaignVideo.pause();
-        campaignVideo.hidden = true;
-        campaignFallback.hidden = true;
-        campaignHero.hidden = false;
-        campaignHero.src = campaign.resources[index];
-        campaignHero.alt = context.title;
-      }
-      $("campaignResourceContext").innerHTML = `<b>${context.title}</b><span>${context.description}</span>`;
-      document.querySelectorAll("[data-campaign-resource]").forEach(button => button.classList.toggle("active", Number(button.dataset.campaignResource) === index));
-    };
-    document.querySelectorAll("[data-campaign-resource]").forEach(button => button.addEventListener("click", () => selectResource(Number(button.dataset.campaignResource))));
-    selectResource(0, false);
-    $("toggleCampaignVideo").onclick = () => {
-      if (campaignVideo.hidden || campaignVideo.paused) playAnimation();
-      else campaignVideo.pause();
-    };
-    campaignVideo.addEventListener("playing", () => {
-      campaignFallback.hidden = true;
-      campaignVideo.hidden = false;
-      $("toggleCampaignVideo").textContent = "Pausar animación";
-    });
-    campaignVideo.addEventListener("pause", () => { if (campaignFallback.hidden) $("toggleCampaignVideo").textContent = "Reproducir animación"; });
-    campaignVideo.addEventListener("error", showFallback);
-    $("campaignObjectives").onclick = () => { campaignVideo.pause(); $("campaignDialog").close(); showView("objectives"); };
-    $("campaignEvaluate").onclick = () => { campaignVideo.pause(); $("campaignDialog").close(); openEvaluation(); };
-    $("campaignEvaluateHome").onclick = openEvaluation;
-    $("closeCampaign").onclick = () => { sessionStorage.setItem(`campaign-${campaign.id}`, "closed"); campaignVideo.pause(); $("campaignDialog").close(); };
-    if (!sessionStorage.getItem(`campaign-${campaign.id}`)) {
-      $("campaignDialog").showModal();
-      if (!matchMedia("(prefers-reduced-motion: reduce)").matches) playAnimation(); else campaignVideo.pause();
-    }
-  }
-
-  function setupPdfViewer() {
-    const dialog = $("pdfDialog");
-    const frame = $("pdfFrame");
-    const securePdfUrl = raw => {
-      const parsed = new URL(raw, location.href);
-      if (!/^https?:$/.test(parsed.protocol) || parsed.origin !== location.origin || !parsed.pathname.toLowerCase().endsWith(".pdf")) throw new Error("Ruta PDF no permitida");
-      return parsed.href;
-    };
-    const secureFileName = value => String(value || "documento.pdf").replace(/[^a-z0-9._-]+/gi, "_").replace(/^\.+/, "") || "documento.pdf";
-    const open = (url, title = "Vista previa PDF", downloadName = "documento.pdf") => {
-      let safeUrl;
-      try { safeUrl = securePdfUrl(url); }
-      catch { announce("No fue posible abrir el PDF: ruta no permitida."); return; }
-      frame.referrerPolicy = "no-referrer";
-      frame.src = safeUrl;
-      $("pdfDialogTitle").textContent = title;
-      $("openPdfExternal").href = safeUrl;
-      $("downloadPdfTarget").href = safeUrl;
-      $("downloadPdfTarget").download = secureFileName(downloadName);
-      if (!dialog.open) dialog.showModal();
-    };
-    window.PdfViewer = {open};
-    document.querySelectorAll(".pdf-preview-link").forEach(link => link.addEventListener("click", event => {
-      event.preventDefault();
-      open(link.href, link.dataset.pdfTitle || link.textContent.trim(), link.href.split("/").pop() || "documento.pdf");
-    }));
-    $("closePdfDialog").onclick = () => dialog.close();
-    dialog.addEventListener("close", () => { frame.src = "about:blank"; });
-  }
-
-  function normalize(value) {
-    return String(value || "").normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
-  }
   function announce(message) { $("statusRegion").textContent = message; }
   function saveProgress() {
     if (!state.content || !state.route) return;
-    sessionStorage.setItem("guia-progress", JSON.stringify({contentId: state.content.id, selections: state.selections, route: state.route, step: state.step}));
+    sessionStorage.setItem("guia-core-progress", JSON.stringify({contentId:state.content.id,selections:state.selections,route:state.route,step:state.step}));
     updateResume();
   }
   function updateResume() {
-    const saved = JSON.parse(sessionStorage.getItem("guia-progress") || "null");
+    const saved = JSON.parse(sessionStorage.getItem("guia-core-progress") || "null");
     const content = saved && cms.contents.find(item => item.id === saved.contentId);
     $("resumeTraining").hidden = !content;
     if (content) $("resumeLabel").textContent = `${content.name} · paso ${Number(saved.step || 0) + 1}`;
@@ -187,295 +31,76 @@
     document.querySelectorAll(".nav-button").forEach(node => node.classList.toggle("active", node.dataset.view === view));
     if (view === "training" && options.reset !== false) resetTraining();
     if (view === "search") renderSearch();
-    if (view === "objectives") window.Objectives?.render();
-    const hash = view === "training" ? "#capacitar" : view === "search" ? "#recetario" : view === "objectives" ? "#objetivos" : "#inicio";
+    const hash = view === "training" ? "#practicar" : view === "search" ? "#biblioteca" : "#inicio";
     if (options.history !== false && location.hash !== hash) history.pushState({view}, "", hash);
-    announce(view === "home" ? "Inicio" : view === "training" ? "Capacitación" : view === "search" ? "Buscador de recetas" : "Objetivos y avance");
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    announce(view === "home" ? "Inicio" : view === "training" ? "Práctica guiada" : "Biblioteca CORE");
+    window.scrollTo({top:0,behavior:"smooth"});
   }
   function trail() {
     const parts = [];
     if (state.category) parts.push(state.category);
     if (state.content) parts.push(state.content.name);
-    Object.entries(state.selections).forEach(([key, value]) => {
+    Object.entries(state.selections).forEach(([key,value]) => {
       const selector = state.content?.selectors.find(item => item.id === key);
       parts.push(`${selector?.label}: ${cms.labels[value] || value}`);
     });
-    $("selectionTrail").innerHTML = parts.map((part, index) => `<span>${index + 1}</span><b>${part}</b>`).join("");
+    $("selectionTrail").innerHTML = parts.map((part,index) => `<span>${index + 1}</span><b>${esc(part)}</b>`).join("");
   }
-  function setTrainingHeader(title, intro) {
-    $("trainingHeading").textContent = title;
-    $("trainingIntro").textContent = intro;
-    trail();
-  }
+  function setTrainingHeader(title, intro) { $("trainingHeading").textContent=title;$("trainingIntro").textContent=intro;trail(); }
   function resetTraining() {
-    state.category = ""; state.content = null; state.selections = {}; state.selectorIndex = 0; state.route = ""; state.step = 0;
-    setTrainingHeader("Elige un área", "Comienza por el tipo de preparación.");
-    $("trainingStage").innerHTML = `<div class="area-grid">
-      ${Object.keys(categoryCopy).map(category => `<button class="area-card" data-category="${category}" type="button"><span>${category === "Bebidas" ? "◒" : category === "Procesos" ? "⟳" : "♨"}</span><b>${category}</b><small>${categoryCopy[category][1]}</small><i>Continuar →</i></button>`).join("")}
-    </div>`;
-    document.querySelectorAll("[data-category]").forEach(button => button.addEventListener("click", () => selectCategory(button.dataset.category)));
+    Object.assign(state,{category:"",content:null,selections:{},selectorIndex:0,route:"",step:0});
+    setTrainingHeader("Elige un área","Comienza por el tipo de preparación.");
+    $("trainingStage").innerHTML = `<div class="area-grid">${Object.entries(categoryCopy).map(([category,copy]) => `<button class="area-card" data-category="${category}" type="button"><span>${category === "Bebidas" ? "☕" : category === "Procesos" ? "↻" : "▱"}</span><b>${category}</b><small>${esc(copy[1])}</small><i>Continuar →</i></button>`).join("")}</div>`;
+    document.querySelectorAll("[data-category]").forEach(button => button.onclick=()=>selectCategory(button.dataset.category));
   }
   function selectCategory(category) {
-    state.category = category;
-    const [title, intro] = categoryCopy[category];
-    setTrainingHeader(title, intro);
-    const contents = cms.contents.filter(item => item.category === category).sort((a, b) => {
-      const priority = value => value.subcategory.includes("prioridad") ? 0 : value.subcategory.includes("temporada") ? 1 : 2;
-      return priority(a) - priority(b) || a.name.localeCompare(b.name, "es");
-    });
-    $("trainingStage").innerHTML = `<button class="back-link inline" id="changeArea" type="button">← Cambiar área</button>
-      <div class="training-card-grid">${contents.map(item => `<button class="training-card" data-content="${item.id}" type="button"><img src="${item.productImage}" alt="${item.name}"><span><small>${item.subcategory}</small><b>${item.name}</b><em>${item.description}</em><i>Practicar →</i></span></button>`).join("")}</div>`;
-    $("changeArea").addEventListener("click", resetTraining);
-    document.querySelectorAll("[data-content]").forEach(button => button.addEventListener("click", () => selectContent(button.dataset.content)));
+    state.category=category;setTrainingHeader(...categoryCopy[category]);
+    const contents=cms.contents.filter(item=>item.category===category).sort((a,b)=>a.subcategory.localeCompare(b.subcategory,"es")||a.name.localeCompare(b.name,"es"));
+    const groups=contents.reduce((acc,item)=>((acc[item.subcategory] ||= []).push(item),acc),{});
+    $("trainingStage").innerHTML=`<button class="back-link" id="changeArea" type="button">← Cambiar área</button>${Object.entries(groups).map(([group,items])=>`<section class="content-group"><header><h2>${esc(group)}</h2><span>${items.length}</span></header><div class="training-card-grid">${items.map(item=>`<button class="training-card" data-content="${item.id}" type="button"><img loading="lazy" src="${item.productImage}" alt=""><span><small>${esc(item.subcategory)}</small><b>${esc(item.name)}</b><em>${esc(item.description)}</em><i>Practicar →</i></span></button>`).join("")}</div></section>`).join("")}`;
+    $("changeArea").onclick=resetTraining;document.querySelectorAll("[data-content]").forEach(button=>button.onclick=()=>selectContent(button.dataset.content));
   }
   function selectContent(id) {
-    state.content = cms.contents.find(item => item.id === id);
-    state.selections = {}; state.selectorIndex = 0;
-    if (!state.content.selectors.length) { state.route = state.content.routes.default; startRoute(); return; }
-    if (state.content.selectors.length === 1 && state.content.selectors[0].options.length === 1) {
-      const selector = state.content.selectors[0];
-      state.selections[selector.id] = selector.options[0];
-      resolveRoute();
-      return;
-    }
-    renderSelector();
+    state.content=cms.contents.find(item=>item.id===id);state.selections={};state.selectorIndex=0;
+    if(!state.content.selectors.length){state.route=state.content.routes.default;return startRoute();}renderSelector();
   }
   function renderSelector() {
-    const selector = state.content.selectors[state.selectorIndex];
-    setTrainingHeader(`Elige ${selector.label.toLowerCase()}`, `Configura ${state.content.name} antes de comenzar.`);
-    $("trainingStage").innerHTML = `<div class="config-layout"><div class="config-product"><img src="${state.content.productImage}" alt="${state.content.name}"><small>${state.content.subcategory}</small><h2>${state.content.name}</h2></div><div class="option-panel"><span class="step-kicker">${state.selectorIndex + 1} de ${state.content.selectors.length}</span><h2>${selector.label}</h2><div class="option-grid">${selector.options.map(option => `<button data-option="${option}" type="button"><b>${cms.labels[option] || option}</b><span>→</span></button>`).join("")}</div></div></div>`;
-    document.querySelectorAll("[data-option]").forEach(button => button.addEventListener("click", () => {
-      state.selections[selector.id] = button.dataset.option;
-      state.selectorIndex += 1;
-      if (state.selectorIndex < state.content.selectors.length) renderSelector(); else resolveRoute();
-    }));
+    const selector=state.content.selectors[state.selectorIndex];
+    setTrainingHeader(`Elige ${selector.label.toLowerCase()}`,`Sólo se muestran opciones disponibles para ${state.content.name}.`);
+    $("trainingStage").innerHTML=`<div class="config-layout"><div class="config-product"><img src="${state.content.productImage}" alt="${esc(state.content.name)}"><small>${esc(state.content.subcategory)}</small><h2>${esc(state.content.name)}</h2></div><div class="option-panel"><span class="step-kicker">CONFIGURA ANTES DE INICIAR</span><h2>${esc(selector.label)}</h2><p>La cantidad se resaltará de acuerdo con esta selección.</p><div class="option-grid">${selector.options.map(option=>`<button data-option="${option}" type="button"><b>${esc(cms.labels[option]||option)}</b><span>→</span></button>`).join("")}</div></div></div>`;
+    document.querySelectorAll("[data-option]").forEach(button=>button.onclick=()=>{state.selections[selector.id]=button.dataset.option;state.selectorIndex++;state.selectorIndex<state.content.selectors.length?renderSelector():resolveRoute();});
   }
   function resolveRoute() {
-    const key = state.content.selectors.map(selector => `${selector.id}=${state.selections[selector.id]}`).join("|");
-    state.route = state.content.routes[key];
-    if (!state.route) throw new Error(`Ruta no encontrada: ${key}`);
-    startRoute();
+    const key=state.content.selectors.map(selector=>`${selector.id}=${state.selections[selector.id]}`).join("|");state.route=state.content.routes[key];
+    if(!state.route)throw new Error(`Ruta no encontrada: ${key}`);startRoute();
   }
-  function routeSteps() { return cms.steps.filter(step => step.route === state.route).sort((a, b) => a.order - b.order); }
-  function valueFor(step) {
-    const entries = Object.fromEntries(String(step.values || "").split("|").filter(Boolean).map(pair => pair.split("=")));
-    const primary = state.selections.size || state.selections.batch;
-    return entries[primary] || entries.TODOS || "";
+  function routeSteps(){return cms.steps.filter(step=>step.route===state.route).sort((a,b)=>a.order-b.order);}
+  function valueFor(step){
+    const entries=Object.fromEntries(String(step.values||"").split("|").filter(Boolean).map(pair=>{const at=pair.indexOf("=");return[pair.slice(0,at),pair.slice(at+1)];}));
+    const selected=state.selections.size||state.selections.batch;return entries[selected]||entries.TODOS||"";
   }
-  function startRoute() {
-    state.step = 0; saveProgress();
-    setTrainingHeader(state.content.name, "Avanza a tu ritmo. La guía conserva el contexto de cada paso.");
-    renderRunner();
+  function startRoute(){state.step=0;saveProgress();setTrainingHeader(state.content.name,"Observa, ejecuta y valida antes de avanzar.");renderRunner();}
+  function renderRunner(){
+    const steps=routeSteps(),current=steps[state.step],progress=Math.round(((state.step+1)/steps.length)*100),visual=current.media||state.content.productImage;
+    $("trainingStage").innerHTML=`<div class="runner"><aside class="runner-visual"><span>${current.media?"TÉCNICA CORE":"RESULTADO ESPERADO"}</span><div class="visual-frame"><img src="${visual}" alt="${esc(current.media?current.title:state.content.name)}"></div><h2>${esc(state.content.name)}</h2><div class="visual-actions"><button id="openRecipe" type="button">Ver ficha completa</button><button id="openRules" type="button">Equipo y control</button></div></aside><section class="runner-main"><div class="progress-meta"><b>Paso ${state.step+1} de ${steps.length}</b><span>${progress}%</span></div><div class="progress-line"><span style="width:${progress}%"></span></div><div class="milestones">${steps.map((item,index)=>`<button class="${index<state.step?"done":index===state.step?"active":""}" data-jump="${index}" type="button" aria-label="Ir al paso ${index+1}"><i>${index<state.step?"✓":index+1}</i><b>${esc(item.stage)}</b></button>`).join("")}</div><article class="step-card"><div class="step-top"><span class="step-icon">${iconMap[current.icon]||"•"}</span><span class="step-kicker">${esc(current.stage)}</span></div><h2>${esc(current.title)}</h2><p>${esc(current.detail)}</p>${valueFor(current)?`<div class="measure"><span>${esc(Object.values(state.selections).map(value=>cms.labels[value]||value).join(" · ")||"CANTIDAD CLAVE")}</span><strong>${esc(valueFor(current))}</strong></div>`:""}${current.timer?`<button class="timer-button" id="timerButton" data-seconds="${current.timer}" type="button">◷ Iniciar temporizador</button>`:""}</article><details class="reference-dock"><summary>Comparar con la ficha de receta</summary><img src="${state.content.referenceImage}" alt="Ficha de ${esc(state.content.name)}"></details><div class="runner-actions"><button id="prevStep" type="button" ${state.step===0?"disabled":""}>← Anterior</button><button class="primary-button" id="nextStep" type="button">${state.step===steps.length-1?"Completar ✓":"Siguiente →"}</button></div></section></div>`;
+    $("prevStep").onclick=()=>{if(state.step>0){state.step--;saveProgress();renderRunner();}};$("nextStep").onclick=()=>{if(state.step<steps.length-1){state.step++;saveProgress();renderRunner();}else renderDone();};$("openRecipe").onclick=()=>openReference(state.content.id);$("openRules").onclick=renderRules;document.querySelectorAll("[data-jump]").forEach(button=>button.onclick=()=>{state.step=Number(button.dataset.jump);saveProgress();renderRunner();});if($("timerButton"))$("timerButton").onclick=startTimer;
   }
-  function renderRunner() {
-    const steps = routeSteps();
-    const step = steps[state.step];
-    const progress = Math.round(((state.step + 1) / steps.length) * 100);
-    const milestones = steps.map((item, index) => `<span class="${index < state.step ? "done" : index === state.step ? "active" : ""}"><i>${index < state.step ? "✓" : index + 1}</i><b>${item.stage}</b></span>`).join("");
-    $("trainingStage").innerHTML = `<div class="runner">
-      <aside class="runner-visual"><img src="${state.content.productImage}" alt="${state.content.name}"><small>Resultado esperado</small><h2>${state.content.name}</h2><button id="openRules" type="button">Equipo y normas</button></aside>
-      <section class="runner-main">
-        <div class="progress-line"><span style="width:${progress}%"></span></div>
-        <div class="milestones">${milestones}</div>
-        <article class="step-card">
-          <div class="step-top"><span class="step-icon">${iconMap[step.icon] || "•"}</span><span class="step-kicker">Paso ${state.step + 1} de ${steps.length}</span></div>
-          <h2>${step.title}</h2><p>${step.detail}</p>
-          ${valueFor(step) ? `<div class="measure"><span>${Object.values(state.selections).map(value => cms.labels[value] || value).join(" · ") || "Indicador"}</span><strong>${valueFor(step)}</strong></div>` : ""}
-          ${step.timer ? `<button class="timer-button" id="timerButton" data-seconds="${step.timer}" type="button">◷ Iniciar temporizador</button>` : ""}
-        </article>
-        <div class="runner-actions"><button id="prevStep" type="button" ${state.step === 0 ? "disabled" : ""}>← Anterior</button><button class="primary-button" id="nextStep" type="button">${state.step === steps.length - 1 ? "Completar" : "Siguiente →"}</button></div>
-      </section>
-    </div>`;
-    $("prevStep").addEventListener("click", () => { if (state.step > 0) { state.step--; saveProgress(); renderRunner(); } });
-    $("nextStep").addEventListener("click", () => { if (state.step < steps.length - 1) { state.step++; saveProgress(); renderRunner(); } else renderDone(); });
-    $("openRules").addEventListener("click", renderRules);
-    if ($("timerButton")) $("timerButton").addEventListener("click", startTimer);
+  function renderRules(){
+    $("trainingStage").innerHTML=`<div class="rules-panel"><button class="back-link" id="backToStep" type="button">← Volver al paso</button><section><span class="eyebrow">ANTES DE COMENZAR</span><h2>Equipo</h2><ul>${state.content.equipment.map(item=>`<li>${esc(item)}</li>`).join("")}</ul><h2>Puntos de control</h2><ul>${state.content.rules.map(item=>`<li>${esc(item)}</li>`).join("")}</ul></section><img src="${state.content.referenceImage}" alt="Ficha de referencia"></div>`;$("backToStep").onclick=renderRunner;
   }
-  function renderRules() {
-    const markup = `<div class="rules-panel"><button class="back-link" id="backToStep" type="button">← Volver al paso</button><div><span class="eyebrow">ANTES DE COMENZAR</span><h2>Equipo</h2><ul>${state.content.equipment.map(item => `<li>${item}</li>`).join("")}</ul><h2>Normas</h2><ul>${state.content.rules.map(item => `<li>${item}</li>`).join("")}</ul></div><img src="${state.content.referenceImage}" alt="Ficha de referencia"></div>`;
-    $("trainingStage").innerHTML = markup;
-    $("backToStep").addEventListener("click", renderRunner);
+  function startTimer(event){let remaining=Number(event.currentTarget.dataset.seconds);clearInterval(state.timer);const button=event.currentTarget;const tick=()=>{const h=Math.floor(remaining/3600),m=Math.floor((remaining%3600)/60),s=remaining%60;button.textContent=`◷ ${h?`${h}:`:""}${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}`;if(remaining--<=0){clearInterval(state.timer);button.textContent="✓ Tiempo completado";}};tick();state.timer=setInterval(tick,1000);}
+  function renderDone(){sessionStorage.removeItem("guia-core-progress");updateResume();$("trainingStage").innerHTML=`<div class="done-card"><span>✓</span><small>PRÁCTICA COMPLETA</small><h2>${esc(state.content.name)}</h2><p>Repasaste ${routeSteps().length} pasos con apoyo de la ficha original.</p><div><button id="repeatTraining" type="button">Repetir</button><button class="primary-button" id="newTraining" type="button">Elegir otra</button></div></div>`;$("repeatTraining").onclick=startRoute;$("newTraining").onclick=resetTraining;}
+  function renderSearch(){
+    const categories=["Todos",...new Set(cms.catalog.map(item=>item.category))];
+    $("filterRow").innerHTML=categories.map(category=>`<button class="${state.filter===category?"active":""}" data-filter="${category}" type="button">${category}<small>${category==="Todos"?cms.catalog.length:cms.catalog.filter(item=>item.category===category).length}</small></button>`).join("");document.querySelectorAll("[data-filter]").forEach(button=>button.onclick=()=>{state.filter=button.dataset.filter;state.subfilter="Todas";state.visible=12;renderSearch();});
+    const subcategories=state.filter==="Todos"?[...new Set(cms.catalog.map(item=>item.subcategory))]:[...new Set(cms.catalog.filter(item=>item.category===state.filter).map(item=>item.subcategory))];$("subfilterRow").innerHTML=["Todas",...subcategories].map(value=>`<button class="${state.subfilter===value?"active":""}" data-subfilter="${esc(value)}" type="button">${esc(value)}</button>`).join("");document.querySelectorAll("[data-subfilter]").forEach(button=>button.onclick=()=>{state.subfilter=button.dataset.subfilter;state.visible=12;renderSearch();});
+    const terms=normalize(state.query).split(" ").filter(Boolean);const filtered=cms.catalog.filter(item=>(state.filter==="Todos"||item.category===state.filter)&&(state.subfilter==="Todas"||item.subcategory===state.subfilter)&&terms.every(term=>normalize(`${item.name} ${item.category} ${item.subcategory}`).includes(term))).sort((a,b)=>a.name.localeCompare(b.name,"es"));
+    $("clearSearch").hidden=!state.query;$("resultCount").textContent=`${filtered.length} ${filtered.length===1?"receta":"recetas"}`;$("recipeGrid").innerHTML=filtered.slice(0,state.visible).map(item=>`<article class="recipe-card"><div class="product-frame"><img loading="lazy" decoding="async" src="${item.productImage}" alt="${esc(item.name)}"></div><div class="recipe-copy"><small>${esc(item.subcategory)}</small><h2>${esc(item.name)}</h2><div class="recipe-actions"><button class="mini-primary" data-practice="${item.id}" type="button">Practicar</button><button class="text-button" data-reference="${item.id}" type="button">Ver ficha</button></div></div></article>`).join("")||`<div class="empty-state"><span>⌕</span><h2>Sin coincidencias</h2><p>Prueba con otra palabra o categoría.</p></div>`;$("showMore").hidden=state.visible>=filtered.length;document.querySelectorAll("[data-reference]").forEach(button=>button.onclick=()=>openReference(button.dataset.reference));document.querySelectorAll("[data-practice]").forEach(button=>button.onclick=()=>launchTraining(button.dataset.practice));announce(`${filtered.length} resultados`);
   }
-  function startTimer(event) {
-    let remaining = Number(event.currentTarget.dataset.seconds);
-    clearInterval(state.timer);
-    const button = event.currentTarget;
-    const tick = () => {
-      const hours = Math.floor(remaining / 3600), minutes = Math.floor((remaining % 3600) / 60), seconds = remaining % 60;
-      button.textContent = `◷ ${hours ? `${hours}:` : ""}${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
-      if (remaining <= 0) { clearInterval(state.timer); button.textContent = "✓ Tiempo completado"; return; }
-      remaining--;
-    };
-    tick(); state.timer = setInterval(tick, 1000);
-  }
-  function renderDone() {
-    sessionStorage.removeItem("guia-progress"); updateResume();
-    const evaluate = state.content.id === "unicorn-frappuccino" || state.content.id === "salsa-azul-drizzle";
-    $("trainingStage").innerHTML = `<div class="done-card"><span>✓</span><small>CAPACITACIÓN COMPLETA</small><h2>${state.content.name}</h2><p>Repasaste ${routeSteps().length} pasos operativos.</p><div><button id="repeatTraining" type="button">Repetir</button>${evaluate ? '<button id="evaluateTraining" type="button">Evaluar preparación</button>' : ""}<button class="primary-button" id="newTraining" type="button">Nueva capacitación</button></div></div>`;
-    $("repeatTraining").addEventListener("click", startRoute);
-    $("newTraining").addEventListener("click", resetTraining);
-    if ($("evaluateTraining")) $("evaluateTraining").addEventListener("click", openEvaluation);
-  }
+  function launchTraining(id){showView("training",{reset:false});selectContent(id);}
+  function openReference(id){const item=cms.catalog.find(entry=>entry.id===id);if(!item)return;$("dialogProduct").src=item.productImage;$("dialogProduct").alt=item.name;$("dialogReference").src=item.referenceImage;$("dialogTitle").textContent=item.name;$("dialogCategory").textContent=`${item.category} · ${item.subcategory}`;const content=cms.contents.find(entry=>entry.id===item.id);$("dialogTrain").hidden=!content;$("dialogTrain").onclick=()=>{$("referenceDialog").close();launchTraining(content.id);};$("referenceDialog").showModal();}
+  function resumeTraining(){const saved=JSON.parse(sessionStorage.getItem("guia-core-progress")||"null"),content=saved&&cms.contents.find(item=>item.id===saved.contentId);if(!content)return;state.content=content;state.category=content.category;state.selections=saved.selections||{};state.route=saved.route;state.step=Math.min(Number(saved.step||0),Math.max(0,cms.steps.filter(item=>item.route===saved.route).length-1));showView("training",{reset:false});setTrainingHeader(content.name,"Continuaste tu práctica guardada.");renderRunner();}
+  function setupInstall(){const standalone=matchMedia("(display-mode: standalone)").matches||navigator.standalone===true,ios=/iphone|ipad|ipod/i.test(navigator.userAgent);$("installApp").textContent=standalone?"Instalada":"Instalar";addEventListener("beforeinstallprompt",event=>{event.preventDefault();state.deferredInstall=event;});$("installApp").onclick=async()=>{if(standalone)return announce("La guía ya está instalada");if(state.deferredInstall){await state.deferredInstall.prompt();state.deferredInstall=null;return;}$("installGuide").innerHTML=ios?"<ol><li>Toca Compartir en Safari.</li><li>Elige Agregar a inicio.</li></ol>":"<p>Abre el menú del navegador y selecciona Instalar aplicación o Agregar a pantalla principal.</p>";$("installDialog").showModal();};$("confirmInstall").onclick=()=>$("installDialog").close();}
 
-  function openEvaluation() {
-    state.evaluationIndex = 0; state.evaluationScore = 0; state.evaluationPhoto = "";
-    state.evaluatedPartner = localStorage.getItem("evaluated-partner") || "";
-    renderEvaluationStart();
-    $("evaluationDialog").showModal();
-  }
-  function renderEvaluationStart() {
-    $("evaluationProgress").textContent = "Comenzar";
-    $("evaluationStage").innerHTML = `<div class="evaluation-start"><span class="eyebrow">PASO 1</span><h2>¿A quién vas a evaluar?</h2><p>Escribe únicamente el nombre del Partner.</p><label><span>Nombre del Partner</span><input id="evaluationPartnerInput" maxlength="80" autocomplete="name" value="${state.evaluatedPartner.replace(/[&<>'"]/g,"")}" placeholder="Ej. Enrique"></label><button class="primary-button" id="startEvaluation" type="button">Comenzar cuestionario</button></div>`;
-    $("startEvaluation").onclick = () => { const name=$("evaluationPartnerInput").value.trim(); if(!name){$("evaluationPartnerInput").focus();return;} state.evaluatedPartner=name;localStorage.setItem("evaluated-partner",name);renderEvaluation(); };
-    $("evaluationPartnerInput").focus();
-  }
-  function renderEvaluation() {
-    const item = unicornQuiz[state.evaluationIndex];
-    if (!item) {
-      const passed = state.evaluationScore >= 4;
-      localStorage.setItem("unicorn-evaluation", JSON.stringify({score: state.evaluationScore, total: unicornQuiz.length, date: localDate("America/Mexico_City")}));
-      $("evaluationProgress").textContent = "Resultado";
-      const partner = state.evaluatedPartner || "Partner";
-      const evaluatedAt = new Intl.DateTimeFormat("es-MX", {dateStyle:"long", timeStyle:"short", timeZone:"America/Mexico_City"}).format(new Date());
-      localStorage.setItem("evaluated-partner", partner);
-      $("evaluationStage").innerHTML = `<div class="evaluation-result"><span>${passed ? "✓" : "↻"}</span><small>${partner.toUpperCase()}</small><h2>${state.evaluationScore} de ${unicornQuiz.length}</h2><p>${passed ? "Cuestionario completo. Ahora registra la práctica." : "Repasa la receta y registra la práctica."}</p><time>${evaluatedAt}</time><div class="practice-capture"><input id="evaluationPhoto" type="file" accept="image/*" capture="environment" hidden><button class="camera-button" id="takePracticePhoto" type="button"><b>◎ Tomar foto de práctica</b><small>Abre la cámara del dispositivo</small></button><img id="evaluationPhotoPreview" alt="Evidencia de práctica" hidden></div><div><button id="retryEvaluation" type="button">Repetir</button><button class="primary-button" id="finishEvaluation" type="button">Finalizar</button></div></div>`;
-      $("retryEvaluation").onclick = () => { state.evaluationIndex = 0; state.evaluationScore = 0; renderEvaluation(); };
-      $("takePracticePhoto").onclick = () => $("evaluationPhoto").click();
-      $("evaluationPhoto").onchange = event => { const file=event.target.files[0];if(!file)return;if(file.size>8*1024*1024){alert("La foto debe pesar menos de 8 MB.");return;}const reader=new FileReader();reader.onload=()=>{state.evaluationPhoto=reader.result;$("evaluationPhotoPreview").src=reader.result;$("evaluationPhotoPreview").hidden=false;$("takePracticePhoto").querySelector("b").textContent="✓ Foto lista";};reader.readAsDataURL(file);};
-      $("finishEvaluation").onclick = () => $("evaluationDialog").close();
-      return;
-    }
-    $("evaluationProgress").textContent = `Pregunta ${state.evaluationIndex + 1} de ${unicornQuiz.length}`;
-    $("evaluationStage").innerHTML = `<div class="evaluation-question"><h2>${item.question}</h2><div class="evaluation-options">${item.options.map(option => `<button type="button" data-evaluation-answer="${option}">${option}<span>→</span></button>`).join("")}</div><p id="evaluationFeedback" aria-live="polite"></p><button class="primary-button" id="nextEvaluation" type="button" hidden>${state.evaluationIndex === unicornQuiz.length - 1 ? "Ver resultado" : "Siguiente"}</button></div>`;
-    document.querySelectorAll("[data-evaluation-answer]").forEach(button => button.onclick = () => {
-      const correct = button.dataset.evaluationAnswer === item.answer;
-      if (correct) state.evaluationScore += 1;
-      document.querySelectorAll("[data-evaluation-answer]").forEach(option => { option.disabled = true; option.classList.toggle("correct", option.dataset.evaluationAnswer === item.answer); option.classList.toggle("wrong", option === button && !correct); });
-      $("evaluationFeedback").textContent = `${correct ? "Correcto. " : "Revisa. "}${item.note}`;
-      $("nextEvaluation").hidden = false;
-      $("nextEvaluation").focus();
-    });
-    $("nextEvaluation").onclick = () => { state.evaluationIndex += 1; renderEvaluation(); };
-  }
-
-  function setupPwaInstall() {
-    const standalone = window.matchMedia("(display-mode: standalone)").matches || navigator.standalone === true;
-    const ios = /iphone|ipad|ipod/i.test(navigator.userAgent);
-    const updateStatus = () => {
-      $("installApp").textContent = standalone ? "App instalada" : "Instalar app";
-      $("installApp").classList.toggle("installed", standalone);
-    };
-    updateStatus();
-    window.addEventListener("beforeinstallprompt", event => { event.preventDefault(); state.deferredInstall = event; });
-    window.addEventListener("appinstalled", () => { state.deferredInstall = null; $("installDialog").close(); $("installApp").textContent = "App instalada"; $("installApp").classList.add("installed"); announce("Aplicación instalada"); });
-    $("installApp").onclick = async () => {
-      if (standalone) { announce("La aplicación ya está instalada"); return; }
-      if (state.deferredInstall) {
-        await state.deferredInstall.prompt();
-        state.deferredInstall = null;
-        return;
-      }
-      $("installGuide").innerHTML = ios ? '<ol><li>Toca <b>Compartir</b> en Safari.</li><li>Elige <b>Agregar a inicio</b>.</li><li>Confirma con <b>Agregar</b>.</li></ol>' : '<p>Abre el menú del navegador y selecciona <b>Instalar aplicación</b> o <b>Agregar a pantalla principal</b>.</p>';
-      $("confirmInstall").textContent = "Entendido";
-      $("confirmInstall").onclick = () => $("installDialog").close();
-      $("installDialog").showModal();
-    };
-  }
-  function renderSearch() {
-    const categories = ["Todos", ...new Set(cms.catalog.map(item => item.category))];
-    const categoryCount = category => category === "Todos" ? cms.catalog.length : cms.catalog.filter(item => item.category === category).length;
-    $("filterRow").innerHTML = categories.map(category => `<button class="${state.filter === category ? "active" : ""}" data-filter="${category}" type="button">${category}<small>${categoryCount(category)}</small></button>`).join("");
-    document.querySelectorAll("[data-filter]").forEach(button => button.addEventListener("click", () => { state.filter = button.dataset.filter; state.subfilter = "Todas"; state.visible = 9; renderSearch(); }));
-    const subcategories = state.filter === "Todos" ? [] : [...new Set(cms.catalog.filter(item => item.category === state.filter).map(item => item.subcategory))];
-    $("subfilterRow").hidden = subcategories.length < 2;
-    $("subfilterRow").innerHTML = ["Todas", ...subcategories].map(value => `<button class="${state.subfilter === value ? "active" : ""}" data-subfilter="${value}" type="button">${value}</button>`).join("");
-    document.querySelectorAll("[data-subfilter]").forEach(button => button.addEventListener("click", () => { state.subfilter = button.dataset.subfilter; state.visible = 9; renderSearch(); }));
-    const query = normalize(state.query);
-    const terms = query.split(" ").filter(Boolean);
-    const priority = item => {
-      const subcategory = normalize(item.subcategory);
-      if (subcategory.includes("pumpkin")) return 0;
-      if (subcategory.includes("ensamble")) return 1;
-      if (subcategory.includes("temporada")) return 2;
-      return 3;
-    };
-    const filtered = cms.catalog.filter(item => {
-      const haystack = normalize(`${item.name} ${item.category} ${item.subcategory} ${item.search}`);
-      return (state.filter === "Todos" || item.category === state.filter) && (state.subfilter === "Todas" || item.subcategory === state.subfilter) && terms.every(term => haystack.includes(term));
-    }).sort((a, b) => {
-      const exactA = query && normalize(a.name) === query ? -2 : query && normalize(a.name).startsWith(query) ? -1 : 0;
-      const exactB = query && normalize(b.name) === query ? -2 : query && normalize(b.name).startsWith(query) ? -1 : 0;
-      return exactA - exactB || priority(a) - priority(b) || a.name.localeCompare(b.name, "es");
-    });
-    $("clearSearch").hidden = !state.query;
-    $("resultCount").textContent = `${filtered.length} ${filtered.length === 1 ? "receta" : "recetas"}`; announce(`${filtered.length} resultados`);
-    $("recipeGrid").innerHTML = filtered.slice(0, state.visible).map(item => { const recent = /pumpkin|ensamble/i.test(item.subcategory); const canPractice = item.category === "Bebidas" || cms.contents.some(content => content.name === item.name); return `<article class="recipe-card${recent ? " recipe-card-new" : ""}"><div class="product-frame"><img loading="lazy" decoding="async" src="${item.productImage}" alt="${item.name}"></div><div class="recipe-copy"><small>${recent ? `<span class="recipe-status">Nueva</span>` : ""}${item.subcategory}</small><h2>${item.name}</h2><div class="recipe-actions">${canPractice ? `<button class="mini-primary" data-practice="${item.id}" type="button">Practicar</button>` : ""}<button class="text-button" data-reference="${item.id}" type="button">Ver receta</button></div></div></article>`; }).join("") || `<div class="empty-state"><span>⌕</span><h2>Sin coincidencias</h2><p>Prueba con otra palabra o categoría.</p></div>`;
-    $("showMore").hidden = state.visible >= filtered.length;
-    document.querySelectorAll("[data-reference]").forEach(button => button.addEventListener("click", () => openReference(button.dataset.reference)));
-    document.querySelectorAll("[data-practice]").forEach(button => button.addEventListener("click", () => openPractice(button.dataset.practice)));
-  }
-  function openPractice(id) {
-    const item = cms.catalog.find(entry => entry.id === id);
-    const content = item && cms.contents.find(entry => entry.name === item.name);
-    if (content) return launchTraining(content.id);
-    openReference(id, true);
-  }
-  function openReference(id, practiceMode = false) {
-    const item = cms.catalog.find(entry => entry.id === id);
-    if (!item) return;
-    $("dialogProduct").src = item.productImage; $("dialogProduct").alt = item.name;
-    $("dialogReference").src = item.referenceImage; $("dialogTitle").textContent = item.name;
-    $("dialogCategory").textContent = `${item.category} · ${item.subcategory}`;
-    const content = cms.contents.find(entry => entry.name === item.name);
-    $("practiceGuide").hidden = !practiceMode;
-    $("dialogTrain").hidden = !content && !practiceMode;
-    $("dialogTrain").textContent = content ? "Iniciar práctica guiada" : "Ver receta completa";
-    $("dialogTrain").onclick = () => {
-      if (content) { $("referenceDialog").close(); showView("training"); selectContent(content.id); return; }
-      $("dialogReference").scrollIntoView({behavior: "smooth", block: "start"});
-      $("dialogReference").focus({preventScroll: true});
-    };
-    $("referenceDialog").showModal();
-  }
-
-  function resumeTraining() {
-    const saved = JSON.parse(sessionStorage.getItem("guia-progress") || "null");
-    const content = saved && cms.contents.find(item => item.id === saved.contentId);
-    if (!content) return;
-    state.content = content; state.category = content.category; state.selections = saved.selections || {};
-    state.route = saved.route; state.step = Math.min(Number(saved.step || 0), Math.max(0, cms.steps.filter(item => item.route === saved.route).length - 1));
-    showView("training", {reset: false});
-    setTrainingHeader(content.name, "Continuaste tu capacitación guardada en este dispositivo."); renderRunner();
-  }
-
-  document.querySelectorAll("[data-view]").forEach(button => button.addEventListener("click", () => showView(button.dataset.view)));
-  $("homeButton").addEventListener("click", () => showView("home"));
-  $("recipeSearch").addEventListener("input", event => { state.query = event.target.value; state.visible = 9; clearTimeout(state.searchTimer); state.searchTimer = setTimeout(renderSearch, 80); });
-  $("clearSearch").addEventListener("click", () => { state.query = ""; state.visible = 9; $("recipeSearch").value = ""; renderSearch(); $("recipeSearch").focus(); });
-  $("showMore").addEventListener("click", () => { state.visible += 9; renderSearch(); });
-  $("closeDialog").addEventListener("click", () => $("referenceDialog").close());
-  $("closeEvaluation").addEventListener("click", () => $("evaluationDialog").close());
-  $("closeInstall").addEventListener("click", () => $("installDialog").close());
-  $("resumeTraining").addEventListener("click", resumeTraining);
-  document.addEventListener("keydown", event => {
-    if (event.key === "/" && state.view === "search" && document.activeElement !== $("recipeSearch")) { event.preventDefault(); $("recipeSearch").focus(); }
-  });
-  document.addEventListener("error", event => {
-    if (event.target.tagName !== "IMG") return;
-    event.target.hidden = true; event.target.parentElement?.classList.add("image-unavailable");
-  }, true);
-  window.addEventListener("popstate", () => {
-    const view = location.hash === "#capacitar" ? "training" : location.hash === "#recetario" ? "search" : location.hash === "#objetivos" ? "objectives" : "home";
-    showView(view, {history: false, reset: view === "training" && !state.content});
-  });
-  $("catalogCount").textContent = cms.meta.catalogItems;
-  $("moduleCount").textContent = cms.meta.trainingModules;
-  updateResume();
-  setupPwaInstall();
-  setupPdfViewer();
-  configureCampaign();
-  const initialView = location.hash === "#capacitar" ? "training" : location.hash === "#recetario" ? "search" : location.hash === "#objetivos" ? "objectives" : "home";
-  showView(initialView, {history: false});
-  if ("serviceWorker" in navigator && location.protocol.startsWith("http")) navigator.serviceWorker.register("sw.js");
+  document.querySelectorAll("[data-view]").forEach(button=>button.onclick=()=>showView(button.dataset.view));document.querySelectorAll("[data-close]").forEach(button=>button.onclick=()=>$(button.dataset.close).close());$("homeButton").onclick=()=>showView("home");$("recipeSearch").oninput=event=>{state.query=event.target.value;state.visible=12;renderSearch();};$("clearSearch").onclick=()=>{state.query="";$("recipeSearch").value="";renderSearch();};$("showMore").onclick=()=>{state.visible+=12;renderSearch();};$("resumeTraining").onclick=resumeTraining;$("homeBeverageCount").textContent=cms.contents.filter(item=>item.category!=="Alimentos").length;$("homeFoodCount").textContent=cms.contents.filter(item=>item.category==="Alimentos").length;addEventListener("popstate",()=>showView(location.hash==="#practicar"?"training":location.hash==="#biblioteca"?"search":"home",{history:false}));if("serviceWorker" in navigator)addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));updateResume();setupInstall();showView(location.hash==="#practicar"?"training":location.hash==="#biblioteca"?"search":"home",{history:false});
 })();
