@@ -9,7 +9,6 @@ permissions:
 
 jobs:
   materialize:
-    if: ${{ hashFiles('.bootstrap/part-*') != '' }}
     runs-on: ubuntu-latest
     steps:
       - name: Descargar rama
