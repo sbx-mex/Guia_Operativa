@@ -33,7 +33,6 @@ jobs:
 
       - name: Regenerar motor y auditar
         run: |
-          python scripts/build_content.py
           python scripts/build_content.py --check
           python scripts/cleanup_obsolete.py | tee -a "$GITHUB_STEP_SUMMARY"
           python scripts/audit_repository_layout.py
