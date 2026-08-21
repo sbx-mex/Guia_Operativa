@@ -4,6 +4,7 @@ tmp_browser/
 node_modules/
 outputs/visual-check/
 **/__pycache__/
+.pytest_cache/
 *.pyc
 _site/
 
