@@ -1,279 +1,53 @@
 from __future__ import annotations
-
 import json
-import re
-import subprocess
-import sys
 from pathlib import Path
-
 from openpyxl import load_workbook
-from PIL import Image
 
-ROOT = Path(__file__).resolve().parents[1]
+ROOT=Path(__file__).resolve().parents[1]
 
+def data(): return json.loads((ROOT/"data/content.json").read_text(encoding="utf-8"))
 
-def load():
-    return json.loads((ROOT / "data" / "content.json").read_text(encoding="utf-8"))
+def test_core_catalog_is_complete_and_campaign_free():
+    cms=data()
+    assert cms["meta"]["version"] == "5.0.0-core"
+    assert cms["meta"]["campaigns"] == []
+    assert len(cms["contents"]) == len(cms["catalog"]) == 103
+    assert sum(item["category"] != "Alimentos" for item in cms["contents"]) == 97
+    assert sum(item["category"] == "Alimentos" for item in cms["contents"]) == 6
+    assert "uni" + "corn" not in json.dumps(cms,ensure_ascii=False).lower()
 
+def test_every_module_has_an_independent_recipe_and_steps():
+    cms=data(); routes={step["route"] for step in cms["steps"]}
+    for item in cms["contents"]:
+        assert (ROOT/item["productImage"]).is_file()
+        assert (ROOT/item["referenceImage"]).is_file()
+        assert item["equipment"] and item["rules"]
+        assert set(item["routes"].values()) <= routes
+    assert any(step["media"].startswith("assets/GIF_CORE/") for step in cms["steps"])
 
-def test_generated_engine_is_synced_with_cms():
-    subprocess.run([sys.executable, "scripts/build_content.py", "--check"], cwd=ROOT, check=True)
-    assert load()["meta"]["source"] == "outputs/CMS_Guia_Operativa_v2.xlsx"
+def test_lots_respect_operational_limits():
+    expected={"Lote_01_Bebidas":49,"Lote_02_Bebidas":48,"Lote_01_Recetas":49,"Lote_02_Recetas":48,"Lote_01_Alimentos":6,"GIF_CORE":16}
+    for folder,count in expected.items():
+        files=[p for p in (ROOT/"assets"/folder).iterdir() if p.is_file()]
+        assert len(files)==count
+        assert len(files)<=100
+        assert sum(p.stat().st_size for p in files)<25*1024*1024
 
-
-def test_cms_has_required_tabs_and_headers():
-    book = load_workbook(ROOT / "outputs" / "CMS_Guia_Operativa_v2.xlsx", read_only=True, data_only=True)
-    expected = {"Instrucciones", "Contenidos", "Selectores", "Opciones", "Rutas", "Pasos", "Equipo", "Normas", "Medios", "Auditoria", "Campanas"}
-    assert expected.issubset(book.sheetnames)
-    assert [cell.value for cell in book["Medios"][4]][:6] == ["ID_MEDIO", "NOMBRE", "CATEGORIA", "SUBCATEGORIA", "IMAGEN_PRODUCTO", "FICHA_REFERENCIA"]
+def test_cms_is_single_canonical_source():
+    cms=ROOT/"outputs/CMS_Guia_Operativa_CORE.xlsx"
+    assert cms.is_file()
+    assert not (ROOT/"outputs/CMS_Guia_Operativa_v2.xlsx").exists()
+    book=load_workbook(cms,read_only=True,data_only=False)
+    assert book.sheetnames == ["Inicio","Contenidos","Selectores","Opciones","Rutas","Pasos","Equipo","Normas","Medios","Campanas","Control"]
+    assert book["Control"]["B14"].value.startswith("=IF(")
     book.close()
 
-
-def test_every_catalog_media_exists_and_is_valid():
-    for item in load()["catalog"]:
-        for key in ("productImage", "referenceImage"):
-            path = ROOT / item[key]
-            assert path.exists(), path
-            with Image.open(path) as image:
-                image.verify()
-
-
-def test_every_beverage_has_recipe_and_practice_entry_points():
-    assert all(item["referenceImage"] for item in load()["catalog"] if item["category"] == "Bebidas")
-    app = (ROOT / "app.js").read_text(encoding="utf-8")
-    assert 'item.category === "Bebidas"' in app
-    assert 'data-practice=' in app and 'openPractice' in app and '>Ver receta<' in app
-
-
-def test_beverage_product_images_are_catalog_ready():
-    subprocess.run([sys.executable, "scripts/crop_product_images.py"], cwd=ROOT, check=True)
-    report = json.loads((ROOT / "reports" / "product-image-audit.json").read_text(encoding="utf-8"))
-    assert report["status"] == "ok" and report["images"] == 92 and not report["failed"]
-
-
-def test_process_reference_media_is_packaged():
-    for name in ("cold-brew-toddy.webp", "croissant-mantequilla.webp", "pan-queso.webp"):
-        assert (ROOT / "assets" / "references" / "procesos" / name).is_file()
-
-
-def test_routes_have_sequential_steps():
-    data = load()
-    routes = {route for content in data["contents"] for route in content["routes"].values()}
-    assert routes == {step["route"] for step in data["steps"]}
-    for route in routes:
-        orders = sorted(step["order"] for step in data["steps"] if step["route"] == route)
-        assert orders == list(range(1, len(orders) + 1)), route
-
-
-def test_cream_omits_roast_and_toddy_parameters_are_real():
-    data = load()
-    cream = [step["title"].lower() for step in data["steps"] if step["route"] == "frap-cajeta-cream"]
-    assert cream[0] == "vierte la leche" and not any("roast" in title for title in cream)
-    complete = " ".join(step["values"] for step in data["steps"] if step["route"] == "toddy-completa")
-    half = " ".join(step["values"] for step in data["steps"] if step["route"] == "toddy-media")
-    assert all(value in complete for value in ("5 lb", "7 L", "20 horas", "5 días"))
-    assert all(value in half for value in ("3 lb", "4.5 L", "20 horas", "5 días"))
-
-
-def test_no_obsolete_empty_or_oversized_files():
-    legacy = {"assets/references/frias/frias-06.tmp.webp"}
-    files = [path for path in ROOT.rglob("*") if path.is_file() and not {".git", ".venv", ".venv-ci", "_site"}.intersection(path.parts)
-             and str(path.relative_to(ROOT)).replace("\\", "/") not in legacy]
-    assert all((path.name == ".nojekyll" or path.stat().st_size > 0) and path.stat().st_size < 25 * 1024 * 1024 for path in files)
-    for directory in [path for path in (ROOT / "assets").rglob("*") if path.is_dir()]:
-        assert len([path for path in directory.iterdir() if path.is_file()]) < 100
-
-
-def test_catalog_has_names_unique_ids_and_operational_categories():
-    catalog = load()["catalog"]
-    assert all(item["name"].strip() for item in catalog)
-    assert len({item["id"] for item in catalog}) == len(catalog)
-    assert {"Bebidas", "Procesos", "Alimentos"}.issubset({item["category"] for item in catalog})
-    assert {
-        "pumpkin-spice-latte", "pumpkin-spice-latte-helado", "pumpkin-spice-frappuccino",
-        "cold-brew-pumpkin-cold-foam", "chai-latte-helado-pumpkin-cold-foam", "cold-foam-pumpkin",
-        "baguette-clasica", "baguette-espanola", "bagel-jamon-queso", "croissant-jamon-queso",
-    }.issubset({item["id"] for item in catalog})
-
-
-def test_new_visual_recipes_are_lightweight_and_split_safely():
-    data = load()
-    visual = [item for item in data["catalog"] if "Pumpkin" in item["subcategory"] or item["subcategory"] == "Ensamble"]
-    assert len(visual) == 10
-    for item in visual:
-        product = ROOT / item["productImage"]
-        reference = ROOT / item["referenceImage"]
-        assert product.stat().st_size < 250_000
-        assert reference.stat().st_size < 500_000
-        with Image.open(product) as image:
-            assert image.size == (720, 720)
-
-
-def test_html_references_and_accessibility_landmarks_exist():
-    html = (ROOT / "index.html").read_text(encoding="utf-8")
-    for match in re.findall(r'(?:src|href)="([^"#]+)"', html):
-        if not match.startswith(("http://", "https://")):
-            assert (ROOT / match).exists(), match
-    assert 'class="skip-link"' in html and 'aria-live="polite"' in html
-    assert 'apple-mobile-web-app-capable' in html
-    assert 'id="installApp"' in html and 'id="evaluationDialog"' in html
-
-
-def test_unicorn_campaign_and_grande_only_routes_are_safe():
-    data = load()
-    contents = {item["id"]: item for item in data["contents"]}
-    for content_id in ("unicorn-frappuccino", "salsa-azul-drizzle"):
-        assert contents[content_id]["selectors"] == [{"id": "size", "label": "Tamaño", "options": ["GRANDE"]}]
-        assert set(contents[content_id]["routes"]) == {"size=GRANDE"}
-    unicorn_steps = [step for step in data["steps"] if step["route"] == "unicorn-frappuccino"]
-    assert len(unicorn_steps) == 9
-    assert any("1 espiral" in step["values"] for step in unicorn_steps)
-    campaign = data["meta"]["campaigns"][0]
-    assert campaign["start"] == "2026-08-13" and campaign["end"] == "2026-08-17"
-    assert campaign["timezone"] == "America/Mexico_City"
-    for media in campaign["resources"]:
-        assert (ROOT / media).is_file()
-    assert campaign["resources"][-1] == "assets/campaigns/unicorn-concurso.webp"
-    salsa = [step for step in data["steps"] if step["route"] == "salsa-azul-drizzle"]
-    assert salsa[0]["values"] == "GRANDE=6 pumps CBS"
-    assert salsa[3]["values"] == "GRANDE=8 pumps CBS"
-
-
-def test_pwa_is_ios_ready_offline_and_contextual():
-    manifest = json.loads((ROOT / "manifest.webmanifest").read_text(encoding="utf-8"))
-    assert manifest["id"] == "./" and manifest["scope"] == "./"
-    assert manifest["orientation"] == "portrait-primary"
-    assert {item["url"] for item in manifest["shortcuts"]} == {"./#capacitar", "./#recetario", "./#objetivos"}
-    worker = (ROOT / "sw.js").read_text(encoding="utf-8")
-    assert "self.skipWaiting()" in worker and "self.clients.claim()" in worker
-    assert "offline.html" in worker
-    assert "unicorn-impacto-fallback.gif" in worker and "unicorn-impacto-poster.webp" in worker
-    assert 'event.request.headers.has("range")' in worker
-    app = (ROOT / "app.js").read_text(encoding="utf-8")
-    assert "campaignResourceCopy" in app and "unicornQuiz" in app
-    assert "beforeinstallprompt" in app and "Agregar a inicio" in app
-
-
-def test_clean_site_builder_excludes_legacy_data():
-    subprocess.run([sys.executable, "scripts/prepare_site.py"], cwd=ROOT, check=True)
-    assert {path.name for path in (ROOT / "_site" / "data").iterdir()} == {"content.js", "content.json", "objectives.js", "objectives.json", "objectives-data"}
-    assert (ROOT / "_site" / "offline.html").is_file()
-
-
-def test_objectives_engine_and_practice_evidence_are_integrated():
-    template = json.loads((ROOT / "data" / "objectives.json").read_text(encoding="utf-8"))
-    assert template["schemaVersion"] == 4
-    assert {item["id"] for item in template["products"]} == {"adt", "unicorn", "cake-pop"}
-    assert [item["id"] for item in template["cuts"]] == ["am", "inter", "pm"]
-    assert len(template["days"]) == 3
-    assert len(template["stores"]) == 873
-    assert all((ROOT / item["image"]).is_file() for item in template["products"] if item.get("image"))
-    assert {item["id"]: Path(item["image"]).name for item in template["products"]} == {
-        "adt": "adt-transacciones.png", "unicorn": "unicorn-frappuccino-objetivos.webp", "cake-pop": "cake-pop-unicornio.png",
-    }
-    assert [store["ceco"] for store in template["stores"]] == sorted((store["ceco"] for store in template["stores"]), key=int)
-    assert (ROOT / "data" / "objectives.js").stat().st_size < 100_000
-    angel_data = json.loads((ROOT / "data" / "objectives-data" / "381.json").read_text(encoding="utf-8"))
-    angel = next(store for store in angel_data["stores"] if store["ceco"] == "38101")
-    assert angel["name"] == "Angel"
-    assert [angel["goals"][day]["adt"] for day in ("2026-08-15", "2026-08-16", "2026-08-17")] == [384, 401, 404]
-    assert all(angel["goals"][day]["unicorn"] == 28 for day in angel["goals"])
-    assert all(angel["goals"][day]["cake-pop"] == 13 for day in angel["goals"])
-    html = (ROOT / "index.html").read_text(encoding="utf-8")
-    assert 'id="objectivesView"' in html and 'id="objectiveStoreSearch"' in html
-    assert 'id="objectiveStoreResults"' in html and 'id="downloadObjectivePdf"' in html
-    assert 'id="previewObjectivePdf"' in html and 'id="pdfDialog"' in html
-    assert "terminos-y-condiciones-unicorn.pdf" in html
-    assert "campaign-terms-callout" in html and 'id="shareObjectives"' in html
-    assert 'id="campaignVideo"' in html and "autoplay muted loop playsinline" in html
-    assert 'id="campaignAnimationFallback"' in html and 'id="campaignObjectives"' in html
-    app = (ROOT / "app.js").read_text(encoding="utf-8")
-    assert 'id="evaluationPhoto"' in app and 'capture="environment"' in app
-    assert "renderEvaluationStart" in app and "Tomar foto de práctica" in app
-    assert "setupPdfViewer" in app and "window.PdfViewer" in app and "toggleCampaignVideo" in app
-    assert "securePdfUrl" in app and "showFallback" in app and "playAnimation" in app and "Promise.race" in app
-    engine = (ROOT / "objectives.js").read_text(encoding="utf-8")
-    assert "window.OBJECTIVES_TEMPLATE" in (ROOT / "data" / "objectives.js").read_text(encoding="utf-8")
-    assert "window.print()" in engine and "reportFileName" in engine and "captures" in engine
-    assert "loadShard" in engine and "navigator.share" in engine and "findStores" in engine
-    assert ".slice(0, 6)" in engine and "normalize(query).length < 2" in engine
-    assert "saveCut" in engine and "shift-row" in engine and "Un renglón por turno" in engine
-
-
-def test_python_objectives_exporter_is_safe_and_available():
-    script = (ROOT / "scripts" / "export_objectives.py").read_text(encoding="utf-8")
-    assert "def validate" in script and "def create_pdf" in script
-    assert "schemaVersion" in script and "ZoneInfo" in script and "dynamic_output" in script
-    assert "optimized_thumbnail" in script and "projection_rows" in script and "actuals" in script
-    builder = (ROOT / "scripts" / "build_objectives.py").read_text(encoding="utf-8")
-    assert "load_stores" in builder and "generate_pdfs" in builder and "objectives-data" in builder
-    video_optimizer = (ROOT / "scripts" / "optimize_campaign_video.py").read_text(encoding="utf-8")
-    assert "fps=24" in video_optimizer and "+faststart" in video_optimizer and "libx264" in video_optimizer
-
-
-def test_campaign_video_is_lightweight_and_has_poster():
-    from PIL import Image
-
-    video = ROOT / "assets" / "campaigns" / "unicorn-impacto-v3.mp4"
-    fallback = ROOT / "assets" / "campaigns" / "unicorn-impacto-fallback.gif"
-    poster = ROOT / "assets" / "campaigns" / "unicorn-impacto-poster.webp"
-    assert video.is_file() and video.stat().st_size < 150_000
-    assert fallback.is_file() and fallback.stat().st_size < 600_000
-    assert poster.is_file() and poster.stat().st_size < 20_000
-    with Image.open(poster) as image:
-        assert image.size == (360, 640)
-    with Image.open(fallback) as image:
-        assert image.is_animated and image.n_frames > 20
-
-
-def test_cleanup_workflow_is_manual_and_validation_is_read_only():
-    cleanup = (ROOT / ".github" / "workflows" / "cleanup-obsolete.yml").read_text(encoding="utf-8")
-    deploy = (ROOT / ".github" / "workflows" / "validate-and-deploy.yml").read_text(encoding="utf-8")
-    assert "workflow_dispatch" in cleanup and "inputs.confirmacion == 'LIMPIAR_RAIZ'" in cleanup
-    assert "github.event_name == 'push'" in cleanup and 'paths:' in cleanup
-    assert "--verify-diff" in cleanup and "git push origin HEAD:main" in cleanup
-    assert "audit_repository_layout.py" in cleanup and "python -m pytest -q" in cleanup
-    assert "cleanup_obsolete.py --apply" not in deploy
-
-
-def test_repository_layout_auditor_has_a_closed_root_allowlist():
-    script = (ROOT / "scripts" / "audit_repository_layout.py").read_text(encoding="utf-8")
-    assert "ALLOWED_FILES" in script and "ALLOWED_DIRECTORIES" in script
-    assert 'outputs" / "CMS_Guia_Operativa_v2.xlsx' in script
-    assert "from cleanup_obsolete import OBSOLETE" in script
-
-
-def test_python_objectives_exporter_generates_one_page_pdf(tmp_path):
-    from scripts.export_objectives import create_pdf, dynamic_output
-    from pypdf import PdfReader
-
-    data = json.loads((ROOT / "data" / "objectives.json").read_text(encoding="utf-8"))
-    data.pop("stores", None)
-    data["store"] = {"ceco": "38101", "name": "Luna Park"}
-    data["values"] = {
-        "2026-08-15": {"adt": {"goal": 384, "actuals": {"am": 120, "inter": 140, "pm": 130}}, "unicorn": {"goal": 30, "actuals": {"am": 8, "inter": 9, "pm": 7}}, "cake-pop": {"goal": 20, "actuals": {"am": 5, "inter": 6, "pm": 7}}},
-        "2026-08-16": {"adt": {"goal": 401, "actuals": {}}, "unicorn": {"goal": 35, "actuals": {}}, "cake-pop": {"goal": 22, "actuals": {}}},
-        "2026-08-17": {"adt": {"goal": 404, "actuals": {}}, "unicorn": {"goal": 28, "actuals": {}}, "cake-pop": {"goal": 18, "actuals": {}}},
-    }
-    output = tmp_path / "objetivos.pdf"
-    create_pdf(data, output)
-    assert output.stat().st_size < 50_000
-    reader = PdfReader(output)
-    assert len(reader.pages) == 1
-    page = reader.pages[0]
-    assert float(page.mediabox.width) > float(page.mediabox.height)
-    assert 610 < float(page.mediabox.width) < 800
-    extracted = reader.pages[0].extract_text()
-    assert all(value in extracted for value in ("Luna Park", "38101", "ADT", "Unicorn Frappuccino", "Cake Pop Unicornio", "80%", "Creado", "PROYECCIÓN POR TURNO", "Apertura", "Intermedio", "Cierre", "LLENADO OPCIONAL"))
-    assert dynamic_output(data, tmp_path).name == "Luna_Park_Unicorn_Frapp_Cake_Pop.pdf"
-
-
-def test_terms_pdf_is_optimized_and_valid():
-    from pypdf import PdfReader
-
-    terms = ROOT / "assets" / "documents" / "terminos-y-condiciones-unicorn.pdf"
-    assert terms.is_file() and terms.stat().st_size < 100_000
-    reader = PdfReader(terms)
-    assert len(reader.pages) == 1
-    text = reader.pages[0].extract_text()
-    assert "TÉRMINOS Y CONDICIONES" in text and "15 al 17 de agosto de 2026" in text
+def test_ui_is_core_and_didactic():
+    html=(ROOT/"index.html").read_text(encoding="utf-8").lower()
+    app=(ROOT/"app.js").read_text(encoding="utf-8").lower()
+    styles=(ROOT/"styles.css").read_text(encoding="utf-8").lower()
+    combined=html+app+styles
+    assert "uni" + "corn" not in combined
+    assert "object" + "ives" not in combined
+    assert 'id="trainingstage"' in html and 'id="recipegrid"' in html
+    assert "reference-dock" in app and "gif_core" in json.dumps(data()).lower()

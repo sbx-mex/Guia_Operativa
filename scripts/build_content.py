@@ -27,7 +27,7 @@ def main() -> None:
     args = parser.parse_args()
     data = load_cms(CMS_PATH)
     json_text = json.dumps(data, ensure_ascii=False, indent=2) + "\n"
-    js_text = "window.TRAINING_CMS = " + json.dumps(data, ensure_ascii=False, separators=(",", ":")) + ";\n"
+    js_text = "window.GUIDE_CMS = " + json.dumps(data, ensure_ascii=False, separators=(",", ":")) + ";\n"
     targets = {ROOT / "data" / "content.json": json_text, ROOT / "data" / "content.js": js_text}
     if args.check:
         stale = [str(path.relative_to(ROOT)) for path, expected in targets.items() if not path.exists() or path.read_text(encoding="utf-8") != expected]

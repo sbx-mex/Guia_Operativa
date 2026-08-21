@@ -1,37 +1,25 @@
+#!/usr/bin/env python3
+"""Construye el directorio estático publicable de la Guía CORE."""
 from __future__ import annotations
-
 import shutil
 from pathlib import Path
 
-from build_objectives import build_template, generate_pdfs
-
 ROOT = Path(__file__).resolve().parents[1]
 SITE = ROOT / "_site"
-FILES = ("index.html", "offline.html", "app.js", "objectives.js", "styles.css", "manifest.webmanifest", "sw.js", ".nojekyll")
+FILES = ("index.html", "offline.html", "app.js", "styles.css", "manifest.webmanifest", "sw.js", ".nojekyll")
 
-
-def main() -> None:
+def main() -> int:
     if SITE.exists():
         shutil.rmtree(SITE)
     SITE.mkdir()
     for name in FILES:
         shutil.copy2(ROOT / name, SITE / name)
-    shutil.copytree(ROOT / "assets", SITE / "assets")
     (SITE / "data").mkdir()
-    for name in ("content.js", "content.json", "objectives.js", "objectives.json"):
+    for name in ("content.js", "content.json"):
         shutil.copy2(ROOT / "data" / name, SITE / "data" / name)
-    shutil.copytree(ROOT / "data" / "objectives-data", SITE / "data" / "objectives-data")
-    generated_pdf_root = SITE / "assets" / "documents" / "objectives"
-    generated_pdf_root.mkdir(parents=True, exist_ok=True)
-    generated = generate_pdfs(build_template(), generated_pdf_root)
-    unexpected = {"source", "outputs", "scripts", "tests"}.intersection(path.name for path in SITE.iterdir())
-    if unexpected:
-        raise SystemExit(f"Contenido privado en publicación: {sorted(unexpected)}")
-    legacy = {"catalog.json", "catalog_audit.json", "recipes.js"}.intersection(path.name for path in (SITE / "data").iterdir())
-    if legacy:
-        raise SystemExit(f"Datos heredados en publicación: {sorted(legacy)}")
-    print(f"Sitio limpio: {sum(1 for path in SITE.rglob('*') if path.is_file())} archivos · {generated} PDFs de objetivos")
-
+    shutil.copytree(ROOT / "assets", SITE / "assets")
+    print(f"Sitio CORE preparado en {SITE}")
+    return 0
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())

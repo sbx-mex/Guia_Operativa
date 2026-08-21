@@ -7,7 +7,7 @@ from typing import Any
 from openpyxl import load_workbook
 
 ROOT = Path(__file__).resolve().parents[1]
-CMS_PATH = ROOT / "outputs" / "CMS_Guia_Operativa_v2.xlsx"
+CMS_PATH = ROOT / "outputs" / "CMS_Guia_Operativa_CORE.xlsx"
 HEADER_ROW = 4
 
 
@@ -120,7 +120,8 @@ def load_cms(path: Path = CMS_PATH) -> dict[str, Any]:
         steps.append({"route": route, "order": order, "title": str(row["TITULO"]).strip(),
                       "detail": str(row["DETALLE"]).strip(), "icon": str(row["ICONO"]).strip(),
                       "values": str(row.get("VALORES") or "").strip(), "timer": int(row.get("TIMER_SEG") or 0),
-                      "stage": str(row.get("ETAPA") or row["TITULO"]).strip(), "media": str(row.get("MEDIA_PASO") or "").strip()})
+                      "stage": str(row.get("ETAPA") or row["TITULO"]).strip(),
+                      "media": _safe_media(row["MEDIA_PASO"]) if row.get("MEDIA_PASO") else ""})
     used_routes = {route for content in contents for route in content["routes"].values()}
     if used_routes != set(orders):
         raise CMSValidationError(f"Rutas/pasos no coinciden: rutas={sorted(used_routes)}, pasos={sorted(orders)}")
@@ -155,6 +156,6 @@ def load_cms(path: Path = CMS_PATH) -> dict[str, Any]:
             "resources": [_safe_media(row[key]) for key in ("IMAGEN_CHECKLIST", "IMAGEN_PRACTICAS", "IMAGEN_CONCURSO") if row.get(key)],
         })
 
-    return {"meta": {"version": "4.0.0", "catalogItems": len(catalog), "trainingModules": len(contents),
-                     "source": "outputs/CMS_Guia_Operativa_v2.xlsx", "campaigns": campaigns}, "labels": labels, "catalog": catalog,
+    return {"meta": {"version": "5.0.0-core", "catalogItems": len(catalog), "trainingModules": len(contents),
+                     "source": "outputs/CMS_Guia_Operativa_CORE.xlsx", "campaigns": campaigns}, "labels": labels, "catalog": catalog,
             "contents": contents, "steps": sorted(steps, key=lambda item: (item["route"], item["order"]))}
