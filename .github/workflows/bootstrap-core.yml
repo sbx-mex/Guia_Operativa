@@ -23,8 +23,11 @@ jobs:
           cat .bootstrap/part-* > /tmp/guia-core.tar.gz
           find . -mindepth 1 -maxdepth 1 ! -name .git -exec rm -rf -- {} +
           tar -xzf /tmp/guia-core.tar.gz
+          git fetch origin main
+          git checkout origin/main -- .github/workflows
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -A
-          git commit -m "feat: materializar guia operativa core"
-          git push origin HEAD:feat/remaster-guia-core
+          TREE_SHA="$(git write-tree)"
+          COMMIT_SHA="$(printf '%s\n' 'feat: materializar guia operativa core' | git commit-tree "$TREE_SHA" -p 66e85c3f113d23181020812851c527344fa96f42)"
+          git push origin "$COMMIT_SHA:refs/heads/feat/remaster-guia-core-content"
