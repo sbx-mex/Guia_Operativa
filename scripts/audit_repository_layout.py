@@ -7,7 +7,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 ALLOWED_FILES = {".gitignore",".nojekyll","README.md","app.js","index.html","manifest.webmanifest","offline.html","requirements.txt","styles.css","sw.js"}
 ALLOWED_DIRECTORIES = {".git",".github","assets","data","outputs","scripts","tests"}
-IGNORED_DIRECTORIES = {"_site",".venv",".venv-ci","node_modules"}
+IGNORED_DIRECTORIES = {"_site",".venv",".venv-ci",".pytest_cache","node_modules","__pycache__"}
 
 def main() -> int:
     unexpected=[]

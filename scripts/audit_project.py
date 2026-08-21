@@ -2,9 +2,11 @@
 """Auditoría integral del catálogo CORE, los lotes y sus medios."""
 from __future__ import annotations
 import json
+import re
 from collections import Counter
 from pathlib import Path
 from PIL import Image
+from cms_engine import CMS_PATH, CMSValidationError, load_cms
 
 ROOT = Path(__file__).resolve().parents[1]
 LOT_LIMIT_FILES = 100
@@ -13,7 +15,13 @@ EXPECTED = {"Lote_01_Bebidas":49,"Lote_02_Bebidas":48,"Lote_01_Recetas":49,"Lote
 
 def main() -> int:
     failures=[]
-    data=json.loads((ROOT/"data/content.json").read_text(encoding="utf-8"))
+    try:
+        generated=json.loads((ROOT/"data/content.json").read_text(encoding="utf-8"))
+        data=load_cms(CMS_PATH)
+    except (CMSValidationError, OSError, json.JSONDecodeError) as exc:
+        print(json.dumps({"status":"error","failures":[str(exc)]},ensure_ascii=False))
+        return 1
+    if data != generated: failures.append("data/content.json no coincide con el CMS; ejecuta scripts/build_content.py")
     if data.get("meta",{}).get("version") != "5.0.0-core": failures.append("Versión CMS distinta de 5.0.0-core")
     if len(data.get("contents",[])) != 103 or len(data.get("catalog",[])) != 103: failures.append("Se esperan 103 módulos y 103 medios")
     categories=Counter(item["category"] for item in data["contents"])
@@ -30,6 +38,11 @@ def main() -> int:
         for key in ("productImage","referenceImage"):
             path=ROOT/item[key]
             if not path.is_file(): failures.append(f"Medio ausente: {item[key]}")
+    for step in data["steps"]:
+        if step["media"] and not (ROOT/step["media"]).is_file(): failures.append(f"GIF de paso ausente: {step['media']}")
+    static_sources = "\n".join((ROOT/name).read_text(encoding="utf-8") for name in ("index.html","offline.html","app.js","sw.js","manifest.webmanifest"))
+    for value in sorted(set(re.findall(r"assets/[A-Za-z0-9_./-]+", static_sources))):
+        if not (ROOT/value).is_file(): failures.append(f"Recurso estático ausente: {value}")
     report={}
     for folder,expected in EXPECTED.items():
         path=ROOT/"assets"/folder
